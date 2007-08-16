@@ -46,7 +46,7 @@ class AddResource extends SpecialPage
 		}
 	
 		/* redirect to new subpage */
-		if ( ($new_subpage = $wgRequest->getVal('new_subpage')) != '' && $par->exists() ) {
+		if ( ($new_subpage = $wgRequest->getVal('new_subpage')) != '' && $title->exists() ) {
 			$redir = Title::newFromText( $par . '/' . $new_subpage);
 			if ( $redir->exists() )
 				$wgOut->redirect($redir->getFullURL() );
@@ -62,6 +62,16 @@ class AddResource extends SpecialPage
 			$externalLinkURL = $wgRequest->getVal('externalLinkURL');
 			$externalLinkTitle = $wgRequest->getVal('externalLinkTitle');
 			if ($externalLinkURL != '' and $externalLinkTitle != '' ) {
+				$newTitle = Title::NewFromText( $par . '/' . $externalLinkTitle );
+				if ( $newTitle->exists() ) {
+# overwrite old article?
+				} else {
+# create new article
+					$newArticle = new Article( $newTitle );
+					$newArticleText = '#REDIRECT [[' . $externalLinkURL . '|' . $externalLinkTitle . ']]';
+					$newArticle->doEdit( $newArticleText, 'a first test to automatically add a page/redirect', EDIT_NEW );
+				}
+
 # TODO: add $par/$externalLinkTitle with content '#REDIRECT [[$externalLinkURL]]'
 			} elseif ( $externalLinkURL != '' and $externalLinkTitle == '') {
 				$wgOut->addHTML( addBanner( wfMsg('forgot_title'), 'forgot_title') );
@@ -87,7 +97,7 @@ class AddResource extends SpecialPage
 		if ( $title->exists() ) 
 			$this->subpage($title);
 		if ( $wgEnableExternalRedirects == True )
-			$this->link($title, $preloadURL, $preloadTitle);
+			$this->link($title, $skin, $preloadURL, $preloadTitle);
 	}
 
 	/* the upload chapter */
@@ -97,6 +107,7 @@ class AddResource extends SpecialPage
 		$wgOut->addWikiText( wfMsg('upload_exp') );
 		// note that this will change in the future:
 		$wgOut->addHTML( wfMsg('upload_pretext') . $skin->makeKnownLink( wfMsg('upload_page'), wfMsg('upload_linktext'), 'summary=%5B%5B' . $title->getPrefixedDBkey() . '%5D%5D') );
+		$wgOut->addWikiText( wfMsg('upload_footer') );
 	}
 	
 	/* the subpage chapter */
@@ -114,10 +125,9 @@ class AddResource extends SpecialPage
 	}
 
 	/* the link chapter */
-	function link ( $title, $preloadURL = '', $preloadTitle = '' ) {
+	function link ( $title, $skin, $preloadURL = '', $preloadTitle = '' ) {
 		global $wgOut;
 		$wgOut->addWikiText( wfMsg('link_header') );
-		$wgOut->addWikiText('\'\'\'STILL NON-FUNCTIONAL\'\'\'');
 		$wgOut->addWikiText( wfMsg('link_exp',
 					wfMsg('link_url'),
 					wfMsg('link_title'),
@@ -135,6 +145,7 @@ class AddResource extends SpecialPage
 		$wgOut->addHTML('  <td><input type="submit" value="' . wfMsg('link_button') . '"></td>');
 		$wgOut->addHTML(' </tr></table></form>');
 
+		$wgOut->addHTML( wfMsg('link_footer', $title->getFullText() ) . $skin->makeKnownLink( wfMsg('download_page') . '/' . $title->getFullText(), wfMsg('download_linktext'), 'showAllSubpages=true') );
 	}
 
 	/* internationalization stuff */
