@@ -64,12 +64,26 @@ class AddResource extends SpecialPage
 			if ($externalLinkURL != '' and $externalLinkTitle != '' ) {
 				$newTitle = Title::NewFromText( $par . '/' . $externalLinkTitle );
 				if ( $newTitle->exists() ) {
-# overwrite old article?
+#		$skin->makeKnownLink( wfMsg('upload_page'), wfMsg('upload_linktext'), 'summary=%5B%5B' . $title->getPrefixedDBkey() . '%5D%5D')	
+					$editPage = $skin->makeKnownLink( $newTitle->getFullText(),
+						wfMsg('link_title_exists_1'), 'action=edit');
+					$listSubpages = $skin->makeKnownLink( wfMsg('download_page') . '/' .
+						$pageTitle, wfMsg('link_title_exists_2'), 'showAllSubpages=true');
+
+					$wgOut->addHTML( addBanner( wfMsg('link_title_exists', $editPage, $listSubpages) ) );
+					$preloadURL = $externalLinkURL;
+					$preloadTitle = $externalLinkTitle;
 				} else {
-# create new article
+					# create new article
 					$newArticle = new Article( $newTitle );
 					$newArticleText = '#REDIRECT [[' . $externalLinkURL . '|' . $externalLinkTitle . ']]';
-					$newArticle->doEdit( $newArticleText, 'a first test to automatically add a page/redirect', EDIT_NEW );
+					$newArticle->doEdit( $newArticleText, wfMsg('commit_message', $externalLinkURL), EDIT_NEW );
+					$view = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_view'),
+						'redirect=no');
+					$edit = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_edit'),
+						'action=edit');
+					$gothere = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_gothere'));
+					$wgOut->addHTML( addBanner( wfMsg('link_created', $view, $edit, $gothere) ) );
 				}
 
 # TODO: add $par/$externalLinkTitle with content '#REDIRECT [[$externalLinkURL]]'
