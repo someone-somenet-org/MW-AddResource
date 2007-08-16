@@ -22,7 +22,7 @@ class AddResource extends SpecialPage
 	}
 
 	function execute( $par ) {
-		global $wgOut, $wgRequest, $wgUser;
+		global $wgOut, $wgRequest, $wgUser, $wgEnableExternalRedirects;
 		$skin = $wgUser->getSkin();
 
 		$this->setHeaders();
@@ -37,15 +37,17 @@ class AddResource extends SpecialPage
 		}
 
 		/* This will hopefully one day automatically add an ExternalRedirect. */
-		$externalLinkURL = $wgRequest->getVal('externalLinkURL');
-		$externalLinkTitle = $wgRequest->getVal('externalLinkTitle');
-		if ($externalLinkURL != '' and $externalLinkTitle != '' ) {
-			print "add an external link";
-		} elseif ( $externalLinkURL != '' and $externalLinkTitle == '') {
-			print "forgot externalLinkTitle";
-		} elseif ( $externalLinkURL == '' and $externalLinkTitle != '') {
-			print "forgot externalLinkURL";
-		} 
+		if ( $wgEnableExternalRedirects == True ) {
+			$externalLinkURL = $wgRequest->getVal('externalLinkURL');
+			$externalLinkTitle = $wgRequest->getVal('externalLinkTitle');
+			if ($externalLinkURL != '' and $externalLinkTitle != '' ) {
+				print "add an external link";
+			} elseif ( $externalLinkURL != '' and $externalLinkTitle == '') {
+				print "forgot externalLinkTitle";
+			} elseif ( $externalLinkURL == '' and $externalLinkTitle != '') {
+				print "forgot externalLinkURL";
+			} 
+		}
 		
 
 		/* make a Title object from $par */
@@ -75,7 +77,8 @@ class AddResource extends SpecialPage
 		$this->upload($title, $skin);
 		if ( $title->exists() ) 
 			$this->subpage($title);
-		$this->link($title);
+		if ( $wgEnableExternalRedirects == True )
+			$this->link($title);
 	}
 
 	/* the upload chapter */
