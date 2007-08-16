@@ -12,6 +12,16 @@ function wfSpecialAddResource ($par) {
 	$page->execute($par);
 }
 
+function addBanner( $text, $div_id = 'random banner' ) {
+	$s = '<div id="' . $div_id . '">';
+	$s .= '<table align="center" border="0" cellpadding="5" cellspacing="2"';
+	$s .= '    style="border: 1px solid #FFA4A4; background-color: #FFF3F3; border-left: 5px solid #FF6666">';
+	$s .= '<tr><td style=font-size: 95%;>';
+	$s .= $text;
+	$s .= '</td></tr></table></div>';
+	return $s;
+}
+
 // actual class
 class AddResource extends SpecialPage
 {
@@ -34,7 +44,7 @@ class AddResource extends SpecialPage
 			$wgOut->addWikiText(wfMsg('noParameterHelp'));
 			return;
 		}
-		
+	
 		/* redirect to new subpage */
 		if ( ($new_subpage = $wgRequest->getVal('new_subpage')) != '' && $par->exists() ) {
 			$redir = Title::newFromText( $par . '/' . $new_subpage);
@@ -44,6 +54,9 @@ class AddResource extends SpecialPage
 				$wgOut->redirect($redir->getFullURL() . '?action=edit' );
 		}
 
+		$pageTitle = $title->getFullText();
+		$wgOut->addWikiText( wfMsg('header', $pageTitle) );
+
 		/* This will hopefully one day automatically add an ExternalRedirect. */
 		if ( $wgEnableExternalRedirects == True ) {
 			$externalLinkURL = $wgRequest->getVal('externalLinkURL');
@@ -51,23 +64,21 @@ class AddResource extends SpecialPage
 			if ($externalLinkURL != '' and $externalLinkTitle != '' ) {
 # TODO: add $par/$externalLinkTitle with content '#REDIRECT [[$externalLinkURL]]'
 			} elseif ( $externalLinkURL != '' and $externalLinkTitle == '') {
+				$wgOut->addHTML( addBanner( wfMsg('forgot_title'), 'forgot_title') );
 				$preloadURL = $externalLinkURL;
 			} elseif ( $externalLinkURL == '' and $externalLinkTitle != '') {
+				$wgOut->addHTML( addBanner( wfMsg('forgot_url'), 'forgot_url') );
 				$preloadTitle = $externalLinkTitle;
 			} 
 		}
 		
-		$pageTitle = $title->getFullText();
-
-		$wgOut->addWikiText( wfMsg('header', $pageTitle) );
-
 		/* display a Banner if article doesn't exist: */
 		if ( ! $title->exists() ) {
-			$wgOut->addHTML('<div id="article_not_exists">
-<table align="center" border="0" cellpadding="5" cellspacing="2" style="border: 1px solid #FFA4A4; background-color: #FFF3F3; border-left: 5px solid #FF6666">
-<tr><td style=font-size: 95%;>' . wfMsg( 'article_not_exists_1', $pageTitle ) . $skin->makeBrokenLink($pageTitle, 'create the page', 'action=edit' ));
-			$wgOut->addWikiText(wfMsg( 'article_not_exists_2' ), false);
-			$wgOut->addHTML( '</td></tr></table></div>');
+			$message = wfMsg( 'article_not_exists', $pageTitle,
+				$skin->makeBrokenLink($pageTitle, 'create the page', 'action=edit') );
+			$wgOut->addHTML( addBanner( $message, 'article_not_exists') );
+#	. wfMsg( 'article_not_exists_1', $pageTitle ) .  ));
+#			$wgOut->addWikiText(wfMsg( 'article_not_exists_2' ), false);
 		}
 		
 		$wgOut->addWikiText( wfMsg('explanation', $pageTitle ) );
