@@ -27,8 +27,16 @@ class AddResource extends SpecialPage
 
 		$this->setHeaders();
 
+		/* make a Title object from $par */
+		if ( $par )
+			$title = Title::newFromText( $par );
+		else { /* if nothing was specified */
+			$wgOut->addWikiText(wfMsg('noParameterHelp'));
+			return;
+		}
+		
 		/* redirect to new subpage */
-		if ( ($new_subpage = $wgRequest->getVal('new_subpage')) != '' ) {
+		if ( ($new_subpage = $wgRequest->getVal('new_subpage')) != '' && $par->exists() ) {
 			$redir = Title::newFromText( $par . '/' . $new_subpage);
 			if ( $redir->exists() )
 				$wgOut->redirect($redir->getFullURL() );
@@ -41,21 +49,12 @@ class AddResource extends SpecialPage
 			$externalLinkURL = $wgRequest->getVal('externalLinkURL');
 			$externalLinkTitle = $wgRequest->getVal('externalLinkTitle');
 			if ($externalLinkURL != '' and $externalLinkTitle != '' ) {
-				print "add an external link";
+# TODO: add $par/$externalLinkTitle with content '#REDIRECT [[$externalLinkURL]]'
 			} elseif ( $externalLinkURL != '' and $externalLinkTitle == '') {
-				print "forgot externalLinkTitle";
+				$preloadURL = $externalLinkURL;
 			} elseif ( $externalLinkURL == '' and $externalLinkTitle != '') {
-				print "forgot externalLinkURL";
+				$preloadTitle = $externalLinkTitle;
 			} 
-		}
-		
-
-		/* make a Title object from $par */
-		if ( $par )
-			$title = Title::newFromText( $par );
-		else { /* if nothing was specified */
-			$wgOut->addWikiText(wfMsg('noParameterHelp'));
-			return;
 		}
 		
 		$pageTitle = $title->getFullText();
@@ -78,7 +77,7 @@ class AddResource extends SpecialPage
 		if ( $title->exists() ) 
 			$this->subpage($title);
 		if ( $wgEnableExternalRedirects == True )
-			$this->link($title);
+			$this->link($title, $preloadURL, $preloadTitle);
 	}
 
 	/* the upload chapter */
@@ -105,7 +104,7 @@ class AddResource extends SpecialPage
 	}
 
 	/* the link chapter */
-	function link ($title) {
+	function link ( $title, $preloadURL = '', $preloadTitle = '' ) {
 		global $wgOut;
 		$wgOut->addWikiText( wfMsg('link_header') );
 		$wgOut->addWikiText('\'\'\'STILL NON-FUNCTIONAL\'\'\'');
@@ -121,8 +120,8 @@ class AddResource extends SpecialPage
 		$wgOut->addHTML('  <th>' . wfMsg('link_title') . ':</th>');
 		$wgOut->addHTML('  <th></th></tr>');
 		$wgOut->addHTML(' <tr>');
-		$wgOut->addHTML('  <td><input type="text" name="externalLinkURL"></td>');
-		$wgOut->addHTML('  <td><input type="text" name="externalLinkTitle"></td>');
+		$wgOut->addHTML('  <td><input type="text" name="externalLinkURL" value="' . $preloadURL . '"></td>');
+		$wgOut->addHTML('  <td><input type="text" name="externalLinkTitle" value="' . $preloadTitle . '"></td>');
 		$wgOut->addHTML('  <td><input type="submit" value="' . wfMsg('link_button') . '"></td>');
 		$wgOut->addHTML(' </tr></table></form>');
 
