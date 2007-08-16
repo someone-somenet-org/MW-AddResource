@@ -8,8 +8,6 @@ Please append the Page you want to add a resource to, i.e. {{FULLPAGENAME}}/Page
 		'header' => '= Add a resource for $1 =',
 		'article_not_exists' => '<h3>Warning!</h3>
 The page "$1" doesn\'t exist yet. You can still add files and links, but no subpages (for technical reasons). You may want to $2 first',
-		'article_not_exists_1' => '<h3>Warning!</h3>',
-		'article_not_exists_2' => ' first.',
 		'explanation' => 'This page allows you to add resources to [[$1]]. You can add three different types of resources: files, subpages and links. The resources you add here are automatically added to the Download-tab of the page.',
 		'upload_header' => '== Add a file ==',
 		'upload_exp' => 'You can upload a file directly. Use this method if you want to add something like a pdf, doc or an odt-file.',
