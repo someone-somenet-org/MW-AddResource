@@ -32,7 +32,7 @@ class AddResource extends SpecialPage
 	}
 
 	function execute( $par ) {
-		global $wgOut, $wgRequest, $wgUser, $wgEnableExternalRedirects;
+		global $wgOut, $wgRequest, $wgUser, $wgEnableUploads, $wgEnableExternalRedirects;
 		$skin = $wgUser->getSkin();
 
 		$this->setHeaders();
@@ -77,14 +77,13 @@ class AddResource extends SpecialPage
 			$message = wfMsg( 'article_not_exists', $pageTitle,
 				$skin->makeBrokenLink($pageTitle, 'create the page', 'action=edit') );
 			$wgOut->addHTML( addBanner( $message, 'article_not_exists') );
-#	. wfMsg( 'article_not_exists_1', $pageTitle ) .  ));
-#			$wgOut->addWikiText(wfMsg( 'article_not_exists_2' ), false);
 		}
 		
 		$wgOut->addWikiText( wfMsg('explanation', $pageTitle ) );
 
 		/* add the various chapters */
-		$this->upload($title, $skin);
+		if ( $wgEnableUploads == True )
+			$this->upload($title, $skin);
 		if ( $title->exists() ) 
 			$this->subpage($title);
 		if ( $wgEnableExternalRedirects == True )
