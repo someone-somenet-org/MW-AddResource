@@ -36,6 +36,18 @@ class AddResource extends SpecialPage
 				$wgOut->redirect($redir->getFullURL() . '?action=edit' );
 		}
 
+		/* This will hopefully one day automatically add an ExternalRedirect. */
+		$externalLinkURL = $wgRequest->getVal('externalLinkURL');
+		$externalLinkTitle = $wgRequest->getVal('externalLinkTitle');
+		if ($externalLinkURL != '' and $externalLinkTitle != '' ) {
+			print "add an external link";
+		} elseif ( $externalLinkURL != '' and $externalLinkTitle == '') {
+			print "forgot externalLinkTitle";
+		} elseif ( $externalLinkURL == '' and $externalLinkTitle != '') {
+			print "forgot externalLinkURL";
+		} 
+		
+
 		/* make a Title object from $par */
 		if ( $par )
 			$title = Title::newFromText( $par );
@@ -106,8 +118,8 @@ class AddResource extends SpecialPage
 		$wgOut->addHTML('  <th>' . wfMsg('link_title') . ':</th>');
 		$wgOut->addHTML('  <th></th></tr>');
 		$wgOut->addHTML(' <tr>');
-		$wgOut->addHTML('  <td><input type="text" name="new_link_url"></td>');
-		$wgOut->addHTML('  <td><input type="text" name="new_link_title"></td>');
+		$wgOut->addHTML('  <td><input type="text" name="externalLinkURL"></td>');
+		$wgOut->addHTML('  <td><input type="text" name="externalLinkTitle"></td>');
 		$wgOut->addHTML('  <td><input type="submit" value="' . wfMsg('link_button') . '"></td>');
 		$wgOut->addHTML(' </tr></table></form>');
 
