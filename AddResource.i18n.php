@@ -39,9 +39,42 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'forgot_title' => 'Please enter a link-text',
 	),
 	'de' => array(
-		'addresource_title' => 'AddResource',
-		'addresource' => 'AddResource',
-		
+		'addresource_title' => 'Materialien hinzufügen',
+		'addresource' => 'Materialen hinzufügen', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
+		'noParameterHelp' => '= Spezial:Materialien hinzufügen: Kein Artikelname angegeben! =
+Bitte gib die Seite, zu der du Materialien hinzufügen willst, als Parameter in der URL an, z.B. {{FULLPAGENAME}}/Artikelname',
+		'header' => 'abc',
+		'article_not_exists' => '<h3>Warning!</h3>
+The page "$1" doesn\'t exist yet. You can still add files and links, but no subpages (for technical reasons). You may want to $2 first',
+		'explanation' => 'abc',
+		'upload_header' => 'abc',
+		'upload_exp' => 'abc',
+		'upload_footer' => 'abc',
+		'upload_pretext' => 'abc',
+		'upload_page' => 'abc',
+		'upload_linktext' => 'abc',
+		'subpage_header' => 'abc',
+		'subpage_exp' => 'abc',
+		'subpage_button' => 'abc',
+		'subpage_after_exp' => 'abc',
+		'link_header' => 'abc',
+		'link_exp' => 'abc',
+		'link_url' => 'abc',
+		'link_title' => 'abc',
+		'link_title_exists' => 'abc',
+		'link_title_exists_1' => 'abc',
+		'link_title_exists_2' => 'abc',
+		'link_button' => 'abc',
+		'link_footer' => 'abc',
+		'link_created' => 'abc',
+		'link_created_view' => 'abc',
+		'link_created_edit' => 'abc',
+		'link_created_gothere' => 'abc',
+		'commit_message' => 'abc',
+		'download_page' => 'abc',
+		'download_linktext' => 'abc',
+		'forgot_url' => 'abc',
+		'forgot_title' => 'abc',
 	)
 );
 ?>
