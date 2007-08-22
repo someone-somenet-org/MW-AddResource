@@ -40,7 +40,7 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 	),
 	'de' => array(
 		'addresource_title' => 'Materialien hinzufügen',
-		'materialien_hinzufügen' => 'Materialien hinzufügen', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
+		'materialien hinzufügen' => 'Materialien hinzufügen', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
 		'noParameterHelp' => '= Spezial:Materialien hinzufügen: Kein Artikelname angegeben! =
 Bitte gib die Seite, zu der du Materialien hinzufügen willst, als Parameter in der URL an, z.B. {{FULLPAGENAME}}/Artikelname',
 		'header' => 'header',

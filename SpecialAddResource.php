@@ -1,8 +1,5 @@
 <?php
 
-// this seems to have no effect?
-$wgSpecialPages[ 'AddResource' ] = 'AddResource';
-
 /**
  * Entry point
  */
