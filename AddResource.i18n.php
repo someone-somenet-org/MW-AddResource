@@ -2,7 +2,7 @@
 $allMessages = array(
         'en' => array(
 		'addresource_title' => 'AddResource',
-		'addresource' => 'AddResource', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
+		'add_resource' => 'AddResource', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
 		'noParameterHelp' => '= Special:AddResource: No pagename specified =
 Please append the Page you want to add a resource to, i.e. {{FULLPAGENAME}}/Pagename.',
 		'header' => '= Add a resource for $1 =',
@@ -39,8 +39,8 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'forgot_title' => 'Please enter a link-text',
 	),
 	'de' => array(
-		'addresource_title' => 'Materialien hinzufügen',
-		'materialien hinzufügen' => 'Materialien hinzufügen', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
+		'addresource_title' => 'Materialien_Hinzufügen',
+		'materialien hinzufügen' => 'Materialien Hinzufügen', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
 		'noParameterHelp' => '= Spezial:Materialien hinzufügen: Kein Artikelname angegeben! =
 Bitte gib die Seite, zu der du Materialien hinzufügen willst, als Parameter in der URL an, z.B. {{FULLPAGENAME}}/Artikelname',
 		'header' => 'header',
