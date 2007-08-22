@@ -16,7 +16,7 @@ switch ( $wgLanguageCode ) {
 		$wgSpecialPages[ 'AddResource' ] = 'AddResource';
 		break;
 	case 'de':
-		$wgSpecialPages[ 'AddResource' ] = 'AddResource';
+		$wgSpecialPages[ 'Materialien hinzufüge' ] = 'AddResource';
 		break;
 	default:
 		$wgSpecialPages[ 'AddResource' ] = 'AddResource';
