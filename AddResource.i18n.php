@@ -67,7 +67,7 @@ Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufü
 		'link_button' => 'Link hinzufügen',
 		'link_footer' => 'Hiermit legst du eine "externe Weiterleitung" an. Der Seitenname ist <i>$1/Titel</i>. Eine exterene Weiterleitung ist also eigentlich eine normale Unterseite mit speziellen Eigenschaften und kann also auch mit anderen Unterseiten "kollidieren". Eine Liste aller Unterseiten findest du $2.',
 		'link_footer_linktext' => 'hier',
-		'link_created' => 'Neue externe Weiterleitung angelegt. Du kannst ihn $1, $2 oder gleich $3 gehen.',
+		'link_created' => 'Neue externe Weiterleitung angelegt. Du kannst sie $1, $2 oder gleich $3 gehen.',
 		'link_created_view' => 'anschaun',
 		'link_created_edit' => 'editieren',
 		'link_created_gothere' => 'dorthin',

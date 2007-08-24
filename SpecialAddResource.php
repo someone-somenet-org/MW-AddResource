@@ -9,10 +9,18 @@ function wfSpecialAddResource ($par) {
 	$page->execute($par);
 }
 
-function addBanner( $text, $div_id = 'random banner' ) {
+function addBanner( $text, $div_id = 'random banner', $color = 'red' ) {
 	$s = '<div id="' . $div_id . '">';
 	$s .= '<table align="center" border="0" cellpadding="5" cellspacing="2"';
-	$s .= '    style="border: 1px solid #FFA4A4; background-color: #FFF3F3; border-left: 5px solid #FF6666">';
+	switch ($color) {
+		case 'red':
+			$s .= '    style="border: 1px solid #FFA4A4; background-color: #FFF3F3; border-left: 5px solid #FF6666">';
+			break;
+		case 'green':
+			$s .= '    style="border: 1px solid #A4FFA4; background-color: #F3FFF3; border-left: 5px solid #66FF66">';
+			break;
+	} 
+
 	$s .= '<tr><td style=font-size: 95%;>';
 	$s .= $text;
 	$s .= '</td></tr></table></div>';
@@ -67,7 +75,7 @@ class AddResource extends SpecialPage
 					$listSubpages = $skin->makeKnownLink( wfMsg('resources_page') . '/' .
 						$pageTitle, wfMsg('link_title_exists_2'), 'showAllSubpages=true');
 
-					$wgOut->addHTML( addBanner( wfMsg('link_title_exists', $editPage, $listSubpages) ) );
+					$wgOut->addHTML( addBanner( wfMsg('link_title_exists', $editPage, $listSubpages), 'link_title_exists' ) );
 					$preloadURL = $externalLinkURL;
 					$preloadTitle = $externalLinkTitle;
 				} else {
@@ -80,7 +88,7 @@ class AddResource extends SpecialPage
 					$edit = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_edit'),
 						'action=edit');
 					$gothere = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_gothere'));
-					$wgOut->addHTML( addBanner( wfMsg('link_created', $view, $edit, $gothere) ) );
+					$wgOut->addHTML( addBanner( wfMsg('link_created', $view, $edit, $gothere), 'link_created', 'green' ) );
 				}
 
 # TODO: add $par/$externalLinkTitle with content '#REDIRECT [[$externalLinkURL]]'
