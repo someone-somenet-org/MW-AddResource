@@ -64,7 +64,7 @@ class AddResource extends SpecialPage
 #		$skin->makeKnownLink( wfMsg('upload_page'), wfMsg('upload_linktext'), 'summary=%5B%5B' . $title->getPrefixedDBkey() . '%5D%5D')	
 					$editPage = $skin->makeKnownLink( $newTitle->getFullText(),
 						wfMsg('link_title_exists_1'), 'action=edit');
-					$listSubpages = $skin->makeKnownLink( wfMsg('download_page') . '/' .
+					$listSubpages = $skin->makeKnownLink( wfMsg('resources_page') . '/' .
 						$pageTitle, wfMsg('link_title_exists_2'), 'showAllSubpages=true');
 
 					$wgOut->addHTML( addBanner( wfMsg('link_title_exists', $editPage, $listSubpages) ) );
@@ -156,7 +156,13 @@ class AddResource extends SpecialPage
 		$wgOut->addHTML('  <td><input type="submit" value="' . wfMsg('link_button') . '"></td>');
 		$wgOut->addHTML(' </tr></table></form>');
 
-		$wgOut->addHTML( wfMsg('link_footer', $title->getFullText() ) . $skin->makeKnownLink( wfMsg('download_page') . '/' . $title->getFullText(), wfMsg('download_linktext'), 'showAllSubpages=true') );
+		$wgOut->addHTML( wfMsg('link_footer',
+			$title->getFullText(),
+			$skin->makeKnownLink( wfMsg('resources_page') . '/' .
+				$title->getFullText(),
+				wfMsg('link_footer_linktext'), 'showAllSubpages=true') )
+		); 
+
 	}
 
 	/* internationalization stuff */
