@@ -59,7 +59,7 @@ class AddResource extends SpecialPage
 				$wgOut->addHTML( addBanner( wfMsg('not_allowed') ) );
 			else {
 				$loginPage = $skin->makeKnownLink( wfMsg('login_page'),
-                                                wfMsg('login_text'), 'returnto=' . wfMsg('addresource_Page')
+                                                wfMsg('login_text'), 'returnto=' . wfMsg('addresourcePage')
 						. '/' . $par );
 				$wgOut->addHTML( addBanner( wfMsg('not_allowed_anon', $loginPage)) );
 			}
