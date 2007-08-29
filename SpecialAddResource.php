@@ -50,15 +50,6 @@ class AddResource extends SpecialPage
 			return;
 		}
 	
-		/* redirect to new subpage */
-		if ( ($new_subpage = $wgRequest->getVal('new_subpage')) != '' && $title->exists() ) {
-			$redir = Title::newFromText( $par . '/' . $new_subpage);
-			if ( $redir->exists() )
-				$wgOut->redirect($redir->getFullURL() );
-			else
-				$wgOut->redirect($redir->getFullURL() . '?action=edit' );
-		}
-
 		$pageTitle = $title->getFullText();
 		$wgOut->addWikiText( wfMsg('header', $pageTitle) );
 
@@ -68,11 +59,22 @@ class AddResource extends SpecialPage
 				$wgOut->addHTML( addBanner( wfMsg('not_allowed') ) );
 			else {
 				$loginPage = $skin->makeKnownLink( wfMsg('login_page'),
-                                                wfMsg('login_text'));
+                                                wfMsg('login_text'), 'returnto=' . wfMsg('addresource_page')
+						. '/' . $par );
 				$wgOut->addHTML( addBanner( wfMsg('not_allowed_anon', $loginPage)) );
 			}
 			return;
 		}
+
+		/* redirect to new subpage */
+		if ( ($new_subpage = $wgRequest->getVal('new_subpage')) != '' && $title->exists() ) {
+			$redir = Title::newFromText( $par . '/' . $new_subpage);
+			if ( $redir->exists() )
+				$wgOut->redirect($redir->getFullURL() );
+			else
+				$wgOut->redirect($redir->getFullURL() . '?action=edit' );
+		}
+
 			
 		/* This automatically adds an ExternalRedirect. */
 		if ( $wgEnableExternalRedirects == True ) {
