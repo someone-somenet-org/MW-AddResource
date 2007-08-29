@@ -62,7 +62,19 @@ class AddResource extends SpecialPage
 		$pageTitle = $title->getFullText();
 		$wgOut->addWikiText( wfMsg('header', $pageTitle) );
 
-		/* This will hopefully one day automatically add an ExternalRedirect. */
+		# a little user-check:
+		if ( ! $wgUser->isAllowed('edit') ) {
+			if ( $wgUser->isLoggedIn() )
+				$wgOut->addHTML( addBanner( wfMsg('not_allowed') ) );
+			else {
+				$loginPage = $skin->makeKnownLink( wfMsg('login_page'),
+                                                wfMsg('login_text'));
+				$wgOut->addHTML( addBanner( wfMsg('not_allowed_anon', $loginPage)) );
+			}
+			return;
+		}
+			
+		/* This automatically adds an ExternalRedirect. */
 		if ( $wgEnableExternalRedirects == True ) {
 			$externalLinkURL = $wgRequest->getVal('externalLinkURL');
 			$externalLinkTitle = $wgRequest->getVal('externalLinkTitle');
