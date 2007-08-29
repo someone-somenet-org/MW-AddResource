@@ -11,8 +11,7 @@ EOT;
 $wgAutoloadClasses['AddResource'] = dirname(__FILE__) . '/SpecialAddResource.php';
 $wgHooks['LoadAllMessages'][] = 'AddResource::loadMessages';
 
-global $wgUser;
-switch ( $wgUser->getOption( 'language' ) ) {
+switch ( $wgLanguageCode ) {
 	case 'en':
 		$wgSpecialPages[ 'AddResource' ] = 'AddResource';
 		break;
