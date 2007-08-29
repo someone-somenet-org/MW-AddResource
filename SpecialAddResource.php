@@ -69,7 +69,7 @@ class AddResource extends SpecialPage
 			if ($externalLinkURL != '' and $externalLinkTitle != '' ) {
 				$newTitle = Title::NewFromText( $par . '/' . $externalLinkTitle );
 				if ( $newTitle->exists() ) {
-#		$skin->makeKnownLink( wfMsg('upload_page'), wfMsg('upload_linktext'), 'summary=%5B%5B' . $title->getPrefixedDBkey() . '%5D%5D')	
+					# article already exists!
 					$editPage = $skin->makeKnownLink( $newTitle->getFullText(),
 						wfMsg('link_title_exists_1'), 'action=edit');
 					$listSubpages = $skin->makeKnownLink( wfMsg('resources_page') . '/' .
@@ -82,7 +82,10 @@ class AddResource extends SpecialPage
 					# create new article
 					$newArticle = new Article( $newTitle );
 					$newArticleText = '#REDIRECT [[' . $externalLinkURL . '|' . $externalLinkTitle . ']]';
-					$newArticle->doEdit( $newArticleText, wfMsg('commit_message', $externalLinkURL), EDIT_NEW );
+
+					$link = $newTitle->getFullURL() . '?redirect=no';
+					
+					$newArticle->doEdit( $newArticleText, wfMsg('commit_message', $link, $externalLinkURL), EDIT_NEW );
 					$view = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_view'),
 						'redirect=no');
 					$edit = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_edit'),

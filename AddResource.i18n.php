@@ -33,7 +33,7 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'link_created_view' => 'view',
 		'link_created_edit' => 'edit',
 		'link_created_gothere' => 'go there',
-		'commit_message' => 'new external link to $1',
+		'commit_message' => 'new external link to $1 ( $2 )',
 		'resources_page' => 'Special:Resources',
 		'forgot_url' => 'Please enter a URL',
 		'forgot_title' => 'Please enter a link-text',
