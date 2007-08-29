@@ -3,6 +3,7 @@ $allMessages = array(
         'en' => array(
 		'addresource_title' => 'AddResource',
 		'add_resource' => 'AddResource', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
+		'addresource' => 'AddResource', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
 		'addresourcePage' => 'Special:AddResource',
 		'noParameterHelp' => '= Special:AddResource: No pagename specified =
 Please append the Page you want to add a resource to, i.e. {{FULLPAGENAME}}/Pagename.',
