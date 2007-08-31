@@ -142,7 +142,7 @@ class AddResource extends SpecialPage
 		$wgOut->addWikiText( wfMsg('upload_header') );
 		$wgOut->addWikiText( wfMsg('upload_exp') );
 		// note that this will change in the future:
-		$wgOut->addHTML( wfMsg('upload_pretext') . $skin->makeKnownLink( wfMsg('upload_page'), wfMsg('upload_linktext'), 'summary=%5B%5B' . $title->getPrefixedDBkey() . '%5D%5D') );
+		$wgOut->addHTML( wfMsg('upload_pretext') . $skin->makeKnownLink( wfMsg('upload_page'), wfMsg('upload_linktext'), 'summary=%0A%0A%3C--%20Dont%20edit%20below%20this%20line%20--%3E%0A%5B%5B' . $title->getPrefixedText() . '%5D%5D%0A%5B%5BKategorie:Materialien%5D%5D') );
 		$wgOut->addWikiText( wfMsg('upload_footer') );
 	}
 	
