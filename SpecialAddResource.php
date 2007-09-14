@@ -194,7 +194,8 @@ class AddResource extends SpecialPage
 	function loadMessages() {
 		static $messagesLoaded = false;
 		global $wgMessageCache;
-		if ( $messagesLoaded ) return;
+		if ( $messagesLoaded )
+			return true;
 		$messagesLoaded = true;
 
 		require( dirname( __FILE__ ) . '/AddResource.i18n.php' );
