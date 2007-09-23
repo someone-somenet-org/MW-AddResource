@@ -9,6 +9,10 @@ function wfSpecialAddResource ($par) {
 	$page->execute($par);
 }
 
+/**
+ * primitive function that returns HTML for a Banner with the given text.
+ * color is either red or green, default is red.
+ */
 function addBanner( $text, $div_id = 'random banner', $color = 'red' ) {
 	$s = '<div id="' . $div_id . '">';
 	$s .= '<table align="center" border="0" cellpadding="5" cellspacing="2"';
@@ -27,15 +31,24 @@ function addBanner( $text, $div_id = 'random banner', $color = 'red' ) {
 	return $s;
 }
 
-// actual class
+/**
+ * actual class...
+ */
 class AddResource extends SpecialPage
 {
+	/**
+	 * constructor, only does the basic stuff...
+	 */
 	function AddResource() {
-		global $wgOut;
 		self::loadMessages();
 		SpecialPage::SpecialPage( wfMsg('addresource_title') );
 	}
 
+	/**
+	 * this is the main worker function that calls all other functions,
+	 * also depending on HTTP-variables (?foo=something). After this
+	 * function you have a complete special page...
+	 */
 	function execute( $par ) {
 		global $wgOut, $wgRequest, $wgUser, $wgEnableUploads, $wgEnableExternalRedirects;
 		$skin = $wgUser->getSkin();
