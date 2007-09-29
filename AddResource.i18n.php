@@ -13,7 +13,7 @@ Please append the Page you want to add a resource to, i.e. {{FULLPAGENAME}}/Page
 		'header' => '= Add a resource for $1 =',
 		'article_not_exists' => '<h3>Warning!</h3>
 The page "$1" doesn\'t exist yet. You can still add files and links, but no subpages (for technical reasons). You may want to $2 first',
-		'explanation' => 'This page allows you to add resources to [[$1]]. You can add three different types of resources: files, subpages and links. The resources you add here are automatically added to the Download-tab of the page.',
+		'explanation' => 'This page allows you to add resources to [[$1]]. You can add three different types of resources: files, subpages and links. The resources you add here are automatically added to the Download-tab of the page. Please note that anything you upload here may be used on other projects, such as the [http://www.mitschriften.at.tf Mitschriftentauschbörse].',
 		'upload_header' => '== Add a file ==',
 		'upload_exp' => 'You can upload a file directly. Use this method if you want to add something like a pdf, a png/jpg or a doc/odt-file.',
 		'upload_footer' => 'Please consider converting your files to a [http://en.wikipedia.org/wiki/Free_file_format free file format] before uploading it. This is of course not mandatory but still a nice thing to do ;-).',
@@ -56,7 +56,7 @@ Bitte gib die Seite, zu der du Materialien hinzufügen willst, als Parameter in 
 		'header' => '= Materialien für $1 hinzufügen =',
 		'article_not_exists' => '<h3>Warnung!</h3>
 Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufügen, aus technischen Gründen können aber keine Unterseiten hinzugefügt werden.',
-		'explanation' => 'Mit dieser Seite kannst du Materialien zu [[$1]] hinzufügen. Es gibt drei verschiedene Arten von Materialien: Dateien, Unterseiten und Links. Die Materialien die du hier hinzufügst werden automatisch auf der [[Spezial:Materialien/$1|Materialien]]-Seite angezeigt.',
+		'explanation' => 'Mit dieser Seite kannst du Materialien zu [[$1]] hinzufügen. Es gibt drei verschiedene Arten von Materialien: Dateien, Unterseiten und Links. Die Materialien die du hier hinzufügst werden automatisch auf der [[Spezial:Materialien/$1|Materialien]]-Seite angezeigt. Beachte, dass Materialien, die hier hochgeladen werden, auch in anderen Projekten, etwa der [http://www.mitschriften.at.tf Mitschriftentauschbörse], verwendet werden können.',
 		'upload_header' => '== Datei hinzufügen ==',
 		'upload_exp' => 'Du kannst Dateien direkt hochladen. Verwende diese Funktion wenn du z.B. eine pdf, ein png/jpg oder eine doc/odt hinzufügen willst.',
 		'upload_footer' => 'Bitte versuche deine Dateien in ein [http://de.wikipedia.org/wiki/Freies_Dateiformat freies Dateiformat] zu konvertieren, bevor du sie hochlädst. Die Konvertierung ist nicht verpflichtend aber es wäre trotzdem nett wenn du es tust :-).',
