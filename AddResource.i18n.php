@@ -13,7 +13,7 @@ Please append the Page you want to add a resource to, i.e. {{FULLPAGENAME}}/Page
 		'header' => '= Add a resource for $1 =',
 		'article_not_exists' => '<h3>Warning!</h3>
 The page "$1" doesn\'t exist yet. You can still add files and links, but no subpages (for technical reasons). You may want to $2 first',
-		'explanation' => 'This page allows you to add resources to [[$1]]. You can add three different types of resources: files, subpages and links. The resources you add here are automatically added to the Download-tab of the page. Please note that anything you upload here may be used on other projects, such as the [http://www.mitschriften.at.tf Mitschriftentauschbörse].',
+		'explanation' => 'This page allows you to add resources to [[$1]]. You can add three different types of resources: files, subpages and links. The resources you add here are automatically added to the [[Special:Resources]]-page. Please note that anything you upload here may be used on other projects, such as the [http://www.mitschriften.at.tf Mitschriftentauschbörse].',
 		'upload_header' => '== Add a file ==',
 		'upload_exp' => 'You can upload a file directly. Use this method if you want to add something like a pdf, a png/jpg or a doc/odt-file.',
 		'upload_footer' => 'Please consider converting your files to a [http://en.wikipedia.org/wiki/Free_file_format free file format] before uploading it. This is of course not mandatory but still a nice thing to do ;-).',
