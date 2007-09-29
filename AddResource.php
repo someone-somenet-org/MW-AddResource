@@ -9,18 +9,19 @@ EOT;
 }
 
 $wgAutoloadClasses['AddResource'] = dirname(__FILE__) . '/SpecialAddResource.php';
+$wgSpecialPages[ 'AddResource' ] = 'AddResource';
 $wgHooks['LoadAllMessages'][] = 'AddResource::loadMessages';
+$wgHooks['LangugeGetSpecialPageAliases'][] = 'AddResource_LocalizedPageName';
 
-switch ( $wgLanguageCode ) {
-	case 'en':
-		$wgSpecialPages[ 'AddResource' ] = 'AddResource';
-		break;
-	case 'de':
-		$wgSpecialPages[ 'Materialien_Hinzufügen' ] = 'AddResource';
-		break;
-	default:
-		$wgSpecialPages[ 'AddResource' ] = 'AddResource';
-		break;
+function AddResource_LocalizedPageName( &$specialPageArray, $code) {
+	AddResource::loadMessages();
+	$text = wfMsg('addresource');
+
+	# Convert from title in text form to DBKey and put it into the alias array:
+	$title = Title::newFromText( $text );
+	$specialPageArray['AddResource'][] = $title->getDBKey();
+
+	return true;
 }
 
 ?>

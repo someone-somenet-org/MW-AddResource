@@ -1,7 +1,6 @@
 <?php
 $allMessages = array(
         'en' => array(
-		'addresource_title' => 'AddResource',
 		'add_resource' => 'AddResource', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
 		'addresource' => 'AddResource', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
 		'addresourcePage' => 'Special:AddResource',
@@ -45,7 +44,7 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'forgot_title' => 'Please enter a link-text',
 	),
 	'de' => array(
-		'addresource_title' => 'Materialien_Hinzufügen',
+		'addresource' => 'Materialien_Hinzufügen',
 		'materialien_hinzufügen' => 'Materialien Hinzufügen', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
 		'addresourcePage' => 'Spezial:Materialien Hinzufügen',
 		'not_allowed' => 'Du hast keine Berechtigung um Artikel zu editieren. Deswegen kannst du hier auch keine Materialien hinzufügen. Bitte wende dich an den Administrator dieser Seite.',

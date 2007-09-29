@@ -41,7 +41,7 @@ class AddResource extends SpecialPage
 	 */
 	function AddResource() {
 		self::loadMessages();
-		SpecialPage::SpecialPage( wfMsg('addresource_title') );
+		SpecialPage::SpecialPage( wfMsg('addresource') );
 	}
 
 	/**
