@@ -71,8 +71,10 @@ class AddResource extends SpecialPage
 			if ( $wgUser->isLoggedIn() )
 				$wgOut->addHTML( addBanner( wfMsg('not_allowed') ) );
 			else {
-				$loginPage = $skin->makeKnownLink( wfMsg('login_page'),
-                                                wfMsg('login_text'), 'returnto=' . wfMsg('addresourcePage')
+				$tmp = SpecialPage::getTitleFor( 'Userlogin' );
+				$tmp = $tmp->getPrefixedText();
+				$loginPage = $skin->makeKnownLink( $tmp,
+						wfMsg('login_text'), 'returnto=' . wfMsg('addresourcePage')
 						. '/' . $par );
 				$wgOut->addHTML( addBanner( wfMsg('not_allowed_anon', $loginPage)) );
 			}
@@ -138,7 +140,8 @@ class AddResource extends SpecialPage
 			$wgOut->addHTML( addBanner( $message, 'article_not_exists') );
 		}
 		
-		$wgOut->addWikiText( wfMsg('explanation', $pageTitle ) );
+		$specialResourceText = SpecialPage::getTitleFor( 'Resources' );
+		$wgOut->addWikiText( wfMsg('explanation', $pageTitle, $specialResourceText ) );
 
 		/* add the various chapters */
 		if ( $wgEnableUploads == True )
@@ -151,31 +154,83 @@ class AddResource extends SpecialPage
 
 	/* the upload chapter */
 	function upload($title, $skin) {
-		global $wgOut;
+		global $wgRequest;
+		global $wgOut, $wgContLang, $wgUser;
+		$imgListTitle = SpecialPage::getTitleFor( 'Imagelist' );
 		$wgOut->addWikiText( wfMsg('upload_header') );
-		$wgOut->addWikiText( wfMsg('upload_exp') );
-		// note that this may change in the future:
-		$wgOut->addHTML( wfMsg('upload_pretext') . $skin->makeKnownLink( wfMsg('upload_page'), wfMsg('upload_linktext'), 'referer=' . $title->getPrefixedText() ) );
+		$wgOut->addWikiText( wfMsg( 'upload_exp', $imgListTitle->getPrefixedText() ) );
+		$titleObj = SpecialPage::getTitleFor( 'Upload' );
+		$action = $titleObj->escapeLocalURL() . '?referer=' . $title->getPrefixedText();
+		$align1 = $wgContLang->isRTL() ? 'left' : 'right';
+		$align2 = $wgContLang->isRTL() ? 'right' : 'left';
+
+		$sourcefilename = wfMsgHtml( 'sourcefilename' );
+		$destfilename = wfMsgHtml( 'destfilename' );
+		$summary = wfMsgExt( 'fileuploadsummary', 'parseinline' );
+		$ulb = wfMsgHtml( 'uploadbtn' );
+		$cols = intval($wgUser->getOption( 'cols' ));
+		$ew = $wgUser->getOption( 'editwidth' );
+		if ( $ew ) $ew = " style=\"width:100%\"";
+                else $ew = '';
+
+		$encDestName = $wgRequest->getText( 'wpDestFile' );
+		$encComment = htmlspecialchars( $wgRequest->getText('wpUploadDescription') );
+
+		$wgOut->addHTML( <<<EOT
+	<form name="new_upload" id='upload' method='post' enctype='multipart/form-data' action="$action">
+		<table border='0'>
+		<tr>
+			<td align='$align1' valign='top'><label for='wpUploadFile'>{$sourcefilename}:</label></td>
+			<td align='$align2'><input tabindex='1' type='file' name='wpUploadFile' id='wpUploadFile' onchange='fillDestFilename("wpUploadFile")' size='40' /><input type='hidden' name='wpSourceType' value='file' /></td>
+		</tr>
+		<tr>
+			<td align='$align1'><label for='wpDestFile'>{$destfilename}:</label></td>
+			<td align='$align2'>
+				<input tabindex='2' type='text' name='wpDestFile' id='wpDestFile' size='40'
+					value="$encDestName" $destOnkeyup />
+			</td>
+		</tr>
+		<tr>
+			<td align='$align1' style="width: 11em"><label for='wpUploadDescription'>{$summary}</label></td>
+			<td align='$align2'>
+				<textarea tabindex='3' name='wpUploadDescription' id='wpUploadDescription' rows='3'
+					cols='{$cols}'{$ew}>$encComment</textarea>
+			</td>
+		</tr>
+EOT
+			);
+		$wgOut->addHtml( "<tr>
+			<td></td>
+			<td align='$align2'><input tabindex='9' type='submit' name='wpUpload' value=\"{$ulb}\"" . $wgUser->getSkin()->tooltipAndAccesskey( 'upload' ) . " /></td>
+		</tr>
+		</table>
+	        <input type='hidden' name='wpDestFileWarningAck' id='wpDestFileWarningAck' value=''/>
+		<input type='hidden' name='wpReferer' id='wpReferer' value='" . $title->getPrefixedText() . "'/>
+	</form>" );
 		$wgOut->addWikiText( wfMsg('upload_footer') );
 	}
 	
 	/* the subpage chapter */
 	function subpage ($title) {
-		global $wgOut;
+		global $wgOut, $wgContLang;
 		$wgOut->addWikiText( wfMsg('subpage_header') );
 		$wgOut->addWikiText( wfMsg('subpage_exp', wfMsg('subpage_button')) );
 
+		$align1 = $wgContLang->isRTL() ? 'left' : 'right';
+		$align2 = $wgContLang->isRTL() ? 'right' : 'left';
+
 		/* display input-form */
-		$wgOut->addHTML('<form name=\'new_subpage\' method=\'get\'>');
-		$wgOut->addHTML('  <input type=\'text\' name=\'new_subpage\'>');
-		$wgOut->addHTML('  <input type=\'submit\' value=\'' . wfMsg('subpage_button')  . '\'>');
-		$wgOut->addHTML('</form>');
+		$wgOut->addHTML('<form name=\'new_subpage\' method=\'get\'><table><tr>
+					<td align="' . $align1 . '" style="width: 11em">' . wfMsg('subpage_inputTitle') . '</td>
+					<td align="' . $align2 . '"><input size=40 type=\'text\' name=\'new_subpage\'></td>
+					<td><input type=\'submit\' value=\'' . wfMsg('subpage_button')  . '\'></td>
+					</tr></table></form>');
 		$wgOut->addWikiText ( wfMsg('subpage_after_exp') );
 	}
 
 	/* the link chapter */
 	function link ( $title, $skin, $preloadURL = '', $preloadTitle = '' ) {
-		global $wgOut;
+		global $wgOut, $wgContLang;
 		$wgOut->addWikiText( wfMsg('link_header') );
 		$wgOut->addWikiText( wfMsg('link_exp',
 					wfMsg('link_url'),
@@ -183,20 +238,25 @@ class AddResource extends SpecialPage
 					wfMsg('link_button')
 		));
 
-		/* display the input-form */
-		$wgOut->addHTML('<form name="new_link" method="get"><table><tr>');
-		$wgOut->addHTML('  <th>' . wfMsg('link_url') . ':</th>');
-		$wgOut->addHTML('  <th>' . wfMsg('link_title') . ':</th>');
-		$wgOut->addHTML('  <th></th></tr>');
-		$wgOut->addHTML(' <tr>');
-		$wgOut->addHTML('  <td><input type="text" name="externalLinkURL" value="' . $preloadURL . '"></td>');
-		$wgOut->addHTML('  <td><input type="text" name="externalLinkTitle" value="' . $preloadTitle . '"></td>');
-		$wgOut->addHTML('  <td><input type="submit" value="' . wfMsg('link_button') . '"></td>');
-		$wgOut->addHTML(' </tr></table></form>');
+		$align1 = $wgContLang->isRTL() ? 'left' : 'right';
+		$align2 = $wgContLang->isRTL() ? 'right' : 'left';
 
+		/* display the input-form */
+		$wgOut->addHTML('<form name="new_link" method="get"><table><tr>
+					<td align="' . $align1 . '" style="width: 11em">' . wfMsg('link_url') . ':</td>
+					<td align="' . $align2 . '"><input type="text" name="externalLinkURL" value="' . $preloadURL . '"></td>
+					</tr><tr>
+					<td align="' . $align1 . '">' . wfMsg('link_title') . ':</td>
+					<td align="' . $align2 . '"><input type="text" name="externalLinkTitle" value="' . $preloadTitle . '"></td>
+					</tr><tr>
+					<td></td>
+					<td><input type="submit" value="' . wfMsg('link_button') . '"></td>
+					</tr></table></form>');
+
+		$resource_page = SpecialPage::getTitleFor( 'Resources' );
 		$wgOut->addHTML( wfMsg('link_footer',
 			$title->getFullText(),
-			$skin->makeKnownLink( wfMsg('resources_page') . '/' .
+			$skin->makeKnownLink( $resource_page . '/' .
 				$title->getFullText(),
 				wfMsg('link_footer_linktext'), 'showAllSubpages=true') )
 		); 
