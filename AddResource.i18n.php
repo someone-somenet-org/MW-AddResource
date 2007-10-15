@@ -51,7 +51,7 @@ Bitte gib die Seite, zu der du Materialien hinzufügen willst, als Parameter in 
 		'header' => '= Materialien für $1 hinzufügen =',
 		'article_not_exists' => '<h3>Warnung!</h3>
 Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufügen, aus technischen Gründen können aber keine Unterseiten hinzugefügt werden.',
-		'explanation' => 'Mit dieser Seite kannst du Materialien zu [[$1]] hinzufügen. Es gibt drei verschiedene Arten von Materialien: Dateien, Unterseiten und Links. Die Materialien die du hier hinzufügst werden automatisch auf der [[$2/$1|Materialien]]-Seite angezeigt. Beachte, dass Materialien, die hier hochgeladen werden, auch in anderen Projekten, etwa der [http://www.mitschriften.at.tf Mitschriftentauschbörse], verwendet werden können.',
+		'explanation' => 'Mit dieser Seite kannst du Materialien zu [[$1]] hinzufügen. Es gibt drei verschiedene Arten von Materialien: Dateien, Unterseiten und Links. Die Materialien die du hier hinzufügst werden automatisch auf der [[$2/$1|Materialien-Seite]] angezeigt. Beachte, dass Materialien, die hier hochgeladen werden, auch in anderen Projekten, etwa der [http://www.mitschriften.at.tf Mitschriftentauschbörse], verwendet werden können.',
 		'upload_header' => '== Datei hinzufügen ==',
 		'upload_exp' => 'Du kannst Dateien direkt hochladen. Verwende diese Funktion wenn du z.B. eine pdf, ein png/jpg oder eine doc/odt hinzufügen willst. Es gibt auch eine Liste [[$1|aller hochgeladener Dateien]].',
 		'upload_footer' => 'Bitte versuche deine Dateien in ein [http://de.wikipedia.org/wiki/Freies_Dateiformat freies Dateiformat] zu konvertieren, bevor du sie hochlädst. Die Konvertierung ist nicht verpflichtend aber es wäre trotzdem nett wenn du es tust :-).',
