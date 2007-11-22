@@ -95,6 +95,7 @@ class AddResource extends SpecialPage
 		if ( $wgEnableExternalRedirects == True ) {
 			$externalLinkURL = $wgRequest->getVal('externalLinkURL');
 			$externalLinkTitle = $wgRequest->getVal('externalLinkTitle');
+			$externalLinkDesc = $wgRequest->getVal('externalLinkDesc');
 			if ($externalLinkURL != '' and $externalLinkTitle != '' ) {
 				$newTitle = Title::NewFromText( $par . '/' . $externalLinkTitle );
 				if ( $newTitle->exists() ) {
@@ -107,10 +108,14 @@ class AddResource extends SpecialPage
 					$wgOut->addHTML( addBanner( wfMsg('link_title_exists', $editPage, $listSubpages), 'link_title_exists' ) );
 					$preloadURL = $externalLinkURL;
 					$preloadTitle = $externalLinkTitle;
+					$preloadDesc = $externalLinkDesc;
 				} else {
+					if ( $externalLinkDesc == '' ) {
+						$externalLinkDesc = $externalLinkTitle;
+					}
 					# create new article
 					$newArticle = new Article( $newTitle );
-					$newArticleText = '#REDIRECT [[' . $externalLinkURL . '|' . $externalLinkTitle . ']]';
+					$newArticleText = '#REDIRECT [[' . $externalLinkURL . '|' . $externalLinkDesc . ']]';
 
 					$link = $newTitle->getFullURL() . '?redirect=no';
 					
@@ -229,7 +234,7 @@ EOT
 	}
 
 	/* the link chapter */
-	function link ( $title, $skin, $preloadURL = '', $preloadTitle = '' ) {
+	function link ( $title, $skin, $preloadURL = '', $preloadTitle = '', $preloadDesc = '' ) {
 		global $wgOut, $wgContLang;
 		$wgOut->addWikiText( wfMsg('link_header') );
 		$wgOut->addWikiText( wfMsg('link_exp',
@@ -243,11 +248,14 @@ EOT
 
 		/* display the input-form */
 		$wgOut->addHTML('<form name="new_link" method="get"><table><tr>
-					<td align="' . $align1 . '" style="width: 11em">' . wfMsg('link_url') . ':</td>
+					<td align="' . $align1 . '" style="width: 11em">' . wfMsg('link_url') . '</td>
 					<td align="' . $align2 . '"><input type="text" name="externalLinkURL" value="' . $preloadURL . '"></td>
 					</tr><tr>
-					<td align="' . $align1 . '">' . wfMsg('link_title') . ':</td>
+					<td align="' . $align1 . '">' . wfMsg('link_title') . '</td>
 					<td align="' . $align2 . '"><input type="text" name="externalLinkTitle" value="' . $preloadTitle . '"></td>
+					</tr><tr>
+					<td align="' . $align1 . '">' . wfMsg('link_desc') . '</td>
+					<td align="' . $align2 . '"><input type="text" name="externalLinkDesc"  value="' . $preloadDesc . '"></td>
 					</tr><tr>
 					<td></td>
 					<td><input type="submit" value="' . wfMsg('link_button') . '"></td>
