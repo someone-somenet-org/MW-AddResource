@@ -13,6 +13,14 @@ $wgSpecialPages[ 'AddResource' ] = 'AddResource';
 $wgHooks['LoadAllMessages'][] = 'AddResource::loadMessages';
 $wgHooks['LangugeGetSpecialPageAliases'][] = 'AddResource_LocalizedPageName';
 
+$wgExtensionCredits['specialpage'][] = array(
+	'name' => 'AddResource',
+	'description' => 'This special page allows you to \'\'\'attach\'\'\' resources to a given page',
+	'version' => '1.0-1.11.0',
+	'author' => 'Mathias Ertl',
+	'url' => 'http://pluto.htu.tuwien.ac.at/devel_wiki/index.php/AddResource',
+);
+
 function AddResource_LocalizedPageName( &$specialPageArray, $code) {
 	AddResource::loadMessages();
 	$text = wfMsg('addresource');

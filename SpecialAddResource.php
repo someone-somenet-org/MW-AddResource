@@ -180,6 +180,7 @@ class AddResource extends SpecialPage
 
 		$encDestName = $wgRequest->getText( 'wpDestFile' );
 		$encComment = htmlspecialchars( $wgRequest->getText('wpUploadDescription') );
+		$example = wfMsg( 'filename_example' );
 
 		$wgOut->addHTML( <<<EOT
 	<form name="new_upload" id='upload' method='post' enctype='multipart/form-data' action="$action">
@@ -192,7 +193,7 @@ class AddResource extends SpecialPage
 			<td align='$align1'><label for='wpDestFile'>{$destfilename}:</label></td>
 			<td align='$align2'>
 				<input tabindex='2' type='text' name='wpDestFile' id='wpDestFile' size='40'
-					value="$encDestName" $destOnkeyup />
+					value="$encDestName" $destOnkeyup />$example
 			</td>
 		</tr>
 		<tr>

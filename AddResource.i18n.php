@@ -39,6 +39,7 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'commit_message' => 'new external link to $1 ( $2 )',
 		'forgot_url' => 'Please enter a URL',
 		'forgot_title' => 'Please enter a link-text',
+		'filename_example' => '<i>e.g. Pruefung 2007-10-10.pdf</i>',
 	),
 	'de' => array(
 		'addresource' => 'Materialien_Hinzufügen',
@@ -79,6 +80,7 @@ Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufü
 		'commit_message' => 'neuer externer link zu $1.',
 		'forgot_url' => 'Bitte URL eingeben.',
 		'forgot_title' => 'Bitte Titel eingeben.',
+		'filename_example' => '<i>z.B. Pruefung 2007-10-10.pdf</i>',
 	)
 );
 ?>
