@@ -116,6 +116,14 @@ class AddResource extends SpecialPage
 					# create new article
 					$newArticle = new Article( $newTitle );
 					$newArticleText = '#REDIRECT [[' . $externalLinkURL . '|' . $externalLinkDesc . ']]';
+					
+					# add a category:
+					global $wgResourcesAddCategory;
+					if ( $wgResourcesAddCategory != NULL && gettype($wgResourcesAddCategory) == "string" ) {
+						global $wgContLang;
+						$category_text = $wgContLang->getNSText ( NS_CATEGORY );
+						$newArticleText .= "\n[[" . $category_text . ":" . $wgResourcesAddCategory . "]]";
+					}
 
 					$link = $newTitle->getFullURL() . '?redirect=no';
 					
