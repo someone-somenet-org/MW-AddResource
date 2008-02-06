@@ -9,7 +9,7 @@ Please append the Page you want to add a resource to, i.e. {{FULLPAGENAME}}/Page
 		'not_allowed' => 'You are not allowed to edit pages. As a result you cannot add any resources to this page.Please contact this sites administrator.',
 		'not_allowed_anon' => 'You are not allowed to edit pages and you are not logged in. You may have to $1 to add resources to this page.',
 		'login_text' => 'log in',
-		'header' => '= Add a resource for $1 =',
+		'addResource_Header' => '= Add a resource for [[$1|$2]] =',
 		'article_not_exists' => '<h3>Warning!</h3>
 The page "$1" doesn\'t exist yet. You can still add files and links, but no subpages (for technical reasons). You may want to $2 first',
 		'explanation' => 'This page allows you to add resources to [[$1]]. You can add three different types of resources: files, subpages and links. The resources you add here are automatically added to the [[$2/$1|Resources]]-page. Please note that anything you upload here may be used on other projects, such as the [http://www.mitschriften.at.tf Mitschriftentauschbörse].',
@@ -25,7 +25,8 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'link_exp' => 'If you can\'t upload a file or page directly here, you can also add an external link. Please enter a $1 and a short but descriptive $2 and click "$3".',
 		'link_url' => 'full URL:',
 		'link_title' => 'link text:',
-		'link_desc' => 'description:',
+		'link_desc' => 'description:
+(optional)',
 		'link_title_exists' => 'A link/subpage with that name already exists. You can either try a new title or $1 the existing link/subpage. A list of existing subpages is available $2.',
 		'link_title_exists_1' => 'edit',
 		'link_title_exists_2' => 'here',
@@ -39,6 +40,7 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'commit_message' => 'new external link to $1 ( $2 )',
 		'forgot_url' => 'Please enter a URL',
 		'forgot_title' => 'Please enter a link-text',
+		'wrong_proto' => 'Error: The Link doesn\'t start with a known protocoll. Try prefixing you link with something like \'http://\'.',
 		'filename_example' => '<i>e.g. Pruefung 2007-10-10.pdf</i>',
 	),
 	'de' => array(
@@ -50,7 +52,7 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'login_text' => 'einloggen',
 		'noParameterHelp' => '= Spezial:Materialien Hinzufügen: Kein Artikelname angegeben! =
 Bitte gib die Seite, zu der du Materialien hinzufügen willst, als Parameter in der URL an, z.B. {{FULLPAGENAME}}/Artikelname',
-		'header' => '= Materialien für $1 hinzufügen =',
+		'addResource_Header' => '= Materialien für [[$1|$2]] hinzufügen =',
 		'article_not_exists' => '<h3>Warnung!</h3>
 Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufügen, aus technischen Gründen können aber keine Unterseiten hinzugefügt werden.',
 		'explanation' => 'Mit dieser Seite kannst du Materialien zu [[$1]] hinzufügen. Es gibt drei verschiedene Arten von Materialien: Dateien, Unterseiten und Links. Die Materialien die du hier hinzufügst werden automatisch auf der [[$2/$1|Materialien-Seite]] angezeigt. Beachte, dass Materialien, die hier hochgeladen werden, auch in anderen Projekten, etwa der [http://www.mitschriften.at.tf Mitschriftentauschbörse], verwendet werden können.',
@@ -66,7 +68,8 @@ Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufü
 		'link_exp' => 'Wenn du Materialien nicht direkt hier hochladen kannst, kannst du auch einen externen Link hinzufügen. Gib ein $1 und einen kurzen eindeutigen $2 ein und klicke $3.',
 		'link_url' => 'URL:',
 		'link_title' => 'Titel:',
-		'link_desc' => 'Beschreibung:',
+		'link_desc' => 'Beschreibung:
+(optional)',
 		'link_title_exists' => 'Ein Link/eine Unterseite mit diesem Namen existiert bereits. Du kannst entweder einen neuen Titel eingeben oder die bestehende Seite $1. Eine Liste aller Subpages findest du unter $2.',
 		'link_title_exists_1' => 'editieren',
 		'link_title_exists_2' => 'hier',
@@ -80,6 +83,7 @@ Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufü
 		'commit_message' => 'neuer externer link zu $1 ( $2 ).',
 		'forgot_url' => 'Bitte URL eingeben.',
 		'forgot_title' => 'Bitte Titel eingeben.',
+		'wrong_proto' => 'Fehler: Der angegeben Link beginnt mit keinem bekannten Protokoll. Versuche dem Link ein "http:\/\/" voranzustellen.',
 		'filename_example' => '<i>z.B. Pruefung 2007-10-10.pdf</i>',
 	)
 );

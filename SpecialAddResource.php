@@ -64,7 +64,8 @@ class AddResource extends SpecialPage
 		}
 	
 		$pageTitle = $title->getFullText();
-		$wgOut->addWikiText( wfMsg('header', $pageTitle) );
+		$pageTarget = $title->getFullText();
+		$wgOut->addWikiText( wfMsg('addResource_Header', $pageTarget, $pageTitle) );
 
 		# a little user-check:
 		if ( ! $wgUser->isAllowed('edit') ) {
@@ -106,43 +107,48 @@ class AddResource extends SpecialPage
 						$pageTitle, wfMsg('link_title_exists_2'), 'showAllSubpages=true');
 
 					$wgOut->addHTML( addBanner( wfMsg('link_title_exists', $editPage, $listSubpages), 'link_title_exists' ) );
-					$preloadURL = $externalLinkURL;
-					$preloadTitle = $externalLinkTitle;
-					$preloadDesc = $externalLinkDesc;
 				} else {
-					if ( $externalLinkDesc == '' ) {
-						$externalLinkDesc = $externalLinkTitle;
-					}
 					# create new article
 					$newArticle = new Article( $newTitle );
-					$newArticleText = '#REDIRECT [[' . $externalLinkURL . '|' . $externalLinkDesc . ']]';
+					global $wgExternalRedirectProtocols;
+					$preg_protos = '(?:' . implode( "|", $wgExternalRedirectProtocols ) .')';
+					if ( ! preg_match( '/^' . $preg_protos . ':\/\//', $externalLinkURL ) ) {
+						$wgOut->addHTML( addBanner( wfMsg('wrong_proto') ) );
+					} else {
+
+						$newArticleText = '#REDIRECT [[' . $externalLinkURL;
+						if ( $externalLinkDesc != '' )
+							$newArticleText .= '|' . $externalLinkDesc;
+						$externalLinkDesc .= ']]';
 					
-					# add a category:
-					global $wgResourcesCategory;
-					if ( $wgResourcesCategory != NULL && gettype($wgResourcesCategory) == "string" ) {
-						global $wgContLang;
-						$category_text = $wgContLang->getNSText ( NS_CATEGORY );
-						$newArticleText .= "\n[[" . $category_text . ":" . $wgResourcesCategory . "]]";
+						# add a category:
+						global $wgResourcesCategory;
+						if ( $wgResourcesCategory != NULL && gettype($wgResourcesCategory) == "string" ) {
+							global $wgContLang;
+							$category_text = $wgContLang->getNSText ( NS_CATEGORY );
+							$newArticleText .= "\n[[" . $category_text . ":" . $wgResourcesCategory . "]]";
+						}
+
+						$link = $newTitle->getFullURL() . '?redirect=no';
+	
+						$newArticle->doEdit( $newArticleText, wfMsg('commit_message', $link, $externalLinkURL), EDIT_NEW );
+						$view = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_view'),
+							'redirect=no');
+						$edit = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_edit'),
+							'action=edit');
+						$gothere = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_gothere'));
+						$wgOut->addHTML( addBanner( wfMsg('link_created', $view, $edit, $gothere), 'link_created', 'green' ) );
+						$externalLinkURL = '';
+						$externalLinkTitle = '';
+						$externalLinkDesc = '';
+						
 					}
-
-					$link = $newTitle->getFullURL() . '?redirect=no';
-
-					$newArticle->doEdit( $newArticleText, wfMsg('commit_message', $link, $externalLinkURL), EDIT_NEW );
-					$view = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_view'),
-						'redirect=no');
-					$edit = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_edit'),
-						'action=edit');
-					$gothere = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_gothere'));
-					$wgOut->addHTML( addBanner( wfMsg('link_created', $view, $edit, $gothere), 'link_created', 'green' ) );
 				}
-
 # TODO: add $par/$externalLinkTitle with content '#REDIRECT [[$externalLinkURL]]'
 			} elseif ( $externalLinkURL != '' and $externalLinkTitle == '') {
 				$wgOut->addHTML( addBanner( wfMsg('forgot_title'), 'forgot_title') );
-				$preloadURL = $externalLinkURL;
 			} elseif ( $externalLinkURL == '' and $externalLinkTitle != '') {
 				$wgOut->addHTML( addBanner( wfMsg('forgot_url'), 'forgot_url') );
-				$preloadTitle = $externalLinkTitle;
 			} 
 		}
 		
@@ -162,7 +168,7 @@ class AddResource extends SpecialPage
 		if ( $title->exists() ) 
 			$this->subpage($title);
 		if ( $wgEnableExternalRedirects == True )
-			$this->link($title, $skin, $preloadURL, $preloadTitle);
+			$this->link($title, $skin, $externalLinkURL, $externalLinkTitle, $externalLinkDesc);
 	}
 
 	/* the upload chapter */
