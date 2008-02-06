@@ -77,7 +77,7 @@ Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufü
 		'link_created_view' => 'anschaun',
 		'link_created_edit' => 'editieren',
 		'link_created_gothere' => 'dorthin',
-		'commit_message' => 'neuer externer link zu $1.',
+		'commit_message' => 'neuer externer link zu $1 ( $2 ).',
 		'forgot_url' => 'Bitte URL eingeben.',
 		'forgot_title' => 'Bitte Titel eingeben.',
 		'filename_example' => '<i>z.B. Pruefung 2007-10-10.pdf</i>',

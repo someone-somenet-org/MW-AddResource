@@ -126,7 +126,7 @@ class AddResource extends SpecialPage
 					}
 
 					$link = $newTitle->getFullURL() . '?redirect=no';
-					
+
 					$newArticle->doEdit( $newArticleText, wfMsg('commit_message', $link, $externalLinkURL), EDIT_NEW );
 					$view = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_view'),
 						'redirect=no');
