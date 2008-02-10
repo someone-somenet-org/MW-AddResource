@@ -119,7 +119,7 @@ class AddResource extends SpecialPage
 						$newArticleText = '#REDIRECT [[' . $externalLinkURL;
 						if ( $externalLinkDesc != '' )
 							$newArticleText .= '|' . $externalLinkDesc;
-						$externalLinkDesc .= ']]';
+						$newArticleText .= ']]';
 					
 						# add a category:
 						global $wgResourcesCategory;
