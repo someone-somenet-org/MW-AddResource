@@ -84,6 +84,8 @@ class AddResource extends SpecialPage
 
 		/* redirect to new subpage */
 		if ( ($new_subpage = $wgRequest->getVal('new_subpage')) != '' && $title->exists() ) {
+			/* replace Slashes with hyphens (slashes cause problems) */
+			$new_subpage = str_replace('/', '-',$new_subpage);
 			$redir = Title::newFromText( $par . '/' . $new_subpage);
 			if ( $redir->exists() )
 				$wgOut->redirect($redir->getFullURL() );
@@ -98,6 +100,8 @@ class AddResource extends SpecialPage
 			$externalLinkTitle = $wgRequest->getVal('externalLinkTitle');
 			$externalLinkDesc = $wgRequest->getVal('externalLinkDesc');
 			if ($externalLinkURL != '' and $externalLinkTitle != '' ) {
+				/* replace Slashes with hyphens (slashes cause problems) */
+				$externalLinkTitle = str_replace('/', '-', $externalLinkTitle);
 				$newTitle = Title::NewFromText( $par . '/' . $externalLinkTitle );
 				if ( $newTitle->exists() ) {
 					# article already exists!
