@@ -5,7 +5,7 @@ $allMessages = array(
 		'addresource' => 'AddResource', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
 		'addResourcesPageTitle' => 'Add resource for $1',
 		'addresourcePage' => 'Special:AddResource',
-		'addResourceTab' => 'add resource',
+		'addResourceTab' => 'add',
 		'noParameterHelp' => 'Please append the Page you want to add a resource to, i.e. {{FULLPAGENAME}}/Pagename.',
 		'not_allowed' => 'You are not allowed to edit pages. As a result you cannot add any resources to this page.Please contact this sites administrator.',
 		'not_allowed_anon' => 'You are not allowed to edit pages and you are not logged in. You may have to $1 to add resources to this page.',
@@ -49,7 +49,7 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'materialien_hinzufügen' => 'Materialien Hinzufügen', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
 		'addresourcePage' => 'Spezial:Materialien Hinzufügen',
 		'addResourcesPageTitle' => 'Materialien für $1 hinzufügen',
-		'addResourceTab' => 'Materialien hinzufügen',
+		'addResourceTab' => 'hinzufügen',
 		'not_allowed' => 'Du hast keine Berechtigung um Artikel zu editieren. Deswegen kannst du hier auch keine Materialien hinzufügen. Bitte wende dich an den Administrator dieser Seite.',
 		'not_allowed_anon' => 'Du bist nicht eingeloggt. Du musst dich $1 um Materialien hinzuzufügen',
 		'login_text' => 'einloggen',

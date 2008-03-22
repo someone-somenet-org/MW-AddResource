@@ -45,8 +45,8 @@ function displayAddResourceTab( $tabs ) {
 
 	global $wgRequest, $wgUser;
 	$resourcesTitle = SpecialPage::getTitleFor( 'Resources' );
-	$reqTitle = $wgRequest->getVal('title');
-	$par = preg_replace('/' . $curSpecialPage . '\/?/', '', $reqTitle );
+	$reqTitle = Title::newFromText( $wgRequest->getVal('title') );
+        $par = preg_replace('/' . $curSpecialPage . '\/?/', '', $reqTitle->getPrefixedText() );
 	if ( $par == '' ) // if no /par was given
 		return true;
 	$parTitle = Title::newFromText( $par )->getSubjectPage();
