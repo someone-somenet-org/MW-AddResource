@@ -3,9 +3,10 @@ $allMessages = array(
         'en' => array(
 		'add_resource' => 'AddResource', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
 		'addresource' => 'AddResource', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
+		'addResourcesPageTitle' => 'Add resource for $1',
 		'addresourcePage' => 'Special:AddResource',
-		'noParameterHelp' => '= Special:AddResource: No pagename specified =
-Please append the Page you want to add a resource to, i.e. {{FULLPAGENAME}}/Pagename.',
+		'addResourceTab' => 'add resource',
+		'noParameterHelp' => 'Please append the Page you want to add a resource to, i.e. {{FULLPAGENAME}}/Pagename.',
 		'not_allowed' => 'You are not allowed to edit pages. As a result you cannot add any resources to this page.Please contact this sites administrator.',
 		'not_allowed_anon' => 'You are not allowed to edit pages and you are not logged in. You may have to $1 to add resources to this page.',
 		'login_text' => 'log in',
@@ -47,11 +48,12 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'addresource' => 'Materialien_Hinzufügen',
 		'materialien_hinzufügen' => 'Materialien Hinzufügen', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
 		'addresourcePage' => 'Spezial:Materialien Hinzufügen',
+		'addResourcesPageTitle' => 'Materialien für $1 hinzufügen',
+		'addResourceTab' => 'Materialien hinzufügen',
 		'not_allowed' => 'Du hast keine Berechtigung um Artikel zu editieren. Deswegen kannst du hier auch keine Materialien hinzufügen. Bitte wende dich an den Administrator dieser Seite.',
 		'not_allowed_anon' => 'Du bist nicht eingeloggt. Du musst dich $1 um Materialien hinzuzufügen',
 		'login_text' => 'einloggen',
-		'noParameterHelp' => '= Spezial:Materialien Hinzufügen: Kein Artikelname angegeben! =
-Bitte gib die Seite, zu der du Materialien hinzufügen willst, als Parameter in der URL an, z.B. {{FULLPAGENAME}}/Artikelname',
+		'noParameterHelp' => 'Bitte gib die Seite, zu der du Materialien hinzufügen willst, als Parameter in der URL an, z.B. {{FULLPAGENAME}}/Artikelname',
 		'addResource_Header' => '= Materialien für [[$1|$2]] hinzufügen =',
 		'article_not_exists' => '<h3>Warnung!</h3>
 Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufügen, aus technischen Gründen können aber keine Unterseiten hinzugefügt werden.',

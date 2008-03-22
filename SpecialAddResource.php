@@ -62,10 +62,9 @@ class AddResource extends SpecialPage
 			$wgOut->addWikiText(wfMsg('noParameterHelp'));
 			return;
 		}
-	
+		
+		$wgOut->setPagetitle( wfMsg('addResourcesPageTitle', $title->getPrefixedText() ) );
 		$pageTitle = $title->getFullText();
-		$pageTarget = $title->getFullText();
-		$wgOut->addWikiText( wfMsg('addResource_Header', $pageTarget, $pageTitle) );
 
 		# a little user-check:
 		if ( ! $wgUser->isAllowed('edit') ) {
