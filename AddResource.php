@@ -8,11 +8,13 @@ EOT;
 	exit( 1 );
 }
 
+$dir = dirname(__FILE__);
+
 $wgAutoloadClasses['AddResource'] = dirname(__FILE__) . '/SpecialAddResource.php';
+$wgExtensionMessagesFiles['AddResource'] = $dir . '/AddResource.i18n.php';
 $wgSpecialPages[ 'AddResource' ] = 'AddResource';
-$wgHooks['LoadAllMessages'][] = 'AddResource::loadMessages';
-$wgHooks['LanguageGetSpecialPageAliases'][] = 'AddResource_LocalizedPageName';
-$wgHooks['SkinTemplateContentActions'][] = 'displayAddResourceTab';
+$wgHooks['LanguageGetSpecialPageAliases'][] = 'efAddResourceLocalizedPageName';
+$wgHooks['SkinTemplateContentActions'][] = 'efAddResourceDisplayTab';
 
 $wgExtensionCredits['specialpage'][] = array(
 	'name' => 'AddResource',
@@ -22,18 +24,21 @@ $wgExtensionCredits['specialpage'][] = array(
 	'url' => 'http://pluto.htu.tuwien.ac.at/devel_wiki/AddResource',
 );
 
-function AddResource_LocalizedPageName( &$specialPageArray, $code) {
-	AddResource::loadMessages();
-	$text = wfMsg('addresource');
+function efAddResourceLocalizedPageName( &$specialPageArray, $code) {
+        wfLoadExtensionMessages('AddResource');
+        $textMain = wfMsgForContent('addresource');
+        $textUser = wfMsg('addresource');
 
-	# Convert from title in text form to DBKey and put it into the alias array:
-	$title = Title::newFromText( $text );
-	$specialPageArray['AddResource'][] = $title->getDBKey();
+        # Convert from title in text form to DBKey and put it into the alias array:
+        $titleMain = Title::newFromText( $textMain );
+        $titleUser = Title::newFromText( $textUser );
+        $specialPageArray['AddResource'][] = $titleMain->getDBKey();
+        $specialPageArray['AddResource'][] = $titleUser->getDBKey();
 
-	return true;
+        return true;
 }
 
-function displayAddResourceTab( $tabs ) {
+function efAddResourceDisplayTab( $tabs ) {
 	global $wgTitle, $wgAddResourceTab, $wgResourcesTabs;
 	$addResourcesTitle = SpecialPage::getTitleFor( 'AddResource' );
 	$curSpecialPage = $wgTitle->getPrefixedText();

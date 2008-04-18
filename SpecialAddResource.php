@@ -1,15 +1,6 @@
 <?php
 
 /**
- * Entry point
- */
-function wfSpecialAddResource ($par) {
-	global $wgOut;
-	$page = new AddResource();
-	$page->execute($par);
-}
-
-/**
  * primitive function that returns HTML for a Banner with the given text.
  * color is either red or green, default is red.
  */
@@ -40,8 +31,8 @@ class AddResource extends SpecialPage
 	 * constructor, only does the basic stuff...
 	 */
 	function AddResource() {
-		self::loadMessages();
-		SpecialPage::SpecialPage( wfMsg('addresource') );
+		SpecialPage::SpecialPage( 'AddResource' );
+		wfLoadExtensionMessages('AddResource' );
 	}
 
 	/**
@@ -287,21 +278,6 @@ EOT
 				wfMsg('link_footer_linktext'), 'showAllSubpages=true') )
 		); 
 
-	}
-
-	/* internationalization stuff */
-	function loadMessages() {
-		static $messagesLoaded = false;
-		global $wgMessageCache;
-		if ( $messagesLoaded )
-			return true;
-		$messagesLoaded = true;
-
-		require( dirname( __FILE__ ) . '/AddResource.i18n.php' );
-		foreach ( $allMessages as $lang => $langMessages ) {
-			$wgMessageCache->addMessages( $langMessages, $lang );
-		}
-		return true;
 	}
 }
 

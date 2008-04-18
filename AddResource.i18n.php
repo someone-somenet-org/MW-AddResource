@@ -1,10 +1,9 @@
 <?php
-$allMessages = array(
+$messages = array(
         'en' => array(
-		'add_resource' => 'AddResource', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
-		'addresource' => 'AddResource', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
+		'addresource' => 'Add resource', /* this is what the special page will be available under */
 		'addResourcesPageTitle' => 'Add resource for $1',
-		'addresourcePage' => 'Special:AddResource',
+		'addresourcePage' => 'Special:Add resource',
 		'addResourceTab' => 'add',
 		'noParameterHelp' => 'Please append the Page you want to add a resource to, i.e. {{FULLPAGENAME}}/Pagename.',
 		'not_allowed' => 'You are not allowed to edit pages. As a result you cannot add any resources to this page.Please contact this sites administrator.',
@@ -45,9 +44,9 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'filename_example' => '<i>e.g. Pruefung 2007-10-10.pdf</i>',
 	),
 	'de' => array(
-		'addresource' => 'Materialien_Hinzufügen',
-		'materialien_hinzufügen' => 'Materialien Hinzufügen', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
-		'addresourcePage' => 'Spezial:Materialien Hinzufügen',
+		'addresource' => 'Materialien hinzufügen',
+#		'materialien_hinzufügen' => 'Materialien hinzufügen', /* this is a) link text in Special:Specialpages and b) title on the view of the special page */
+		'addresourcePage' => 'Spezial:Materialien hinzufügen',
 		'addResourcesPageTitle' => 'Materialien für $1 hinzufügen',
 		'addResourceTab' => 'hinzufügen',
 		'not_allowed' => 'Du hast keine Berechtigung um Artikel zu editieren. Deswegen kannst du hier auch keine Materialien hinzufügen. Bitte wende dich an den Administrator dieser Seite.',
