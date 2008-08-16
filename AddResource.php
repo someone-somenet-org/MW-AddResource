@@ -19,7 +19,7 @@ $wgHooks['SkinTemplateContentActions'][] = 'efAddResourceDisplayTab';
 $wgExtensionCredits['specialpage'][] = array(
 	'name' => 'AddResource',
 	'description' => 'This special page allows you to \'\'\'attach\'\'\' resources to a given page',
-	'version' => '1.5-1.12.0',
+	'version' => '1.5-1.13.0',
 	'author' => 'Mathias Ertl',
 	'url' => 'http://pluto.htu.tuwien.ac.at/devel_wiki/AddResource',
 );

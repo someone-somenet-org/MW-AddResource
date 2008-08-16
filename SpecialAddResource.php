@@ -191,7 +191,7 @@ class AddResource extends SpecialPage
 		$example = wfMsg( 'filename_example' );
 
 		$wgOut->addHTML( <<<EOT
-	<form name="new_upload" id='upload' method='post' enctype='multipart/form-data' action="$action">
+	<form name="new_upload" id='upload' method='post' enctype='multipart/form-data' action="$action" enctype="multipart/form-data" id="mw-upload-form" >
 		<table border='0'>
 		<tr>
 			<td align='$align1' valign='top'><label for='wpUploadFile'>{$sourcefilename}:</label></td>
