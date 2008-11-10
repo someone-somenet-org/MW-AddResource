@@ -42,6 +42,7 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'forgot_title' => 'Please enter a link-text',
 		'wrong_proto' => 'Error: The Link doesn\'t start with a known protocoll. Try prefixing you link with something like \'http://\'.',
 		'filename_example' => '<i>e.g. Pruefung 2007-10-10.pdf</i>',
+		'specialpages-specialpagegroup-addresource' => 'resources',
 	),
 	'de' => array(
 		'addresource' => 'Materialien hinzufügen',
@@ -86,6 +87,7 @@ Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufü
 		'forgot_title' => 'Bitte Titel eingeben.',
 		'wrong_proto' => 'Fehler: Der angegeben Link beginnt mit keinem bekannten Protokoll. Versuche dem Link ein "http:\/\/" voranzustellen.',
 		'filename_example' => '<i>z.B. Pruefung 2007-10-10.pdf</i>',
+		'specialpages-specialpagegroup-addresource' => 'resources',
 	)
 );
 ?>
