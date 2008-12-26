@@ -14,6 +14,8 @@ function addBanner( $text, $div_id = 'random banner', $color = 'red' ) {
 		case 'green':
 			$s .= '    style="border: 1px solid #A4FFA4; background-color: #F3FFF3; border-left: 5px solid #66FF66">';
 			break;
+		case 'grey':
+			$s .= '    style="border: 1px solid #BDBDBD; background-color: #E6E6E6; border-left: 5px solid #6E6E6E">';
 	} 
 
 	$s .= '<tr><td style=font-size: 95%;>';
@@ -43,13 +45,13 @@ class AddResource extends SpecialPage
 	function execute( $par ) {
 		global $wgOut, $wgRequest, $wgUser, $wgEnableUploads, $wgEnableExternalRedirects;
 		$skin = $wgUser->getSkin();
-
 		$this->setHeaders();
 
 		/* make a Title object from $par */
-		if ( $par )
+		if ( $par ) {
 			$title = Title::newFromText( $par );
-		else { /* if nothing was specified */
+			$this->param = $par;
+		} else { /* if nothing was specified */
 			$wgOut->addWikiText(wfMsg('noParameterHelp'));
 			return;
 		}
@@ -57,16 +59,13 @@ class AddResource extends SpecialPage
 		$wgOut->setPagetitle( wfMsg('addResourcesPageTitle', $title->getPrefixedText() ) );
 		$pageTitle = $title->getFullText();
 
-		# a little user-check:
-		if ( ! $wgUser->isAllowed('edit') ) {
+		# If we are not allowed to do *anything*, we display a red warning message.
+		if ( !( $wgUser->isAllowed('edit') && $wgUser->isAllowed( 'createpage' ) )
+				&& ! $wgUser->isAllowed( 'upload' ) ) {
 			if ( $wgUser->isLoggedIn() )
 				$wgOut->addHTML( addBanner( wfMsg('not_allowed') ) );
 			else {
-				$tmp = SpecialPage::getTitleFor( 'Userlogin' );
-				$tmp = $tmp->getPrefixedText();
-				$loginPage = $skin->makeKnownLink( $tmp,
-						wfMsg('login_text'), 'returnto=' . wfMsg('addresourcePage')
-						. '/' . $par );
+				$loginPage = $this->getLoginLink( wfMsg( 'login_text' ) );
 				$wgOut->addHTML( addBanner( wfMsg('not_allowed_anon', $loginPage)) );
 			}
 			return;
@@ -167,11 +166,22 @@ class AddResource extends SpecialPage
 
 	/* the upload chapter */
 	function upload($title, $skin) {
-		global $wgRequest;
-		global $wgOut, $wgContLang, $wgUser;
+		global $wgRequest, $wgOut, $wgContLang, $wgUser;
+		
+		# we need a header no matter what:
 		$imgListTitle = SpecialPage::getTitleFor( 'Imagelist' );
 		$wgOut->addWikiText( wfMsg('upload_header') );
 		$wgOut->addWikiText( wfMsg( 'upload_exp', $imgListTitle->getPrefixedText() ) );
+		
+		# check if we are allowed to upload:
+		if ( ! $wgUser->isAllowed('upload') ) {
+			$link = $this->getLoginLink( wfMsg('login_text' ));
+			$wgOut->addHTML( addBanner( wfMsg( 'upload_not_allowed', $link), 
+				'upload_not_allowed', 'grey' ) );
+			return;
+		}
+
+		# ok, we can upload:
 		$titleObj = SpecialPage::getTitleFor( 'Upload' );
 		$action = $titleObj->escapeLocalURL() . '?referer=' . $title->getPrefixedText();
 		$align1 = $wgContLang->isRTL() ? 'left' : 'right';
@@ -226,9 +236,19 @@ EOT
 	
 	/* the subpage chapter */
 	function subpage ($title) {
-		global $wgOut, $wgContLang;
+		global $wgOut, $wgContLang, $wgUser;
+		
 		$wgOut->addWikiText( wfMsg('subpage_header') );
 		$wgOut->addWikiText( wfMsg('subpage_exp', wfMsg('subpage_button')) );
+
+		# check if we are allowed to create subpages:
+		if ( ! ( $wgUser->isAllowed( 'edit' ) && $wgUser->isAllowed('createpage') ) ) {
+			$link = $this->getLoginLink( wfMsg('login_text' ));
+			$wgOut->addHTML( addBanner( wfMsg( 'createpage_not_allowed', wfMsg( 'subpages' ), $link ), 
+				'createpage_not_allowed', 'grey' ) );
+			return;
+		}
+
 
 		$align1 = $wgContLang->isRTL() ? 'left' : 'right';
 		$align2 = $wgContLang->isRTL() ? 'right' : 'left';
@@ -244,13 +264,21 @@ EOT
 
 	/* the link chapter */
 	function link ( $title, $skin, $preloadURL = '', $preloadTitle = '', $preloadDesc = '' ) {
-		global $wgOut, $wgContLang;
+		global $wgOut, $wgContLang, $wgUser;
 		$wgOut->addWikiText( wfMsg('link_header') );
 		$wgOut->addWikiText( wfMsg('link_exp',
 					wfMsg('link_url'),
 					wfMsg('link_title'),
 					wfMsg('link_button')
 		));
+
+		# check if we are allowed to create subpages:
+		if ( ! ( $wgUser->isAllowed( 'edit' ) && $wgUser->isAllowed('createpage') ) ) {
+			$link = $this->getLoginLink( wfMsg('login_text' ));
+			$wgOut->addHTML( addBanner( wfMsg( 'createpage_not_allowed', wfMsg( 'links' ),  $link ), 
+				'createpage_not_allowed', 'grey' ) );
+			return;
+		}
 
 		$align1 = $wgContLang->isRTL() ? 'left' : 'right';
 		$align2 = $wgContLang->isRTL() ? 'right' : 'left';
@@ -278,6 +306,17 @@ EOT
 				wfMsg('link_footer_linktext'), 'showAllSubpages=true') )
 		); 
 
+	}
+
+	function getLoginLink( $login_text ) {
+		global $wgUser;
+		$skin = $wgUser->getSkin();
+		$userlogin = SpecialPage::getTitleFor( 'Userlogin' );
+		$userlogin = $userlogin->getPrefixedText();
+		$loginPage = $skin->makeKnownLink( $userlogin,
+			$login_text, 'returnto=' . wfMsg('addresourcePage') 
+			. '/' . $this->param );
+		return $loginPage;
 	}
 }
 

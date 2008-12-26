@@ -43,6 +43,10 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'wrong_proto' => 'Error: The Link doesn\'t start with a known protocoll. Try prefixing you link with something like \'http://\'.',
 		'filename_example' => '<i>e.g. Pruefung 2007-10-10.pdf</i>',
 		'specialpages-specialpagegroup-addresource' => 'resources',
+		'subpages' => 'subpages',
+		'links' => 'links',
+		'upload_not_allowed' => 'You cannot upload any files because you do not have sufficient permissions to do so. You may want to $1.',
+		'createpage_not_allowed' => 'You cannot create any $1 because you do not have sufficient permissions to do so. You may want to $2.',
 	),
 	'de' => array(
 		'addresource' => 'Materialien hinzufügen',
@@ -88,6 +92,10 @@ Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufü
 		'wrong_proto' => 'Fehler: Der angegeben Link beginnt mit keinem bekannten Protokoll. Versuche dem Link ein "http:\/\/" voranzustellen.',
 		'filename_example' => '<i>z.B. Pruefung 2007-10-10.pdf</i>',
 		'specialpages-specialpagegroup-addresource' => 'resources',
+		'subpages' => 'Unterseiten',
+		'links' => 'Links',
+		'upload_not_allowed' => 'Du hast nicht die Berechtigung Dateien hoch zu laden. Du kannst dich aber $1.',
+		'createpage_not_allowed' => 'Du hast nicht die Berechtigung $2 zu erstellen. Du kannst dich aber $2.', 
 	)
 );
 ?>
