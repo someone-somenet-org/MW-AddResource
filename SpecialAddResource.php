@@ -153,7 +153,11 @@ class AddResource extends SpecialPage
 		}
 		
 		$specialResourceText = SpecialPage::getTitleFor( 'Resources' );
-		$wgOut->addWikiText( wfMsg('explanation', $pageTitle, $specialResourceText ) );
+		$wgOut->addWikiText( wfMsg('explanation', $pageTitle, $specialResourceText,
+				wfMsg( 'upload_header' ),
+				wfMsg( 'subpage_header' ),
+				wfMsg( 'link_header' )
+			) );
 
 		/* add the various chapters */
 		if ( $wgEnableUploads == True )
@@ -170,7 +174,7 @@ class AddResource extends SpecialPage
 		
 		# we need a header no matter what:
 		$imgListTitle = SpecialPage::getTitleFor( 'Imagelist' );
-		$wgOut->addWikiText( wfMsg('upload_header') );
+		$wgOut->addWikiText( '==' . wfMsg('upload_header') . '==' );
 		$wgOut->addWikiText( wfMsg( 'upload_exp', $imgListTitle->getPrefixedText() ) );
 		
 		# check if we are allowed to upload:
@@ -198,20 +202,21 @@ class AddResource extends SpecialPage
 
 		$encDestName = $wgRequest->getText( 'wpDestFile' );
 		$encComment = htmlspecialchars( $wgRequest->getText('wpUploadDescription') );
-		$example = wfMsg( 'filename_example' );
+		$example = wfMsg( 'filename_example', date('Y-m-d') );
 
 		$wgOut->addHTML( <<<EOT
 	<form name="new_upload" id='upload' method='post' enctype='multipart/form-data' action="$action" enctype="multipart/form-data" id="mw-upload-form" >
 		<table border='0'>
 		<tr>
-			<td align='$align1' valign='top'><label for='wpUploadFile'>{$sourcefilename}:</label></td>
+			<td align='$align1' valign='top'><label for='wpUploadFile'>{$sourcefilename}</label></td>
 			<td align='$align2'><input tabindex='1' type='file' name='wpUploadFile' id='wpUploadFile' onchange='fillDestFilename("wpUploadFile")' size='40' /><input type='hidden' name='wpSourceType' value='file' /></td>
 		</tr>
 		<tr>
-			<td align='$align1'><label for='wpDestFile'>{$destfilename}:</label></td>
+			<td align='$align1' valign='top'><label for='wpDestFile'>{$destfilename}</label></td>
 			<td align='$align2'>
 				<input tabindex='2' type='text' name='wpDestFile' id='wpDestFile' size='40'
-					value="$encDestName" $destOnkeyup />$example
+					value="$encDestName" $destOnkeyup />
+					<br /><span style="font-size:0.8em; color:darkgrey;">$example</span>
 			</td>
 		</tr>
 		<tr>
@@ -238,7 +243,7 @@ EOT
 	function subpage ($title) {
 		global $wgOut, $wgContLang, $wgUser;
 		
-		$wgOut->addWikiText( wfMsg('subpage_header') );
+		$wgOut->addWikiText( '==' . wfMsg('subpage_header') . '==' );
 		$wgOut->addWikiText( wfMsg('subpage_exp', wfMsg('subpage_button')) );
 
 		# check if we are allowed to create subpages:
@@ -265,10 +270,8 @@ EOT
 	/* the link chapter */
 	function link ( $title, $skin, $preloadURL = '', $preloadTitle = '', $preloadDesc = '' ) {
 		global $wgOut, $wgContLang, $wgUser;
-		$wgOut->addWikiText( wfMsg('link_header') );
+		$wgOut->addWikiText( '==' . wfMsg('link_header') . '==' );
 		$wgOut->addWikiText( wfMsg('link_exp',
-					wfMsg('link_url'),
-					wfMsg('link_title'),
 					wfMsg('link_button')
 		));
 
