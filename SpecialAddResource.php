@@ -301,12 +301,13 @@ EOT
 					<td><input type="submit" value="' . wfMsg('link_button') . '"></td>
 					</tr></table></form>');
 
-		$resource_page = SpecialPage::getTitleFor( 'Resources' );
 		$wgOut->addHTML( wfMsg('link_footer',
 			$title->getFullText(),
-			$skin->makeKnownLink( $resource_page . '/' .
-				$title->getFullText(),
-				wfMsg('link_footer_linktext'), 'showAllSubpages=true') )
+			$skin->makeKnownLink( SpecialPage::getTitleFor( 'Prefixindex' ) . '/' .
+						$title->getFullText() . '/',
+					wfMsg('link_footer_linktext'),
+					"namespace=" . $title->getNamespace() ) 
+				)
 		); 
 
 	}
