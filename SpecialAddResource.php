@@ -119,7 +119,8 @@ class AddResource extends SpecialPage
 		/* Add a banner if we successfully added a file */
 		$wpDestFile = $wgRequest->getVal( 'wpDestFile' );
 		if( $wpDestFile ) {
-			$targetTitle = Title::makeTitleSafe( NS_IMAGE, $wpDestFile );
+			$filename = wfStripIllegalFilenameChars($wpDestFile);
+			$targetTitle = Title::makeTitleSafe( NS_IMAGE, $filename );
 			$detailLink = $skin->link( $targetTitle, #Beschreibung
 				wfMsg( 'file_created_details' ) );
 			$directLink = $skin->makeMediaLinkObj( $targetTitle,
@@ -306,6 +307,7 @@ EOT
 		</tr>
 		</table>
 		<input type='hidden' name='wpDestFileWarningAck' id='wpDestFileWarningAck' value='1'/>
+		<input type='hidden' name='wpIgnoreWarning' id='wpIgnoreWarning' value='1'/>
 		<input type='hidden' name='wpReferer' id='wpReferer' value='" . $title->getPrefixedText() . "'/>
 	</form>" );
 		$wgOut->addWikiText( wfMsg('upload_footer') );
