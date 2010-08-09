@@ -25,6 +25,40 @@ function addBanner( $text, $div_id = 'random banner', $color = 'red' ) {
 }
 
 /**
+ * This class is so far not used. It will be used as soon as
+ * we have the specialized java script working...
+ */
+class UploadResourceForm extends UploadForm {
+	function getSourceSection() {
+		$arr = parent::getSourceSection();
+#		foreach ( $arr as $key =>$elem ) {
+#			$elem['section'] = 'description';
+#			$arr[$key] = $elem;
+#		}
+		return $arr;
+	}
+
+	function getDescriptionSection() {
+		$arr = parent::getDescriptionSection();
+#		unset( $arr['License'] );
+#		foreach( $arr as $key =>$elem ) {
+#			$arr[$key] = $elem;
+#		}
+		return $arr;
+	}
+
+	function getOptionsSection() {
+		$descriptor['wpDestFileWarningAck'] = array(
+                        'type' => 'hidden',
+                        'id' => 'wpDestFileWarningAck',
+                        'default' => $this->mDestWarningAck ? '1' : '',
+                );
+		return $descriptor;
+	}
+}
+
+
+/**
  * actual class...
  */
 class AddResource extends SpecialPage
@@ -82,6 +116,18 @@ class AddResource extends SpecialPage
 				$wgOut->redirect($redir->getFullURL() . '?action=edit' );
 		}
 
+		/* Add a banner if we successfully added a file */
+		$wpDestFile = $wgRequest->getVal( 'wpDestFile' );
+		if( $wpDestFile ) {
+			$targetTitle = Title::makeTitle( NS_IMAGE, $wpDestFile );
+			$directLink = $skin->makeMediaLinkObj( $targetTitle,
+				wfMsg('file_created_view') );
+			$detailLink = $skin->link( $targetTitle, 
+				wfMsg( 'file_created_details' ) );
+
+			$wgOut->addHTML( addBanner( wfMsg('file_created', $detailLink, $directLink ), 
+				'file_uploaded', 'green' ) );
+		}
 			
 		/* This automatically adds an ExternalRedirect. */
 		if ( $wgEnableExternalRedirects == True ) {
@@ -170,7 +216,10 @@ class AddResource extends SpecialPage
 
 	/* the upload chapter */
 	function upload($title, $skin) {
-		global $wgRequest, $wgOut, $wgContLang, $wgUser;
+		global $wgRequest, $wgOut, $wgContLang, $wgUser, $wgFileExtensions;
+		$vars['wgFileExtensions'] = $wgFileExtensions;
+		$variablesScript = Skin::makeVariablesScript( $vars ); # == makeGlobalVariablesScript
+		$wgOut->addScript( $variablesScript );
 		
 		# we need a header no matter what:
 		$imgListTitle = SpecialPage::getTitleFor( 'Imagelist' );
@@ -185,9 +234,32 @@ class AddResource extends SpecialPage
 			return;
 		}
 
-		# ok, we can upload:
+#		# ok, we are allowed to upload:
+#		$form = new UploadResourceForm();
+#		
+		# set the form handler:
+#		$form->setTitle( SpecialPage::getTitleFor( 'Upload' ) );
+#
+#		$form->show();
+#		return;
+
+		# add javascript - more or less copied from UploadForm:addUploadJS:
+                $scriptVars = array(
+			# for now, AjaxDestCheck is disabled, because we cannot check for the filename
+			# modified by the ManipulateUpload extension
+                        'wgAjaxUploadDestCheck' => false,
+			# we do not want to display it, so it should always be false!
+                        'wgAjaxLicensePreview' => false,
+                        'wgUploadAutoFill' => true,
+                        'wgUploadSourceIds' => array('wpUploadFile'),
+                );
+                $wgOut->addScript( Skin::makeVariablesScript( $scriptVars ) );
+                // For <charinsert> support
+                $wgOut->addScriptFile( 'edit.js' );
+		$wgOut->addScriptFile( 'upload.js' );
+		
 		$titleObj = SpecialPage::getTitleFor( 'Upload' );
-		$action = $titleObj->escapeLocalURL() . '?referer=' . $title->getPrefixedText();
+		$action = $titleObj->escapeLocalURL();
 		$align1 = $wgContLang->isRTL() ? 'left' : 'right';
 		$align2 = $wgContLang->isRTL() ? 'right' : 'left';
 
@@ -198,7 +270,7 @@ class AddResource extends SpecialPage
 		$cols = intval($wgUser->getOption( 'cols' ));
 		$ew = $wgUser->getOption( 'editwidth' );
 		if ( $ew ) $ew = " style=\"width:100%\"";
-                else $ew = '';
+		else $ew = '';
 
 		$encDestName = $wgRequest->getText( 'wpDestFile' );
 		$encComment = htmlspecialchars( $wgRequest->getText('wpUploadDescription') );
@@ -206,10 +278,10 @@ class AddResource extends SpecialPage
 
 		$wgOut->addHTML( <<<EOT
 	<form name="new_upload" id='upload' method='post' enctype='multipart/form-data' action="$action" enctype="multipart/form-data" id="mw-upload-form" >
-		<table border='0'>
+		<table id="mw-htmlform-description" border='0'>
 		<tr>
 			<td align='$align1' valign='top'><label for='wpUploadFile'>{$sourcefilename}</label></td>
-			<td align='$align2'><input tabindex='1' type='file' name='wpUploadFile' id='wpUploadFile' onchange='fillDestFilename("wpUploadFile")' size='40' /><input type='hidden' name='wpSourceType' value='file' /></td>
+			<td align='$align2'><input tabindex='1' type='file' name='wpUploadFile' id='wpUploadFile' onchange='fillDestFilename("wpUploadFile")' size='40' />
 		</tr>
 		<tr>
 			<td align='$align1' valign='top'><label for='wpDestFile'>{$destfilename}</label></td>
@@ -233,7 +305,7 @@ EOT
 			<td align='$align2'><input tabindex='9' type='submit' name='wpUpload' value=\"{$ulb}\"" . $wgUser->getSkin()->tooltipAndAccesskey( 'upload' ) . " /></td>
 		</tr>
 		</table>
-	        <input type='hidden' name='wpDestFileWarningAck' id='wpDestFileWarningAck' value=''/>
+		<input type='hidden' name='wpDestFileWarningAck' id='wpDestFileWarningAck' value='1'/>
 		<input type='hidden' name='wpReferer' id='wpReferer' value='" . $title->getPrefixedText() . "'/>
 	</form>" );
 		$wgOut->addWikiText( wfMsg('upload_footer') );
