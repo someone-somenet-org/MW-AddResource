@@ -48,8 +48,8 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'upload_not_allowed' => 'You cannot upload any files because you do not have sufficient permissions to do so. You may want to $1.',
 		'createpage_not_allowed' => 'You cannot create any $1 because you do not have sufficient permissions to do so. You may want to $2.',
 		'file_created' => 'File uploaded. You can either $1 or $2.',
-		'file_created_view' => 'view its description',
-		'file_created_details' => 'download it directly',
+		'file_created_details' => 'view its description',
+		'file_created_download' => 'download it directly',
 	),
 	'de' => array(
 		'addresource' => 'Materialien hinzufügen',
@@ -100,8 +100,8 @@ Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufü
 		'upload_not_allowed' => 'Du hast nicht die Berechtigung Dateien hoch zu laden. Du kannst dich aber $1.',
 		'createpage_not_allowed' => 'Du hast nicht die Berechtigung $2 zu erstellen. Du kannst dich aber $2.', 
 		'file_created' => 'Datei hochgeladen. Du kannst dir entweder die $1 ansehen oder sie $2.',
-		'file_created_view' => 'Beschreibung der Datei',
-		'file_created_details' => 'direkt herunterladen',
+		'file_created_details' => 'Beschreibung',
+		'file_created_download' => 'direkt herunterladen',
 	)
 );
 ?>

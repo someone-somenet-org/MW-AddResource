@@ -119,11 +119,11 @@ class AddResource extends SpecialPage
 		/* Add a banner if we successfully added a file */
 		$wpDestFile = $wgRequest->getVal( 'wpDestFile' );
 		if( $wpDestFile ) {
-			$targetTitle = Title::makeTitle( NS_IMAGE, $wpDestFile );
-			$directLink = $skin->makeMediaLinkObj( $targetTitle,
-				wfMsg('file_created_view') );
-			$detailLink = $skin->link( $targetTitle, 
+			$targetTitle = Title::makeTitleSafe( NS_IMAGE, $wpDestFile );
+			$detailLink = $skin->link( $targetTitle, #Beschreibung
 				wfMsg( 'file_created_details' ) );
+			$directLink = $skin->makeMediaLinkObj( $targetTitle,
+				wfMsg( 'file_created_download') ); #direct herunterladen
 
 			$wgOut->addHTML( addBanner( wfMsg('file_created', $detailLink, $directLink ), 
 				'file_uploaded', 'green' ) );
