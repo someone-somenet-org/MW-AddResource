@@ -155,6 +155,15 @@ class AddResource extends SpecialPage
 					if ( ! preg_match( '/^' . $preg_protos . ':\/\//', $externalLinkURL ) ) {
 						$wgOut->addHTML( addBanner( wfMsg('wrong_proto') ) );
 					} else {
+						# we de-sanitize latin1 encoded strings,
+						# because some very old systems (e.g. vBulletin
+						# use that by default.
+						$latin1_mapping = array( 
+							'%C4'=>'Ä', '%E4'=>'ä', 
+							'%D6'=>'Ö', '%F6'=>'ö',
+							'%DC'=>'Ü', '%FC'=>'ü', 
+							'%DF'=>'ß' );
+						$externalLinkURL = strtr( $externalLinkURL, $mapping );
 
 						$newArticleText = '#REDIRECT [[' . $externalLinkURL;
 						if ( $externalLinkDesc != '' )
