@@ -15,18 +15,19 @@ EOT;
 
 /* this is boilerplate (hook-registration etc.) */
 $dir = dirname(__FILE__);
-$wgAutoloadClasses['AddResource'] = dirname(__FILE__) . '/SpecialAddResource.php';
+$wgAutoloadClasses['AddResource'] = $dir . '/SpecialAddResource.php';
 $wgExtensionMessagesFiles['AddResource'] = $dir . '/AddResource.i18n.php';
 $wgSpecialPages[ 'AddResource' ] = 'AddResource';
 $wgHooks['LanguageGetSpecialPageAliases'][] = 'efAddResourceLocalizedPageName';
 $wgHooks['SkinTemplateContentActions'][] = 'efAddResourceDisplayTab';
+$wgSpecialPageGroups[ 'AddResource' ] = 'other';
 
 $wgExtensionCredits['specialpage'][] = array(
 	'name' => 'AddResource',
 	'description' => 'This special page allows you to \'\'\'attach\'\'\' resources to a given page',
 	'version' => '2.0.1-1.16.0',
 	'author' => 'Mathias Ertl',
-	'url' => 'http://fs.fsinf.at/wiki/AddResource',
+	'url' => 'https://fs.fsinf.at/wiki/AddResource',
 );
 
 /**
