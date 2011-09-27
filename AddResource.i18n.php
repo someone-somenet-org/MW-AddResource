@@ -1,4 +1,14 @@
 <?php
+$aliases = array(
+	'en' => array(
+		'AddResource' => array( 'AddResource' )
+	),
+	'de' => array(
+		'AddResource' => array( 'Materialien hinzufügen' )
+	)
+);
+
+
 $messages = array(
         'en' => array(
 		'addresource' => 'Add resource', /* this is what the special page will be available under */
