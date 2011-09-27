@@ -63,12 +63,15 @@ class UploadResourceForm extends UploadForm {
  */
 class AddResource extends SpecialPage
 {
-	/**
-	 * constructor, only does the basic stuff...
-	 */
-	function AddResource() {
-		SpecialPage::SpecialPage( 'AddResource' );
-		wfLoadExtensionMessages('AddResource' );
+
+	function __construct() {
+		parent::__construct( 'AddResource' );
+		wfLoadExtensionMessages('AddResource');
+	}
+
+	private function addSectionHeader( $message, $class ) {
+		global $wgOut;
+		$wgOut->wrapWikiMsg( "<h2 class='mw-addresourcesection' id='mw-addresource-$class'>$1</h2>", $message );
 	}
 
 	/**
@@ -80,7 +83,7 @@ class AddResource extends SpecialPage
 		global $wgOut, $wgRequest, $wgUser, $wgEnableUploads, $wgEnableExternalRedirects;
 		$skin = $wgUser->getSkin();
 		$this->setHeaders();
-
+		
 		/* make a Title object from $par */
 		if ( $par ) {
 			$title = Title::newFromText( $par );
@@ -205,7 +208,7 @@ class AddResource extends SpecialPage
 				wfMsg( 'subpage_header' ),
 				wfMsg( 'link_header' )
 			) );
-
+		
 		/* add the various chapters */
 		if ( $wgEnableUploads == True )
 			$this->upload($title, $skin);
@@ -224,7 +227,7 @@ class AddResource extends SpecialPage
 		
 		# we need a header no matter what:
 		$imgListTitle = SpecialPage::getTitleFor( 'Imagelist' );
-		$wgOut->addWikiText( '==' . wfMsg('upload_header') . '==' );
+		$this->addSectionHeader( 'upload_header', 'upload' );
 		$wgOut->addWikiText( wfMsg( 'upload_exp', $imgListTitle->getPrefixedText() ) );
 		
 		# check if we are allowed to upload:
@@ -317,7 +320,7 @@ EOT
 	function subpage ($title) {
 		global $wgOut, $wgContLang, $wgUser;
 		
-		$wgOut->addWikiText( '==' . wfMsg('subpage_header') . '==' );
+		$this->addSectionHeader( 'subpage_header', 'subpage' );
 		$wgOut->addWikiText( wfMsg('subpage_exp', wfMsg('subpage_button')) );
 
 		# check if we are allowed to create subpages:
@@ -344,7 +347,7 @@ EOT
 	/* the link chapter */
 	function link ( $title, $skin, $preloadURL = '', $preloadTitle = '', $preloadDesc = '' ) {
 		global $wgOut, $wgContLang, $wgUser;
-		$wgOut->addWikiText( '==' . wfMsg('link_header') . '==' );
+		$this->addSectionHeader( 'link_header', 'link' );
 		$wgOut->addWikiText( wfMsg('link_exp',
 					wfMsg('link_button')
 		));
