@@ -16,7 +16,7 @@ function addBanner( $text, $div_id = 'random banner', $color = 'red' ) {
 			break;
 		case 'grey':
 			$s .= '    style="border: 1px solid #BDBDBD; background-color: #E6E6E6; border-left: 5px solid #6E6E6E">';
-	} 
+	}
 
 	$s .= '<tr><td style=font-size: 95%;>';
 	$s .= $text;
@@ -25,35 +25,369 @@ function addBanner( $text, $div_id = 'random banner', $color = 'red' ) {
 }
 
 /**
+ * Superclass for creating links and subpages. Only contains common validator.
+ */
+class PageCreationForm extends HTMLForm {
+	protected $mMyAction;
+	protected $mAction;
+
+	/**
+	 * Callback that validates that a page does *not* exist.
+	 */
+	public function validatePageNotExists( $value, $alldata) {
+		if ($this->mAction != $this->mMyAction) {
+			return true;
+		}
+		$value =str_replace('/', '-', $value);
+		$title = Title::NewFromText( $alldata['BasePage'] . '/' . $value );
+		if ( $title->exists() ) {
+            return wfMsg('page-exists');
+		} else {
+			return true;
+		}
+	}
+}
+
+/**
  * This class is so far not used. It will be used as soon as
  * we have the specialized java script working...
  */
-class UploadResourceForm extends UploadForm {
-	function getSourceSection() {
-		$arr = parent::getSourceSection();
-#		foreach ( $arr as $key =>$elem ) {
-#			$elem['section'] = 'description';
-#			$arr[$key] = $elem;
-#		}
-		return $arr;
+class UploadFileForm extends HTMLForm {
+	private $mDesiredDestName;
+	private $mForReUpload;
+	private $mComment;
+
+	public function __construct( $title, $options = array() ) {
+		global $wgUser;
+		$descriptor = $this->getUploadDescriptors();
+		parent::__construct( $descriptor, 'addresource' );
+		$this->title = $title;
+
+		# Set some form properties
+		$this->setSubmitText( wfMsg( 'uploadbtn' ) );
+		$this->setSubmitName( 'submit' ); #TODO: maybe interesting to get type of submission?
+		# Used message keys: 'accesskey-upload', 'tooltip-upload'
+		$this->setSubmitTooltip( 'upload' );
+		$this->setId( 'mw-upload-form' );
+
+		$this->addHeaderText( wfMsg( 'upload_exp', $wgUser->getSkin()->linkKnown(
+				SpecialPage::getTitleFor( 'Imagelist' ),
+				wfMsg( 'upload_exp_linktext' ) ))
+		);
+		$this->addPostText( '<br />' . wfMsg('upload_footer',
+			$wgUser->getSkin()->makeExternalLink(
+				wfMsg( 'upload_footer_url' ),
+				wfMsg( 'upload_footer_linktext' )
+			))
+		);
 	}
 
-	function getDescriptionSection() {
-		$arr = parent::getDescriptionSection();
-#		unset( $arr['License'] );
-#		foreach( $arr as $key =>$elem ) {
-#			$arr[$key] = $elem;
-#		}
-		return $arr;
-	}
+	protected function getUploadDescriptors() {
+		global $wgUser, $wgLang, $wgMaxUploadSize;
 
-	function getOptionsSection() {
-		$descriptor['wpDestFileWarningAck'] = array(
-                        'type' => 'hidden',
-                        'id' => 'wpDestFileWarningAck',
-                        'default' => $this->mDestWarningAck ? '1' : '',
-                );
+		$descriptor = array();
+		$descriptor['UploadFile'] = array(
+			'class' => 'UploadSourceField',
+#			'section' => 'file',
+			'type' => 'file',
+			'id' => 'wpUploadFile',
+			'label-message' => 'sourcefilename',
+			'upload-type' => 'File',
+			'radio' => &$radio,
+			'help' => wfMsgExt( 'upload-maxfilesize',
+					array( 'parseinline', 'escapenoentities' ),
+					$wgLang->formatSize(
+						wfShorthandToInteger( min(
+							wfShorthandToInteger(
+								ini_get( 'upload_max_filesize' )
+							), $wgMaxUploadSize
+						) )
+					)
+				) . ' ' . wfMsgHtml( 'upload_source_file' ),
+			'checked' => true, #$selectedSourceType == 'file',
+		);
+
+		$descriptor['Extensions'] = array(
+			'type' => 'info',
+#			'section' => 'file',
+			'default' => $this->getExtensionsMessage(),
+			'raw' => true,
+		);
+
+		$descriptor['DestFile'] = array(
+				'type' => 'text',
+#				'section' => 'description',
+				'id' => 'wpDestFile',
+				'label-message' => 'destfilename',
+				'size' => 60,
+				'default' => $this->mDesiredDestName,
+				# FIXME: hack to work around poor handling of the 'default' option in HTMLForm
+				'nodata' => strval( $this->mDesiredDestName ) !== '',
+		);
+		$descriptor['UploadDescription'] = array(
+			'type' => 'textarea',
+#			'section' => 'description',
+			'id' => 'wpUploadDescription',
+			'label-message' => $this->mForReUpload
+				? 'filereuploadsummary'
+				: 'fileuploadsummary',
+			'default' => $this->mComment,
+			'cols' => intval( $wgUser->getOption( 'cols' ) ),
+			'rows' => 8,
+		);
+		$descriptor['IgnoreWarning'] = array(
+			'type' => 'hidden',
+			'id' => 'wpIgnoreWarning',
+			'label-message' => 'ignorewarnings',
+			'default' => '1',
+		);
+
+		$descriptor['DestFileWarningAck'] = array(
+			'type' => 'hidden',
+			'id' => 'wpDestFileWarningAck',
+			'default' => '1',
+		);
+#		$descriptor['SourceType'] = array(
+#			'type' => 'hidden',
+#			'default' => 'Stash',
+#		);
+
+#		if ( $this->mForReUpload ) {
+			$descriptor['ForReUpload'] = array(
+				'type' => 'hidden',
+				'id' => 'wpForReUpload',
+				'default' => '1',
+			);
+#		}
+
+		$descriptor['Action'] = array(
+			'type' => 'hidden',
+			'id' => 'action-upload',
+			'default' => 'upload',
+		);
+
 		return $descriptor;
+	}
+
+	/**
+	 * Get the messages indicating which extensions are preferred and prohibitted.
+	 *
+	 * Exact copy of UploadForm::getExtensionsMessage() in 1.17.0
+	 *
+	 * @return String: HTML string containing the message
+	 */
+	protected function getExtensionsMessage() {
+		# Print a list of allowed file extensions, if so configured.  We ignore
+		# MIME type here, it's incomprehensible to most people and too long.
+		global $wgLang, $wgCheckFileExtensions, $wgStrictFileExtensions,
+		$wgFileExtensions, $wgFileBlacklist;
+
+		if( $wgCheckFileExtensions ) {
+			if( $wgStrictFileExtensions ) {
+				# Everything not permitted is banned
+				$extensionsList =
+					'<div id="mw-upload-permitted">' .
+					wfMsgWikiHtml( 'upload-permitted', $wgLang->commaList( $wgFileExtensions ) ) .
+					"</div>\n";
+			} else {
+				# We have to list both preferred and prohibited
+				$extensionsList =
+					'<div id="mw-upload-preferred">' .
+					wfMsgWikiHtml( 'upload-preferred', $wgLang->commaList( $wgFileExtensions ) ) .
+					"</div>\n" .
+					'<div id="mw-upload-prohibited">' .
+					wfMsgWikiHtml( 'upload-prohibited', $wgLang->commaList( $wgFileBlacklist ) ) .
+					"</div>\n";
+			}
+		} else {
+			# Everything is permitted.
+			$extensionsList = '';
+		}
+		return $extensionsList;
+	}
+
+}
+
+class SubpageForm extends PageCreationForm {
+	private $mDest;
+
+	public function __construct( $action, $title, $options = array() ) {
+		$this->mAction = $action;
+		$this->mMyAction = 'subpage';
+		$this->title = $title;
+		$descriptor = $this->getDescriptors();
+		parent::__construct( $descriptor, 'addresource' );
+
+		$this->mDest = isset( $options['dest'] ) ? $options['dest'] : '';
+		$this->mSubmitCallback = array( $this, 'submit' );
+
+		# Set some form properties
+		$this->setSubmitText( wfMsg( 'subpage_button' ) );
+		$this->setSubmitName( 'submit' );
+		# Used message keys: 'accesskey-upload', 'tooltip-upload'
+		$this->setSubmitTooltip( 'create' );
+		$this->setId( 'mw-upload-form' );
+
+		$this->addHeaderText( wfMsg('subpage_exp', wfMsg('subpage_button')) );
+		$this->addPostText( '<br />' . wfMsg('subpage_after_exp' ) );
+	}
+
+	public function submit() {
+		global $wgOut;
+		$subpage = str_replace('/', '-', $this->mDest);
+
+		$wgOut->redirect($this->title->getFullURL() . '/' . $subpage . '?action=edit' );
+	}
+
+	protected function getDescriptors() {
+		global $wgUser, $wgLang, $wgMaxUploadSize;
+
+		$descriptor = array();
+		$descriptor['SubpageDest'] = array(
+				'type' => 'text',
+				'id' => 'wpSubpageDest',
+				'label-message' => 'subpage_inputTitle',
+				'size' => 60,
+				'default' => $this->mDest,
+				'validation-callback' => array($this, 'validatePageNotExists'),
+				'required' => true,
+		);
+		$descriptor['Action'] = array(
+			'type' => 'hidden',
+			'default' => 'subpage',
+		);
+		$descriptor['BasePage'] = array(
+			'type' => 'hidden',
+			'id' => 'action-link',
+			'default' => $this->title->getPrefixedText(),
+		);
+		return $descriptor;
+	}
+
+	function tryAuthorizedSubmit() {
+		if ($this->mAction === 'subpage') {
+			return parent::tryAuthorizedSubmit();
+		} else {
+			return false;
+		}
+	}
+}
+
+class ExternalRedirectForm extends PageCreationForm {
+	private $mLinkUrl;
+	private $mLinkTitle;
+	private $mLinkDesc;
+
+	public function __construct( $action, $title, $options = array() ) {
+		$this->mAction = $action;
+		$this->mMyAction = 'link';
+		$this->title = $title;
+
+		$this->mLinkUrl = isset( $options['desturl'] ) ? $options['desturl'] : '';
+		$this->mLinkTitle = isset( $options['desttitle'] ) ? $options['desttitle'] : '';
+		$this->mLinkDesc = isset( $options['destdesc'] ) ? $options['destdesc'] : '';
+
+		$descriptor = $this->getDescriptors();
+		parent::__construct( $descriptor, 'addresource' );
+
+		# Set some form properties
+		$this->setSubmitText( wfMsg( 'link_button' ) );
+		$this->setSubmitName( 'submit' );
+		# Used message keys: 'accesskey-upload', 'tooltip-upload'
+		$this->setSubmitTooltip( 'create' );
+		$this->setId( 'mw-upload-form' );
+
+		global $wgUser;
+		$this->addHeaderText( wfMsg('link_exp', wfMsg('link_button') ) );
+		$this->addPostText( '<br />' . wfMsg('link_footer',
+			$title->getFullText(),
+			$wgUser->getSkin()->linkKnown(
+				SpecialPage::getTitleFor( 'Prefixindex', $title->getPrefixedText() ),
+				wfMsg('link_footer_linktext'), null,
+				array( 'namespace' => $title->getNamespace() )
+			)
+		));
+
+		$this->mSubmitCallback = array( $this, 'submit' );
+	}
+
+	public function submit() {
+		global $wgOut;
+
+		$subpage = str_replace('/', '-', $this->mLinkTitle);
+		$title = Title::NewFromText( $this->title->getPrefixedText() . '/' . $subpage);
+		$article = new Article( $title );
+
+		$text = '#REDIRECT [[' . $this->mLinkUrl;
+		if ( $this->mLinkDesc != '' )
+			$text .= '|' . $this->mLinkDesc;
+		$text .= ']]';
+
+		# add a category:
+		global $wgResourcesCategory;
+		if ( $wgResourcesCategory != NULL && gettype($wgResourcesCategory) == "string" ) {
+			global $wgContLang;
+			$category_text = $wgContLang->getNSText ( NS_CATEGORY );
+			$text .= "\n[[" . $category_text . ":" . $wgResourcesCategory . "]]";
+		}
+		$link = $title->getFullURL() . '?redirect=no';
+		$article->doEdit( $text, wfMsg('commit_message', $link, $this->mLinkUrl), EDIT_NEW );
+
+		$redir = SpecialPage::getTitleFor( 'Resources', $this->title->getPrefixedText() );
+		$wgOut->redirect($redir->getFullURL() . '?highlight=' . $subpage );
+	}
+
+	public function validateUrl( $value, $alldata ) {
+#TODO: actually validate
+		return true;
+	}
+
+	protected function getDescriptors() {
+		$descriptor = array();
+		$descriptor['LinkUrl'] = array(
+				'type' => 'text',
+				'id' => 'wpLinkUrl',
+				'label-message' => 'link_url',
+				'size' => 60,
+				'default' => $this->mLinkUrl,
+				'validation-callback' => array($this, 'validateUrl'),
+				'required' => true,
+		);
+		$descriptor['LinkTitle'] = array(
+				'type' => 'text',
+				'id' => 'wpLinkTitle',
+				'label-message' => 'link_title',
+				'size' => 60,
+				'default' => $this->mLinkTitle,
+				'validation-callback' => array($this, 'validatePageNotExists'),
+				'required' => true,
+		);
+		$descriptor['LinkDesc'] = array(
+				'type' => 'text',
+				'id' => 'wpLinkDesc',
+				'label-message' => 'link_desc',
+				'size' => 60,
+				'default' => $this->mLinkDesc,
+		);
+		$descriptor['BasePage'] = array(
+			'type' => 'hidden',
+			'id' => 'action-link',
+			'default' => $this->title->getPrefixedText(),
+		);
+		$descriptor['Action'] = array(
+			'type' => 'hidden',
+			'id' => 'action-link',
+			'default' => 'link',
+		);
+		return $descriptor;
+	}
+
+	function tryAuthorizedSubmit() {
+		if ($this->mAction === 'link') {
+			return parent::tryAuthorizedSubmit();
+		} else {
+			return false;
+		}
 	}
 }
 
@@ -63,10 +397,50 @@ class UploadResourceForm extends UploadForm {
  */
 class AddResource extends SpecialPage
 {
+	private $mAction;
+	private $mRequest;
 
-	function __construct() {
+	private $mSubpageDest;
+
+	private $mLinkUrl;
+	private $mLinkTitle;
+	private $mLinkDesc;
+
+	private $mUpload;
+	private $mTokenOk;
+	private $mCancelUpload;
+	private $mUploadClicked;
+
+	function __construct($request = null) {
 		parent::__construct( 'AddResource' );
 		wfLoadExtensionMessages('AddResource');
+
+		global $wgRequest;
+		$this->loadRequest( is_null( $request ) ? $wgRequest : $request );
+
+
+	}
+
+	private function loadRequest( $request ) {
+		global $wgUser;
+		$this->mRequest = $request;
+		$this->mAction = $request->getVal( 'wpAction' );
+
+		$this->mSubpageDest = $request->getVal( 'wpSubpageDest' );
+
+		$this->mLinkUrl = $request->getVal( 'wpLinkUrl' );
+		$this->mLinkTitle = $request->getVal( 'wpLinkTitle' );
+		$this->mLinkDesc = $request->getVal( 'wpLinkDesc' );
+
+
+#TODO: get correct value for these variables:
+		$this->mUpload = UploadBase::createFromRequest( $request );
+		$this->mUploadClicked = $request->wasPosted() && $this->mAction == 'upload'; # TODO: 'upload' replace by static variable #mMyAction #mAction
+		$this->mTokenOk = $wgUser->matchEditToken(
+			$request->getVal( 'wpEditToken' )
+		);
+#TODO: Is there a sensefull way to cancel?
+		$this->mCancelUpload = false;
 	}
 
 	private function addSectionHeader( $message, $class ) {
@@ -83,18 +457,27 @@ class AddResource extends SpecialPage
 		global $wgOut, $wgRequest, $wgUser, $wgEnableUploads, $wgEnableExternalRedirects;
 		$skin = $wgUser->getSkin();
 		$this->setHeaders();
-		
+
 		/* make a Title object from $par */
 		if ( $par ) {
-			$title = Title::newFromText( $par );
+			$this->targetTitle = Title::newFromText( $par );
 			$this->param = $par;
 		} else { /* if nothing was specified */
 			$wgOut->addWikiText(wfMsg('noParameterHelp'));
 			return;
 		}
-		
-		$wgOut->setPagetitle( wfMsg('addResourcesPageTitle', $title->getPrefixedText() ) );
-		$pageTitle = $title->getFullText();
+
+		/* header text, title */
+		$wgOut->setPagetitle( wfMsg('addResourcesPageTitle', $this->targetTitle->getPrefixedText()) );
+		$wgOut->addWikiText(
+			wfMsg('explanation',
+				$this->targetTitle->getFullText(),
+				SpecialPage::getTitleFor( 'Resources' ),
+				wfMsg( 'upload_header' ),
+				wfMsg( 'subpage_header' ),
+				wfMsg( 'link_header' )
+			)
+		);
 
 		# If we are not allowed to do *anything*, we display a red warning message.
 		if ( !( $wgUser->isAllowed('edit') && $wgUser->isAllowed( 'createpage' ) )
@@ -108,17 +491,16 @@ class AddResource extends SpecialPage
 			return;
 		}
 
-		/* redirect to new subpage */
-		if ( ($new_subpage = $wgRequest->getVal('new_subpage')) != '' && $title->exists() ) {
-			/* replace Slashes with hyphens (slashes cause problems) */
-			$new_subpage = str_replace('/', '-',$new_subpage);
-			$redir = Title::newFromText( $par . '/' . $new_subpage);
-			if ( $redir->exists() )
-				$wgOut->redirect($redir->getFullURL() );
-			else
-				$wgOut->redirect($redir->getFullURL() . '?action=edit' );
-		}
+		/* add the various chapters */
+		if ( $wgEnableUploads == True )
+			$this->uploadChapter();
+		if ( $this->targetTitle->exists() )
+			$this->subpageChapter();
+		if ( $wgEnableExternalRedirects == True )
+			$this->linkChapter();
+	}
 
+	private function handleUploadSubmission() {
 		/* Add a banner if we successfully added a file */
 		$wpDestFile = $wgRequest->getVal( 'wpDestFile' );
 		if( $wpDestFile ) {
@@ -129,10 +511,26 @@ class AddResource extends SpecialPage
 			$directLink = $skin->makeMediaLinkObj( $targetTitle,
 				wfMsg( 'file_created_download') ); #direct herunterladen
 
-			$wgOut->addHTML( addBanner( wfMsg('file_created', $detailLink, $directLink ), 
+			$wgOut->addHTML( addBanner( wfMsg('file_created', $detailLink, $directLink ),
 				'file_uploaded', 'green' ) );
 		}
-			
+	}
+
+	private function handleSubpageSubmission() {
+		/* redirect to new subpage */
+		if ( ($new_subpage = $wgRequest->getVal('new_subpage')) != '' && $title->exists() ) {
+			/* replace Slashes with hyphens (slashes cause problems) */
+			$new_subpage = str_replace('/', '-',$new_subpage);
+			$redir = Title::newFromText( $par . '/' . $new_subpage);
+			if ( $redir->exists() )
+				$wgOut->redirect($redir->getFullURL() );
+			else
+			$new_subpage = str_replace('/', '-',$new_subpage);
+				$wgOut->redirect($redir->getFullURL() . '?action=edit' );
+		}
+	}
+
+	private function handleLinkSubmission() {
 		/* This automatically adds an ExternalRedirect. */
 		if ( $wgEnableExternalRedirects == True ) {
 			$externalLinkURL = $wgRequest->getVal('externalLinkURL');
@@ -163,7 +561,7 @@ class AddResource extends SpecialPage
 						if ( $externalLinkDesc != '' )
 							$newArticleText .= '|' . $externalLinkDesc;
 						$newArticleText .= ']]';
-					
+
 						# add a category:
 						global $wgResourcesCategory;
 						if ( $wgResourcesCategory != NULL && gettype($wgResourcesCategory) == "string" ) {
@@ -173,7 +571,7 @@ class AddResource extends SpecialPage
 						}
 
 						$link = $newTitle->getFullURL() . '?redirect=no';
-	
+
 						$newArticle->doEdit( $newArticleText, wfMsg('commit_message', $link, $externalLinkURL), EDIT_NEW );
 						$view = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_view'),
 							'redirect=no');
@@ -184,7 +582,7 @@ class AddResource extends SpecialPage
 						$externalLinkURL = '';
 						$externalLinkTitle = '';
 						$externalLinkDesc = '';
-						
+
 					}
 				}
 # TODO: add $par/$externalLinkTitle with content '#REDIRECT [[$externalLinkURL]]'
@@ -192,201 +590,110 @@ class AddResource extends SpecialPage
 				$wgOut->addHTML( addBanner( wfMsg('forgot_title'), 'forgot_title') );
 			} elseif ( $externalLinkURL == '' and $externalLinkTitle != '') {
 				$wgOut->addHTML( addBanner( wfMsg('forgot_url'), 'forgot_url') );
-			} 
+			}
 		}
-		
+
 		/* display a Banner if article doesn't exist: */
 		if ( ! $title->exists() ) {
 			$message = wfMsg( 'article_not_exists', $pageTitle,
 				$skin->makeBrokenLink($pageTitle, 'create the page', 'action=edit') );
 			$wgOut->addHTML( addBanner( $message, 'article_not_exists') );
 		}
-		
-		$specialResourceText = SpecialPage::getTitleFor( 'Resources' );
-		$wgOut->addWikiText( wfMsg('explanation', $pageTitle, $specialResourceText,
-				wfMsg( 'upload_header' ),
-				wfMsg( 'subpage_header' ),
-				wfMsg( 'link_header' )
-			) );
-		
-		/* add the various chapters */
-		if ( $wgEnableUploads == True )
-			$this->upload($title, $skin);
-		if ( $title->exists() ) 
-			$this->subpage($title);
-		if ( $wgEnableExternalRedirects == True )
-			$this->link($title, $skin, $externalLinkURL, $externalLinkTitle, $externalLinkDesc);
+
+
 	}
 
 	/* the upload chapter */
-	function upload($title, $skin) {
-		global $wgRequest, $wgOut, $wgContLang, $wgUser, $wgFileExtensions;
-		$vars['wgFileExtensions'] = $wgFileExtensions;
-		$variablesScript = Skin::makeVariablesScript( $vars ); # == makeGlobalVariablesScript
-		$wgOut->addScript( $variablesScript );
-		
-		# we need a header no matter what:
-		$imgListTitle = SpecialPage::getTitleFor( 'Imagelist' );
-		$this->addSectionHeader( 'upload_header', 'upload' );
-		$wgOut->addWikiText( wfMsg( 'upload_exp', $imgListTitle->getPrefixedText() ) );
-		
-		# check if we are allowed to upload:
-		if ( ! $wgUser->isAllowed('upload') ) {
-			$link = $this->getLoginLink( wfMsg('login_text' ));
-			$wgOut->addHTML( addBanner( wfMsg( 'upload_not_allowed', $link), 
-				'upload_not_allowed', 'grey' ) );
-			return;
+	private function uploadChapter() {
+		global $wgOut, $wgUser;
+
+		# Unsave the temporary file in case this was a cancelled upload
+		if ( $this->mCancelUpload ) {
+			if ( !$this->unsaveUploadedFile() ) {
+				# Something went wrong, so unsaveUploadedFile showed a warning
+				return;
+			}
 		}
 
-#		# ok, we are allowed to upload:
-#		$form = new UploadResourceForm();
-#		
-		# set the form handler:
-#		$form->setTitle( SpecialPage::getTitleFor( 'Upload' ) );
-#
-#		$form->show();
-#		return;
+		if (
+				$this->mTokenOk && !$this->mCancelUpload &&
+				( $this->mUpload && $this->mUploadClicked )
+		) {
+			$this->processUpload();
+		} else {
+			# we need a header no matter what:
+			$this->addSectionHeader( 'upload_header', 'upload' );
 
-		# add javascript - more or less copied from UploadForm:addUploadJS:
-                $scriptVars = array(
-			# for now, AjaxDestCheck is disabled, because we cannot check for the filename
-			# modified by the ManipulateUpload extension
-                        'wgAjaxUploadDestCheck' => false,
-			# we do not want to display it, so it should always be false!
-                        'wgAjaxLicensePreview' => false,
-                        'wgUploadAutoFill' => true,
-                        'wgUploadSourceIds' => array('wpUploadFile'),
-                );
-                $wgOut->addScript( Skin::makeVariablesScript( $scriptVars ) );
-                // For <charinsert> support
-                $wgOut->addScriptFile( 'edit.js' );
-		$wgOut->addScriptFile( 'upload.js' );
-		
-		$titleObj = SpecialPage::getTitleFor( 'Upload' );
-		$action = $titleObj->escapeLocalURL();
-		$align1 = $wgContLang->isRTL() ? 'left' : 'right';
-		$align2 = $wgContLang->isRTL() ? 'right' : 'left';
+			# check if we are allowed to upload:
+			if ( ! $wgUser->isAllowed('upload') ) {
+				$link = $this->getLoginLink( wfMsg('login_text' ));
+				$wgOut->addHTML( addBanner( wfMsg( 'upload_not_allowed', $link),
+					'upload_not_allowed', 'grey' ) );
+				return;
+			}
 
-		$sourcefilename = wfMsgHtml( 'sourcefilename' );
-		$destfilename = wfMsgHtml( 'destfilename' );
-		$summary = wfMsgExt( 'fileuploadsummary', 'parseinline' );
-		$ulb = wfMsgHtml( 'uploadbtn' );
-		$cols = intval($wgUser->getOption( 'cols' ));
-		$ew = $wgUser->getOption( 'editwidth' );
-		if ( $ew ) $ew = " style=\"width:100%\"";
-		else $ew = '';
+			$form = new UploadFileForm( $this->targetTitle );
+			$form->setTitle( $this->getTitle($this->targetTitle) );
+			$form->show();
+		}
 
-		$encDestName = $wgRequest->getText( 'wpDestFile' );
-		$encComment = htmlspecialchars( $wgRequest->getText('wpUploadDescription') );
-		$example = wfMsg( 'filename_example', date('Y-m-d') );
+		# Cleanup
+		if ( $this->mUpload ) {
+			$this->mUpload->cleanupTempFile();
+		}
 
-		$wgOut->addHTML( <<<EOT
-	<form name="new_upload" id='upload' method='post' enctype='multipart/form-data' action="$action" enctype="multipart/form-data" id="mw-upload-form" >
-		<table id="mw-htmlform-description" border='0'>
-		<tr>
-			<td align='$align1' valign='top'><label for='wpUploadFile'>{$sourcefilename}</label></td>
-			<td align='$align2'><input tabindex='1' type='file' name='wpUploadFile' id='wpUploadFile' onchange='fillDestFilename("wpUploadFile")' size='40' />
-		</tr>
-		<tr>
-			<td align='$align1' valign='top'><label for='wpDestFile'>{$destfilename}</label></td>
-			<td align='$align2'>
-				<input tabindex='2' type='text' name='wpDestFile' id='wpDestFile' size='40'
-					value="$encDestName" $destOnkeyup />
-					<br /><span style="font-size:0.8em; color:darkgrey;">$example</span>
-			</td>
-		</tr>
-		<tr>
-			<td align='$align1' style="width: 11em"><label for='wpUploadDescription'>{$summary}</label></td>
-			<td align='$align2'>
-				<textarea tabindex='3' name='wpUploadDescription' id='wpUploadDescription' rows='3'
-					cols='{$cols}'{$ew}>$encComment</textarea>
-			</td>
-		</tr>
-EOT
-			);
-		$wgOut->addHtml( "<tr>
-			<td></td>
-			<td align='$align2'><input tabindex='9' type='submit' name='wpUpload' value=\"{$ulb}\"" . $wgUser->getSkin()->tooltipAndAccesskey( 'upload' ) . " /></td>
-		</tr>
-		</table>
-		<input type='hidden' name='wpDestFileWarningAck' id='wpDestFileWarningAck' value='1'/>
-		<input type='hidden' name='wpIgnoreWarning' id='wpIgnoreWarning' value='1'/>
-		<input type='hidden' name='wpReferer' id='wpReferer' value='" . $title->getPrefixedText() . "'/>
-	</form>" );
-		$wgOut->addWikiText( wfMsg('upload_footer') );
 	}
-	
+
+	private function processUpload() {
+		die( 'processing upload.' );
+	}
+
 	/* the subpage chapter */
-	function subpage ($title) {
-		global $wgOut, $wgContLang, $wgUser;
-		
+	private function subpageChapter() {
+		global $wgOut, $wgUser;
+
 		$this->addSectionHeader( 'subpage_header', 'subpage' );
-		$wgOut->addWikiText( wfMsg('subpage_exp', wfMsg('subpage_button')) );
 
 		# check if we are allowed to create subpages:
 		if ( ! ( $wgUser->isAllowed( 'edit' ) && $wgUser->isAllowed('createpage') ) ) {
 			$link = $this->getLoginLink( wfMsg('login_text' ));
-			$wgOut->addHTML( addBanner( wfMsg( 'createpage_not_allowed', wfMsg( 'subpages' ), $link ), 
+			$wgOut->addHTML( addBanner( wfMsg( 'createpage_not_allowed', wfMsg( 'subpages' ), $link ),
 				'createpage_not_allowed', 'grey' ) );
 			return;
 		}
 
-
-		$align1 = $wgContLang->isRTL() ? 'left' : 'right';
-		$align2 = $wgContLang->isRTL() ? 'right' : 'left';
-
-		/* display input-form */
-		$wgOut->addHTML('<form name=\'new_subpage\' method=\'get\'><table><tr>
-					<td align="' . $align1 . '" style="width: 11em">' . wfMsg('subpage_inputTitle') . '</td>
-					<td align="' . $align2 . '"><input size=40 type=\'text\' name=\'new_subpage\'></td>
-					<td><input type=\'submit\' value=\'' . wfMsg('subpage_button')  . '\'></td>
-					</tr></table></form>');
-		$wgOut->addWikiText ( wfMsg('subpage_after_exp') );
+		$form = new SubpageForm( $this->mAction, $this->targetTitle, array(
+			'dest' => $this->mSubpageDest,
+		));
+		$form->setTitle( $this->getTitle($this->targetTitle) );
+		if ( $this->mAction != 'subpage' ) {
+#			$form->setMethod( 'get' );
+		}
+		$form->show();
 	}
 
 	/* the link chapter */
-	function link ( $title, $skin, $preloadURL = '', $preloadTitle = '', $preloadDesc = '' ) {
-		global $wgOut, $wgContLang, $wgUser;
+	private function linkChapter() {
+		global $wgOut, $wgUser;
 		$this->addSectionHeader( 'link_header', 'link' );
-		$wgOut->addWikiText( wfMsg('link_exp',
-					wfMsg('link_button')
-		));
 
 		# check if we are allowed to create subpages:
 		if ( ! ( $wgUser->isAllowed( 'edit' ) && $wgUser->isAllowed('createpage') ) ) {
 			$link = $this->getLoginLink( wfMsg('login_text' ));
-			$wgOut->addHTML( addBanner( wfMsg( 'createpage_not_allowed', wfMsg( 'links' ),  $link ), 
+			$wgOut->addHTML( addBanner( wfMsg( 'createpage_not_allowed', wfMsg( 'links' ),  $link ),
 				'createpage_not_allowed', 'grey' ) );
 			return;
 		}
 
-		$align1 = $wgContLang->isRTL() ? 'left' : 'right';
-		$align2 = $wgContLang->isRTL() ? 'right' : 'left';
-
-		/* display the input-form */
-		$wgOut->addHTML('<form name="new_link" method="get"><table><tr>
-					<td align="' . $align1 . '" style="width: 11em">' . wfMsg('link_url') . '</td>
-					<td align="' . $align2 . '"><input type="text" name="externalLinkURL" value="' . $preloadURL . '"></td>
-					</tr><tr>
-					<td align="' . $align1 . '">' . wfMsg('link_title') . '</td>
-					<td align="' . $align2 . '"><input type="text" name="externalLinkTitle" value="' . $preloadTitle . '"></td>
-					</tr><tr>
-					<td align="' . $align1 . '">' . wfMsg('link_desc') . '</td>
-					<td align="' . $align2 . '"><input type="text" name="externalLinkDesc"  value="' . $preloadDesc . '"></td>
-					</tr><tr>
-					<td></td>
-					<td><input type="submit" value="' . wfMsg('link_button') . '"></td>
-					</tr></table></form>');
-
-		$wgOut->addHTML( wfMsg('link_footer',
-			$title->getFullText(),
-			$skin->makeKnownLink( SpecialPage::getTitleFor( 'Prefixindex' ) . '/' .
-						$title->getFullText() . '/',
-					wfMsg('link_footer_linktext'),
-					"namespace=" . $title->getNamespace() ) 
-				)
-		); 
-
+		$form = new ExternalRedirectForm($this->mAction, $this->targetTitle, array(
+			'desturl'   => $this->mLinkUrl,
+			'desttitle' => $this->mLinkTitle,
+			'destdesc'  => $this->mLinkDesc
+		));
+		$form->setTitle( $this->getTitle($this->targetTitle) );
+		if ( $this->mAction != 'link' ) {
+		}
+		$form->show();
 	}
 
 	function getLoginLink( $login_text ) {
@@ -395,7 +702,7 @@ EOT
 		$userlogin = SpecialPage::getTitleFor( 'Userlogin' );
 		$userlogin = $userlogin->getPrefixedText();
 		$loginPage = $skin->makeKnownLink( $userlogin,
-			$login_text, 'returnto=' . wfMsg('addresourcePage') 
+			$login_text, 'returnto=' . wfMsg('addresourcePage')
 			. '/' . $this->param );
 		return $loginPage;
 	}
