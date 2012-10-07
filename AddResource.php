@@ -13,6 +13,13 @@ EOT;
 	exit( 1 );
 }
 
+/**
+ * Define some usefull constants.
+ */
+define("ADD_RESOURCE_ACTION_UPLOAD", 1);
+define("ADD_RESOURCE_ACTION_SUBPAGE", 2);
+define("ADD_RESOURCE_ACTION_LINK", 3);
+
 /* this is boilerplate (hook-registration etc.) */
 $dir = dirname(__FILE__);
 $wgAutoloadClasses['AddResource'] = $dir . '/SpecialAddResource.php';
@@ -53,7 +60,7 @@ function efAddResourceLocalizedPageName( &$specialPageArray, $code) {
 /**
  * This function is responsible for adding the tabs for the subject, talk and
  * resources-page.
- * 
+ *
  * @param array tabs the original tabs
  * @return boolean always true, there is no error-condition.
  */
@@ -100,9 +107,9 @@ function efAddResourceDisplayTab( $tabs ) {
 
 	$customTabs['add-resource'] = array ( 'class' => 'selected',
 		'text' => wfMsg('addResourceTab'),
-		'href' => $tabs['nstab-special']['href'] 
+		'href' => $tabs['nstab-special']['href']
 	);
-		
+
 	$tabs = $customTabs;
 	return true;
 }
