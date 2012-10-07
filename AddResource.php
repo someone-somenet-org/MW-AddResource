@@ -56,6 +56,7 @@ $wgAutoloadClasses['UploadResourceFromStash'] = $dir . '/ResourceUploadBackends.
  */
 $wgHooks['LanguageGetSpecialPageAliases'][] = 'efAddResourceLocalizedPageName';
 $wgHooks['UploadCreateFromRequest'][] = 'wgAddResourceGetUploadRequestHandler';
+$wgHooks['SkinTemplateNavigation::SpecialPage'][] = 'efAddResourceSpecialPage';
 
 /**
  * Default values for most options.
@@ -63,6 +64,11 @@ $wgHooks['UploadCreateFromRequest'][] = 'wgAddResourceGetUploadRequestHandler';
  * TODO.
  */
 #$wgCategoryTreeDefaultOptions      = array();
+
+function getResourcesUrl($title) {
+    $resources = SpecialPage::getTitleFor('Resources');
+    return $resources->getLocalURL() .'/'. $title->getPrefixedDBkey();
+}
 
 /**
  * These functions adds the localized pagename of the "Add resource" special-
@@ -83,6 +89,59 @@ function efAddResourceLocalizedPageName( &$specialPageArray, $code) {
         $specialPageArray['AddResource'][] = $titleUser->getDBKey();
 
         return true;
+}
+
+function efAddResourceSpecialPage($template, $links) {
+    global $wgTitle, $wgRequest, $wgUser, $wgAddResourceTab;
+
+    // return if we are not on the right special page
+    if (!$wgTitle->isSpecial('AddResource')) {
+        return true;
+    }
+
+    // parse subpage-part. We cannot use $wgTitle->getSubpage() because the
+    // special namespaces doesn't have real subpages
+    $prefixedText = $wgTitle->getPrefixedText();
+    if (strpos($prefixedText, '/') === FALSE) {
+        return true; // no page given
+    }
+    $parts = explode( '/', $prefixedText);
+    $pageName = $parts[count( $parts ) - 1];
+
+    $title = Title::newFromText($pageName)->getSubjectPage();
+    $talkTitle = $title->getTalkPage();
+
+    // Get AddResource URL:
+    $resourceCount = getResourceCount($title);
+    $resourcesUrl = getResourcesUrl($title);
+    $resourcesText = getResourceTabText($resourceCount);
+    $resourcesClass = $resourceCount > 0 ? 'is_resource' : 'new is_resource';
+
+    $head = array (
+        $title->getNamespaceKey('') => array(
+            'class' => $title->exists() ? null : 'new',
+            'text' => $title->getText(),
+            'href' => $title->getLocalUrl(),
+        ),
+        'resources' => array(
+            'class' => $resourcesClass,
+            'text' => $resourcesText,
+            'href' => $resourcesUrl,
+        ),
+    );
+    $tail = array (
+        $title->getNamespaceKey('') . '_talk' => array(
+            'class' => $talkTitle->exists() ? null : 'new',
+            'text' => wfMsg('Talk'),
+            'href' => $talkTitle->getLocalUrl(),
+        )
+    );
+    $resourceCount = getResourceCount($title);
+
+    $links['namespaces'] = array_merge($head, $links['namespaces'], $tail);
+    $links['namespaces']['special']['text'] = '+';
+
+    return true;
 }
 
 /**
