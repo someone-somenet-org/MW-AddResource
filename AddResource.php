@@ -55,7 +55,6 @@ $wgAutoloadClasses['UploadResourceFromStash'] = $dir . '/ResourceUploadBackends.
  * Hook registration.
  */
 $wgHooks['LanguageGetSpecialPageAliases'][] = 'efAddResourceLocalizedPageName';
-$wgHooks['SkinTemplateContentActions'][] = 'efAddResourceDisplayTab';
 $wgHooks['UploadCreateFromRequest'][] = 'wgAddResourceGetUploadRequestHandler';
 
 /**
@@ -84,63 +83,6 @@ function efAddResourceLocalizedPageName( &$specialPageArray, $code) {
         $specialPageArray['AddResource'][] = $titleUser->getDBKey();
 
         return true;
-}
-
-/**
- * This function is responsible for adding the tabs for the subject, talk and
- * resources-page.
- *
- * @param array tabs the original tabs
- * @return boolean always true, there is no error-condition.
- */
-function efAddResourceDisplayTab( $tabs ) {
-    /* some variables needed immediatly */
-    global $wgTitle, $wgAddResourceTab, $wgResourcesTabs;
-    $addResourcesTitle = SpecialPage::getTitleFor( 'AddResource' );
-    $curSpecialPage = $wgTitle->getPrefixedText();
-
-    /* return if not on the right page or not enabled */
-    if ( $curSpecialPage != $addResourcesTitle ||
-            ! $wgAddResourceTab || ! $wgResourcesTabs )
-        return true;
-
-    /* get the requested page */
-    global $wgRequest, $wgUser;
-    $par = ereg_replace( $wgTitle->getPrefixedDBkey() . '/?', '',
-        $wgRequest->getVal( 'title' ) );
-    if ( $par == '' ) // if no /par was given
-        return true;
-
-    /* build the subject page and add the tab */
-    $skin = $wgUser->getSkin();
-    $parTitle = Title::newFromText( $par )->getSubjectPage();
-    $nskey = $parTitle->getNamespaceKey();
-    $customTabs[$nskey] = $skin->tabAction(
-        $parTitle, $nskey, false, '', true);
-
-    /* build the talk page and add the tab */
-    $parTalkTitle = $parTitle->getTalkPage();
-    $customTabs['talk'] = $skin->tabAction(
-        $parTalkTitle, 'talk', false, '', true);
-
-    // build subject-page tab:
-    $resourcesTitle = SpecialPage::getTitleFor( 'Resources' );
-    $resourcesPage = new Resources();
-    $resourcesCount = $resourcesPage->getResourceListCount( $parTitle );
-
-    $customTabs['view-resources'] = array ( 'class' => $resourcesCount ? false : 'new',
-        'text' => wfMsg('ResourcesTab'),
-        'href' => $resourcesTitle->getLocalURL() . '/' .
-            $parTitle->getPrefixedDBkey()
-    );
-
-    $customTabs['add-resource'] = array ( 'class' => 'selected',
-        'text' => wfMsg('addResourceTab'),
-        'href' => $tabs['nstab-special']['href']
-    );
-
-    $tabs = $customTabs;
-    return true;
 }
 
 /**
