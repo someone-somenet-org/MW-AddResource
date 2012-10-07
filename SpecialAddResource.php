@@ -1,30 +1,6 @@
 <?php
 
 /**
- * primitive function that returns HTML for a Banner with the given text.
- * color is either red or green, default is red.
- */
-function addBanner( $text, $div_id = 'random banner', $color = 'red' ) {
-    $s = '<div id="' . $div_id . '">';
-    $s .= '<table align="center" border="0" cellpadding="5" cellspacing="2"';
-    switch ($color) {
-        case 'red':
-            $s .= '    style="border: 1px solid #FFA4A4; background-color: #FFF3F3; border-left: 5px solid #FF6666">';
-            break;
-        case 'green':
-            $s .= '    style="border: 1px solid #A4FFA4; background-color: #F3FFF3; border-left: 5px solid #66FF66">';
-            break;
-        case 'grey':
-            $s .= '    style="border: 1px solid #BDBDBD; background-color: #E6E6E6; border-left: 5px solid #6E6E6E">';
-    }
-
-    $s .= '<tr><td style=font-size: 95%;>';
-    $s .= $text;
-    $s .= '</td></tr></table></div>';
-    return $s;
-}
-
-/**
  * actual class...
  */
 class AddResource extends SpecialPage
