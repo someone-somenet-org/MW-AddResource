@@ -24,7 +24,6 @@ define("ADD_RESOURCE_ACTION_LINK", 3);
  * Some extension boilerplace.
  */
 $dir = dirname(__FILE__);
-$wgAutoloadClasses['AddResource'] = $dir . '/SpecialAddResource.php';
 $wgExtensionMessagesFiles['AddResource'] = $dir . '/AddResource.i18n.php';
 $wgSpecialPages[ 'AddResource' ] = 'AddResource';
 $wgSpecialPageGroups[ 'AddResource' ] = 'other';
@@ -37,6 +36,16 @@ $wgExtensionCredits['specialpage'][] = array(
     'author' => 'Mathias Ertl',
     'url' => 'https://fs.fsinf.at/wiki/AddResource',
 );
+
+/**
+ * Autoload classes
+ */
+$wgAutoloadClasses['AddResource'] = $dir . '/SpecialAddResource.php';
+$wgAutoloadClasses['UploadFileForm'] = $dir . '/ResourceForms.php';
+$wgAutoloadClasses['SubpageForm'] = $dir . '/ResourceForms.php';
+$wgAutoloadClasses['ExternalRedirectForm'] = $dir . '/ResourceForms.php';
+$wgAutoloadClasses['UploadResourceFromFile'] = $dir . '/ResourceUploadBackends.php';
+$wgAutoloadClasses['UploadResourceFromStash'] = $dir . '/ResourceUploadBackends.php';
 
 /**
  * Hook registration.
