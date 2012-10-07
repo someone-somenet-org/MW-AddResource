@@ -1,22 +1,4 @@
 <?php
-/**
- * This extension requires the mReferer-Patch for SpecialUpload.php.
- * You can get it at
- * 	http://svn.fsinf.at/mediawiki/patches/SpecialUpload.php/
- * 
- * Together with the patch, this extension allows you to load
- * Special:Upload with '?referer=something', which will:
- * * Prefix the user-given filename with "something_-_"
- * * append a comment linking to the page "something"
- */
-
-$wgExtensionCredits['other'][] = array (
-	'name' => 'ManipulateUpload',
-	'description' => 'Manipulate the input of the Upload-Page. This extension is very customized to our environment.',
-	'version' => '2.0-1.16.0',
-	'author' => 'Mathias Ertl, Klaus Purer',
-	'url' => 'http://fs.fsinf.at/wiki/ManipulateInput',
-);
 
 # hook definitions
 $wgHooks['UploadFormInitDescriptor'][] = 'wgManipulateUploadAddReferer';
@@ -28,14 +10,14 @@ $wgHooks['SpecialUploadComplete'][] = 'wgManipulateUploadHandleCompletion';
  */
 function getResourceComment() {
 	global $wgResourcesCategory, $wgContLang, $wgRequest;
-	
+
 	$referer = $wgRequest->getText( 'wpReferer' );
 	$pageText .= "\n\n<!-- Don't edit below this line! -->\n[[" . $referer . "]] ";
 	$pageText .= "([[" . SpecialPage::getTitleFor( 'Resources' )
 			. '/' . $referer . '|' . wfMsgForContent('resources') . ']])';
 	if ( $wgResourcesCategory != NULL && gettype($wgResourcesCategory) == "string" ) {
 		$categoryText = $wgContLang->getNSText ( NS_CATEGORY );
-		$pageText .= "\n[[" . $categoryText . ":" . 
+		$pageText .= "\n[[" . $categoryText . ":" .
 			$wgResourcesCategory . "]]";
 	}
 	return $pageText;
@@ -73,7 +55,7 @@ class UploadResourceFromFile extends UploadFromFile {
 	 * @param $pageText string The text of the page. This string is modified
 	 *	with a link back to the original article referred to by the
 	 * 	wpReferer variable.
-	 */	
+	 */
 	function performUpload( $comment, $pageText, $watch, $user ) {
 		$pageText .= getResourceComment();
 		return parent::performUpload( $comment, $pageText, $watch, $user );
