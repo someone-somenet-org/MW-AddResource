@@ -146,7 +146,7 @@ class UploadFileForm extends HTMLForm {
         $descriptor['Action'] = array(
             'type' => 'hidden',
             'id' => 'action-upload',
-            'default' => 'upload',
+            'default' => ADD_RESOURCE_ACTION_UPLOAD,
         );
 
         return $descriptor;
