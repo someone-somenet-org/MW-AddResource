@@ -260,6 +260,8 @@ class AddResource extends SpecialPage
          * The previous two lines are in the original function. We don't need
          * the hook and we don't need the redirect.
          */
+        $redir = SpecialPage::getTitleFor( 'Resources', $this->targetTitle->getPrefixedText() );
+        $this->getOutput()->redirect($redir->getFullURL());
     }
 
     /**
