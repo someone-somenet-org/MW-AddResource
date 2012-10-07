@@ -71,30 +71,4 @@ class UploadResourceFromStash extends UploadFromStash {
 		return parent::performUpload( $comment, $pageText, $watch, $user );
 	}
 }
-
-/**
- * Sets the upload handler to our special class in case the POST data includes
- * the wpReferer value
- */
-function wgAddResourceGetUploadRequestHandler( $type, $className ) {
-	global $wgRequest;
-	if ( ! $wgRequest->getText( 'wpReferer' ) ) {
-		return true;
-	}
-
-	switch ( $type ) {
-		case "File":
-			$className = 'UploadResourceFromFile';
-			break;
-		case "Stash":
-			$className = 'UploadResourceFromStash';
-			break;
-		default:
-			print( "wpReferer: " . $wgRequest->getText( 'wpReferer' ) . "<br />" );
-			print( "wpDestFile: "  . $wgRequest->getText( 'wpDestFile' ) . "<br />") ;
-			die( $type );
-	}
-	return true;
-}
-
 ?>
