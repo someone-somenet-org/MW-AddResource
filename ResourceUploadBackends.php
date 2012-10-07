@@ -4,18 +4,18 @@
  * Generic function to add the comment linking back to the original title
  */
 function getResourceComment() {
-	global $wgResourcesCategory, $wgContLang, $wgRequest;
+   global $wgResourcesCategory, $wgContLang, $wgRequest;
 
-	$referer = $wgRequest->getText(ADD_RESOURCE_REFERER_FIELD);
-	$pageText .= "\n\n<!-- Don't edit below this line! -->\n[[" . $referer . "]] ";
-	$pageText .= "([[" . SpecialPage::getTitleFor( 'Resources' )
-			. '/' . $referer . '|' . wfMsgForContent('resources') . ']])';
-	if ( $wgResourcesCategory != NULL && gettype($wgResourcesCategory) == "string" ) {
-		$categoryText = $wgContLang->getNSText ( NS_CATEGORY );
-		$pageText .= "\n[[" . $categoryText . ":" .
-			$wgResourcesCategory . "]]";
-	}
-	return $pageText;
+   $referer = $wgRequest->getText(ADD_RESOURCE_REFERER_FIELD);
+   $pageText .= "\n\n<!-- Don't edit below this line! -->\n[[" . $referer . "]] ";
+   $pageText .= "([[" . SpecialPage::getTitleFor( 'Resources' )
+         . '/' . $referer . '|' . wfMsgForContent('resources') . ']])';
+   if ( $wgResourcesCategory != NULL && gettype($wgResourcesCategory) == "string" ) {
+      $categoryText = $wgContLang->getNSText ( NS_CATEGORY );
+      $pageText .= "\n[[" . $categoryText . ":" .
+         $wgResourcesCategory . "]]";
+   }
+   return $pageText;
 }
 
 /**
@@ -23,40 +23,40 @@ function getResourceComment() {
  * the desired destination name and add the generic comment
  */
 class UploadResourceFromFile extends UploadFromFile {
-	/**
-	 * Modify the desired destination name.
-	 */
-	function initializeFromRequest( &$request ) {
-		$desiredDestName = $request->getText( 'wpDestFile' );
-		if( !$desiredDestName ) {
-			$desiredDestName = $request->getFileName( 'wpUploadFile' );
-		}
+   /**
+    * Modify the desired destination name.
+    */
+   function initializeFromRequest( &$request ) {
+      $desiredDestName = $request->getText( 'wpDestFile' );
+      if( !$desiredDestName ) {
+         $desiredDestName = $request->getFileName( 'wpUploadFile' );
+      }
 
-		$referer =  $request->getText(ADD_RESOURCE_REFERER_FIELD);
+      $referer =  $request->getText(ADD_RESOURCE_REFERER_FIELD);
 
-		# filenames can never contain slashes, but the referer might contain them, if
-		# its a subpage:
-		$prefix = preg_replace('/\//', '-', $referer);
-		$destName = $prefix . ' - ' . $desiredDestName;
+      # filenames can never contain slashes, but the referer might contain them, if
+      # its a subpage:
+      $prefix = preg_replace('/\//', '-', $referer);
+      $destName = $prefix . ' - ' . $desiredDestName;
 
         $init = parent::initializeFromRequest( $request );
         $this->mDesiredDestName = $destName;
 
         return $init;
-	}
+   }
 
-	/**
-	 * Append the generic comment.
-	 *
-	 * @param $comment string The comment describing the change in the changelog
-	 * @param $pageText string The text of the page. This string is modified
-	 *	with a link back to the original article referred to by the
-	 * 	ADD_RESOURCE_REFERER_FIELD variable.
-	 */
-	function performUpload( $comment, $pageText, $watch, $user ) {
-		$pageText .= getResourceComment();
-		return parent::performUpload( $comment, $pageText, $watch, $user );
-	}
+   /**
+    * Append the generic comment.
+    *
+    * @param $comment string The comment describing the change in the changelog
+    * @param $pageText string The text of the page. This string is modified
+    *   with a link back to the original article referred to by the
+    *    ADD_RESOURCE_REFERER_FIELD variable.
+    */
+    function performUpload( $comment, $pageText, $watch, $user ) {
+      $pageText .= getResourceComment();
+      return parent::performUpload( $comment, $pageText, $watch, $user );
+   }
 }
 
 /**
@@ -65,12 +65,12 @@ class UploadResourceFromFile extends UploadFromFile {
  * loaded and the file is in fact already uploaded (as temporary file).
  */
 class UploadResourceFromStash extends UploadFromStash {
-	/**
-	 * This function just appends the generic comment
-	 */
-	function performUpload( $comment, $pageText, $watch, $user ) {
-		$pageText .= getResourceComment();
-		return parent::performUpload( $comment, $pageText, $watch, $user );
-	}
+   /**
+    * This function just appends the generic comment
+    */
+    function performUpload( $comment, $pageText, $watch, $user ) {
+      $pageText .= getResourceComment();
+      return parent::performUpload( $comment, $pageText, $watch, $user );
+   }
 }
 ?>
