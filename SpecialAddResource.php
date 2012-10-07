@@ -1,7 +1,7 @@
 <?php
 
 /**
- * actual class...
+ * The AddResource special page
  */
 class AddResource extends SpecialPage
 {
