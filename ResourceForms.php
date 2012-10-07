@@ -40,7 +40,11 @@ class AddResourceForm extends HTMLForm {
     }
 
     /**
-     * Construct the form fields from the Descriptor array
+     * Override the function in HTMLForm to only load the data when this form
+     * was actually clicked.
+     *
+     * The else-branch is a 1:1 copy (with some parts commented out) of the
+     * parent function.
      */
     function loadData() {
         if ($this->wasClicked()) {
@@ -53,6 +57,8 @@ class AddResourceForm extends HTMLForm {
                     continue;
                 } elseif ( !empty( $field->mParams['disabled'] ) ) {
                     $fieldData[$fieldname] = $field->getDefault();
+                //} else {
+                //    $fieldData[$fieldname] = $field->loadDataFromRequest( $this->getRequest() );
                 }
             }
 
