@@ -38,9 +38,11 @@ class UploadResourceFromFile extends UploadFromFile {
 		# its a subpage:
 		$prefix = preg_replace('/\//', '-', $referer);
 		$destName = $prefix . ' - ' . $desiredDestName;
-		$request->setVal( 'wpDestFile', $destName );
 
-		return parent::initializeFromRequest( $request );
+        $init = parent::initializeFromRequest( $request );
+        $this->mDesiredDestName = $destName;
+
+        return $init;
 	}
 
 	/**
