@@ -391,14 +391,12 @@ class AddResource extends SpecialPage
     }
 
     function getLoginLink($login_text) {
-        global $wgUser;
+        global $wgUser, $wgTitle;
         $skin = $wgUser->getSkin();
-        $userlogin = SpecialPage::getTitleFor('Userlogin');
-        $userlogin = $userlogin->getPrefixedText();
-        $loginPage = $skin->makeKnownLink($userlogin,
-            $login_text, 'returnto=' . wfMsg('addresourcePage')
-            . '/' . $this->param);
-        return $loginPage;
+        $userLogin = SpecialPage::getTitleFor('Userlogin');
+        $query =  array('returnto' => $wgTitle->getPrefixedText());
+
+        return $skin->link($userLogin, $login_text, array(), $query);
     }
 
     /**
