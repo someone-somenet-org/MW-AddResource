@@ -230,6 +230,7 @@ class AddResource extends SpecialPage
                 $this->mTokenOk && !$this->mCancelUpload &&
                 ( $this->mUpload && $this->mUploadClicked )
         ) {
+            die('processing upload');
             $this->processUpload();
         } else {
             # check if we are allowed to upload:

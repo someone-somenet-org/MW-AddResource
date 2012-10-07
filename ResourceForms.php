@@ -4,8 +4,12 @@
  * Baseclass for all forms in this extension.
  */
 class AddResourceForm extends HTMLForm {
+    protected $formAction;
 
-    public function getCommonFields($action) {
+    /**
+     * Get form fields common to all fields.
+     */
+    protected function getCommonFields() {
         return array(
             # Remember what article we upload a resource for. This information
             # is used by our upload backends in ResourceUploadBackends.php
@@ -19,9 +23,55 @@ class AddResourceForm extends HTMLForm {
             ADD_RESOURCE_ACTION_NAME => array(
                 'type' => 'hidden',
                 'id' => ADD_RESOURCE_ACTION_FIELD,
-                'default' => $action,
+                'default' => $this->formAction,
             ),
         );
+    }
+
+    /**
+     * Returns true if this particular form was clicked, which is decided
+     * via ADD_RESOURCE_ACTION_FIELD.
+     *
+     * TODO: add check if request is POST.
+     */
+    function wasClicked() {
+        global $wgRequest;
+        return $wgRequest->getInt(ADD_RESOURCE_ACTION_FIELD) === $this->formAction;
+    }
+
+    /**
+     * Construct the form fields from the Descriptor array
+     */
+    function loadData() {
+        if ($this->wasClicked()) {
+            parent::loadData();
+        } else {
+            $fieldData = array();
+
+            foreach ( $this->mFlatFields as $fieldname => $field ) {
+                if ( !empty( $field->mParams['nodata'] ) ) {
+                    continue;
+                } elseif ( !empty( $field->mParams['disabled'] ) ) {
+                    $fieldData[$fieldname] = $field->getDefault();
+                }
+            }
+
+            # Filter data.
+            foreach ( $fieldData as $name => &$value ) {
+                $field = $this->mFlatFields[$name];
+                $value = $field->filter( $value, $this->mFlatFields );
+            }
+
+            $this->mFieldData = $fieldData;
+        }
+    }
+
+    function tryAuthorizedSubmit() {
+        if ($this->wasClicked()) {
+            return parent::tryAuthorizedSubmit();
+        } else {
+            return false;
+        }
     }
 }
 
@@ -29,8 +79,6 @@ class AddResourceForm extends HTMLForm {
  * Superclass for creating links and subpages. Only contains common validator.
  */
 class PageCreationForm extends AddResourceForm {
-    protected $mAction;
-
     /**
      * Callback that validates that a page does *not* exist.
      */
@@ -49,6 +97,8 @@ class PageCreationForm extends AddResourceForm {
 /**
  */
 class UploadFileForm extends AddResourceForm {
+    protected $formAction = ADD_RESOURCE_ACTION_UPLOAD;
+
     private $mDesiredDestName;
     private $mForReUpload;
     private $mComment;
@@ -82,7 +132,7 @@ class UploadFileForm extends AddResourceForm {
     protected function getUploadDescriptors() {
         global $wgUser, $wgLang, $wgMaxUploadSize;
 
-        $descriptor = $this->getCommonFields(ADD_RESOURCE_ACTION_UPLOAD);
+        $descriptor = $this->getCommonFields();
 
         $descriptor['UploadFile'] = array(
             'class' => 'UploadSourceField',
@@ -201,10 +251,11 @@ class UploadFileForm extends AddResourceForm {
 }
 
 class SubpageForm extends PageCreationForm {
+    protected $formAction = ADD_RESOURCE_ACTION_SUBPAGE;
+
     private $mDest;
 
     public function __construct( $action, $title, $options = array() ) {
-        $this->mAction = $action;
         $this->title = $title;
         $descriptor = $this->getDescriptors();
         parent::__construct( $descriptor, 'addresource' );
@@ -233,7 +284,7 @@ class SubpageForm extends PageCreationForm {
     protected function getDescriptors() {
         global $wgUser, $wgLang, $wgMaxUploadSize;
 
-        $descriptor = $this->getCommonFields(ADD_RESOURCE_ACTION_SUBPAGE);
+        $descriptor = $this->getCommonFields();
 
         $descriptor['SubpageDest'] = array(
                 'type' => 'text',
@@ -247,23 +298,16 @@ class SubpageForm extends PageCreationForm {
 
         return $descriptor;
     }
-
-    function tryAuthorizedSubmit() {
-        if ($this->mAction === 'subpage') {
-            return parent::tryAuthorizedSubmit();
-        } else {
-            return false;
-        }
-    }
 }
 
 class ExternalRedirectForm extends PageCreationForm {
+    protected $formAction = ADD_RESOURCE_ACTION_LINK;
+
     private $mLinkUrl;
     private $mLinkTitle;
     private $mLinkDesc;
 
     public function __construct( $action, $title, $options = array() ) {
-        $this->mAction = $action;
         $this->title = $title;
 
         $this->mLinkUrl = isset( $options['desturl'] ) ? $options['desturl'] : '';
@@ -326,7 +370,7 @@ class ExternalRedirectForm extends PageCreationForm {
     }
 
     protected function getDescriptors() {
-        $descriptor = $this->getCommonFields(ADD_RESOURCE_ACTION_LINK);
+        $descriptor = $this->getCommonFields();
         $descriptor['LinkUrl'] = array(
                 'type' => 'text',
                 'id' => 'wpLinkUrl',
@@ -353,14 +397,6 @@ class ExternalRedirectForm extends PageCreationForm {
                 'default' => $this->mLinkDesc,
         );
         return $descriptor;
-    }
-
-    function tryAuthorizedSubmit() {
-        if ($this->mAction === 'link') {
-            return parent::tryAuthorizedSubmit();
-        } else {
-            return false;
-        }
     }
 }
 
