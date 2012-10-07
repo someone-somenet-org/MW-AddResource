@@ -25,8 +25,6 @@ class AddResource extends SpecialPage
 
         global $wgRequest;
         $this->loadRequest( is_null( $request ) ? $wgRequest : $request );
-
-
     }
 
     private function loadRequest( $request ) {
@@ -37,7 +35,9 @@ class AddResource extends SpecialPage
         switch ($this->mAction) {
         case ADD_RESOURCE_ACTION_UPLOAD;
             $this->mUpload = UploadBase::createFromRequest($request);
-            $this->mUploadClicked = true; # used by copied processUpload()
+            # used by copied processUpload()
+            $this->mUploadClicked = true;
+            $this->mComment = $request->getVal('wpUploadDescription');
             break;
         case ADD_RESOURCE_ACTION_SUBPAGE;
             $this->mSubpageDest = $request->getVal( 'wpSubpageDest' );
@@ -538,8 +538,7 @@ class AddResource extends SpecialPage
      * TODO: Really implement this function
      */
     protected function getInitialPageText($comment, $license, $copyrightStatus, $copyrightSource) {
-        # TODO: use correct comment
-        return $comment . "\n\n\nand also some additional text!";
+        return $comment;
     }
 }
 
