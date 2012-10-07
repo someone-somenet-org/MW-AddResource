@@ -72,6 +72,10 @@ class AddResourceForm extends HTMLForm {
         }
     }
 
+    /**
+     * Override function in baseclass to only try an authorized submit if this
+     * form was actually clicked.
+     */
     function tryAuthorizedSubmit() {
         if ($this->wasClicked()) {
             return parent::tryAuthorizedSubmit();
