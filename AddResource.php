@@ -21,7 +21,7 @@ define("ADD_RESOURCE_ACTION_SUBPAGE", 2);
 define("ADD_RESOURCE_ACTION_LINK", 3);
 
 /**
- * Some extension boilerplace.
+ * Some extension boilerplate
  */
 $dir = dirname(__FILE__);
 $wgExtensionMessagesFiles['AddResource'] = $dir . '/AddResource.i18n.php';
