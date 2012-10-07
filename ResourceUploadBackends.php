@@ -1,7 +1,6 @@
 <?php
 
 # hook definitions
-$wgHooks['UploadFormInitDescriptor'][] = 'wgManipulateUploadAddReferer';
 $wgHooks['UploadCreateFromRequest'][] = 'wgManipulateUploadGetUploadRequestHandler';
 
 /**
@@ -98,20 +97,6 @@ function wgManipulateUploadGetUploadRequestHandler( $type, $className ) {
 			print( "wpDestFile: "  . $wgRequest->getText( 'wpDestFile' ) . "<br />") ;
 			die( $type );
 	}
-	return true;
-}
-
-/**
- * Adds the wpReferer input field to the upload form. This is used when the
- * destination filename already exists and Special:Upload gets displayed.
- */
-function wgManipulateUploadAddReferer ( $descriptor ) {
-	global $wgRequest;
-	$descriptor['wpReferer'] = array(
-		'type' => 'hidden',
-		'id' => 'wpReferer',
-		'default' => $wgRequest->getText( 'wpReferer' ),
-	);
 	return true;
 }
 
