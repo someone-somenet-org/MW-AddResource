@@ -19,6 +19,9 @@ EOT;
 define("ADD_RESOURCE_ACTION_UPLOAD", 1);
 define("ADD_RESOURCE_ACTION_SUBPAGE", 2);
 define("ADD_RESOURCE_ACTION_LINK", 3);
+define("ADD_RESOURCE_ACTION_NAME", 'Action');
+define("ADD_RESOURCE_ACTION_FIELD", 'wpAction');
+define("ADD_RESOURCE_REFERER_NAME", 'ForArticle');
 define("ADD_RESOURCE_REFERER_FIELD", "wpForArticle");
 
 /**
