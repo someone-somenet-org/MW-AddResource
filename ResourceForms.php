@@ -40,7 +40,8 @@ class PageCreationForm extends AddResourceForm {
             return true;
         }
         $value =str_replace('/', '-', $value);
-        $title = Title::NewFromText( $alldata['BasePage'] . '/' . $value );
+        $title = Title::NewFromText(
+            $alldata[ADD_RESOURCE_REFERER_NAME] . '/' . $value);
         if ( $title->exists() ) {
             return wfMsg('page-exists');
         } else {
@@ -249,12 +250,6 @@ class SubpageForm extends PageCreationForm {
                 'required' => true,
         );
 
-        // TODO: Remove this field, it should use the wpForArticleField instead
-        $descriptor['BasePage'] = array(
-            'type' => 'hidden',
-            'id' => 'action-link',
-            'default' => $this->title->getPrefixedText(),
-        );
         return $descriptor;
     }
 
@@ -362,12 +357,6 @@ class ExternalRedirectForm extends PageCreationForm {
                 'label-message' => 'link_desc',
                 'size' => 60,
                 'default' => $this->mLinkDesc,
-        );
-        // TODO: remove this field
-        $descriptor['BasePage'] = array(
-            'type' => 'hidden',
-            'id' => 'action-link',
-            'default' => $this->title->getPrefixedText(),
         );
         return $descriptor;
     }
