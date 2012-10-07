@@ -29,16 +29,12 @@ class AddResourceForm extends HTMLForm {
  * Superclass for creating links and subpages. Only contains common validator.
  */
 class PageCreationForm extends AddResourceForm {
-    protected $mMyAction;
     protected $mAction;
 
     /**
      * Callback that validates that a page does *not* exist.
      */
     public function validatePageNotExists( $value, $alldata) {
-        if ($this->mAction != $this->mMyAction) {
-            return true;
-        }
         $value =str_replace('/', '-', $value);
         $title = Title::NewFromText(
             $alldata[ADD_RESOURCE_REFERER_NAME] . '/' . $value);
@@ -209,7 +205,6 @@ class SubpageForm extends PageCreationForm {
 
     public function __construct( $action, $title, $options = array() ) {
         $this->mAction = $action;
-        $this->mMyAction = 'subpage';
         $this->title = $title;
         $descriptor = $this->getDescriptors();
         parent::__construct( $descriptor, 'addresource' );
@@ -269,7 +264,6 @@ class ExternalRedirectForm extends PageCreationForm {
 
     public function __construct( $action, $title, $options = array() ) {
         $this->mAction = $action;
-        $this->mMyAction = 'link';
         $this->title = $title;
 
         $this->mLinkUrl = isset( $options['desturl'] ) ? $options['desturl'] : '';
