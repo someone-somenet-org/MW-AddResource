@@ -24,10 +24,6 @@ function addBanner( $text, $div_id = 'random banner', $color = 'red' ) {
     return $s;
 }
 
-require_once(dirname(__FILE__) . '/ResourceForms.php');
-
-
-
 /**
  * actual class...
  */
