@@ -14,7 +14,7 @@ EOT;
 }
 
 /**
- * Define some usefull constants.
+ * Define some useful constants.
  */
 define("ADD_RESOURCE_ACTION_UPLOAD", 1);
 define("ADD_RESOURCE_ACTION_SUBPAGE", 2);
