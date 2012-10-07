@@ -115,7 +115,7 @@ function efAddResourceSpecialPage($template, $links) {
     $resourceCount = getResourceCount($title);
     $resourcesUrl = getResourcesUrl($title);
     $resourcesText = getResourceTabText($resourceCount);
-    $resourcesClass = $resourceCount > 0 ? 'is_resource' : 'new is_resource';
+    $resourcesClass = $resourceCount > 0 ? 'is_resources' : 'new is_resources';
 
     $head = array (
         $title->getNamespaceKey('') => array(
