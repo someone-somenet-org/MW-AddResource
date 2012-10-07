@@ -167,8 +167,6 @@ class AddResource extends SpecialPage
 
     /**
      * Implementation of getUploadForm()
-     *
-     * TODO: merge functionaility from upstream
      */
     protected function getUploadForm($message = '', $sessionKey = '', $hideIgnoreWarning = false) {
         $form = new UploadFileForm($this->targetTitle);
@@ -182,8 +180,6 @@ class AddResource extends SpecialPage
 
     /**
      * Implementation of showUploadForm()
-     *
-     * TODO: merge functionality from upstream
      */
     protected function showUploadForm($form) {
         $form->show();
@@ -342,7 +338,9 @@ class AddResource extends SpecialPage
         }
     }
 
-    /* the subpage chapter */
+    /**
+     * Display the subpage chapter
+     */
     private function subpageChapter() {
         global $wgOut, $wgUser;
 
@@ -366,7 +364,9 @@ class AddResource extends SpecialPage
         $form->show();
     }
 
-    /* the link chapter */
+    /**
+     * Display the link chapter.
+     */
     private function linkChapter() {
         global $wgOut, $wgUser;
         $this->addSectionHeader('link_header', 'link');
@@ -402,15 +402,8 @@ class AddResource extends SpecialPage
     }
 
     /**
-     * TODO: deprecate theis function inf favour of getError()
-     */
-    private function addError($msg, $id = 'error') {
-        global $wgOut;
-        $wgOut->addHTML(getBanner($msg, $id, 'red'));
-    }
-
-    /**
-     * TODO: deprecate theis function inffavour of getWarning()
+     * Wrapper-function of addWarning, used by copied code in uploadChapter()
+     *
      */
     private function addWarning($msg, $id = 'warning') {
         global $wgOut;
@@ -418,27 +411,21 @@ class AddResource extends SpecialPage
     }
 
     /**
-     * TODO: deprecate theis function inf favour of getNotification()
+     * Return HTML of an error-message
      */
-    private function addNotification($msg, $id = 'notification') {
-        global $wgOut;
-        $wgOut->addHTML(getBanner($msg, $id, 'green'));
-    }
-
     protected function getError($msg) {
         return getBanner($msg, 'error', 'red');
     }
 
+    /**
+     * Return HTML of a warning-message
+     */
     protected function getWarning($msg) {
         return getBanner($msg, 'error', 'grey');
     }
 
-    protected function getNotification($msg) {
-        return getBanner($msg, 'error', 'green');
-    }
-
     /**
-     * Wrapper-functions for addError, used by various copied functions
+     * Wrapper-functions for getError, used by various copied functions
      */
     private function showUploadError($msg) {
         $this->showUploadForm($this->getUploadForm($this->getError($msg)));
@@ -451,8 +438,6 @@ class AddResource extends SpecialPage
     /**
      * This function returns the text used in the description of a newly
      * uploaded file.
-     *
-     * TODO: Really implement this function
      */
     protected function getInitialPageText($comment, $license, $copyrightStatus, $copyrightSource) {
         return $comment;
