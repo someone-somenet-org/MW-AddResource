@@ -30,6 +30,7 @@ $wgSpecialPages[ 'AddResource' ] = 'AddResource';
 $wgSpecialPageGroups[ 'AddResource' ] = 'other';
 
 $wgExtensionCredits['specialpage'][] = array(
+    'path' => __FILE__,
     'name' => 'AddResource',
     'description' => 'This special page allows you to \'\'\'attach\'\'\' resources to a given page',
     'version' => '2.0.1-1.16.0',
@@ -42,6 +43,13 @@ $wgExtensionCredits['specialpage'][] = array(
  */
 $wgHooks['LanguageGetSpecialPageAliases'][] = 'efAddResourceLocalizedPageName';
 $wgHooks['SkinTemplateContentActions'][] = 'efAddResourceDisplayTab';
+
+/**
+ * Default values for most options.
+ *
+ * TODO.
+ */
+#$wgCategoryTreeDefaultOptions      = array();
 
 /**
  * These functions adds the localized pagename of the "Add resource" special-
