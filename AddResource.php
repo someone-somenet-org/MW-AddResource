@@ -19,6 +19,7 @@ EOT;
 define("ADD_RESOURCE_ACTION_UPLOAD", 1);
 define("ADD_RESOURCE_ACTION_SUBPAGE", 2);
 define("ADD_RESOURCE_ACTION_LINK", 3);
+define("ADD_RESOURCE_REFERER_FIELD", "wpForArticle");
 
 /**
  * Some extension boilerplate
