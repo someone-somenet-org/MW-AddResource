@@ -136,11 +136,12 @@ class AddResource extends SpecialPage
             /* replace Slashes with hyphens (slashes cause problems) */
             $new_subpage = str_replace('/', '-',$new_subpage);
             $redir = Title::newFromText( $par . '/' . $new_subpage);
-            if ( $redir->exists() )
-                $wgOut->redirect($redir->getFullURL() );
-            else
-            $new_subpage = str_replace('/', '-',$new_subpage);
-                $wgOut->redirect($redir->getFullURL() . '?action=edit' );
+            if ($redir->exists()) {
+                $wgOut->redirect($redir->getFullURL());
+            } else {
+                $new_subpage = str_replace('/', '-',$new_subpage);
+                $wgOut->redirect($redir->getFullURL() . '?action=edit');
+            }
         }
     }
 
@@ -217,7 +218,13 @@ class AddResource extends SpecialPage
 
     }
 
-    /* the upload chapter */
+    /**
+     * Display the upload chapter.
+     *
+     * Parts of this function are a 1:1 copy of SpecialUpload::execute() found
+     * in includes/specials/SpecialUpload.php. See inline-comments for exact
+     * details.
+     */
     private function uploadChapter() {
         global $wgOut, $wgUser;
 
@@ -233,6 +240,9 @@ class AddResource extends SpecialPage
         $this->addSectionHeader( 'upload_header', 'upload' );
         global $wgRequest;
 
+        /**
+         * Start copy of SpecialUpload::execute()
+         */
         if (
                 $this->mTokenOk && !$this->mCancelUpload &&
                 ( $this->mUpload && $this->mUploadClicked )
@@ -254,6 +264,9 @@ class AddResource extends SpecialPage
         if ( $this->mUpload ) {
             $this->mUpload->cleanupTempFile();
         }
+        /**
+         * END copy of SpecialUpload::execute()
+         */
     }
 
     /**
@@ -282,7 +295,8 @@ class AddResource extends SpecialPage
 
     /**
      * This functionis a 1:1 copy of class SpecialUpload found in
-     * includes/specials/SpecialUpload.php, version 1.19.2.
+     * includes/specials/SpecialUpload.php, version 1.19.2. The only
+     * difference is the different redirect at the end.
      */
     private function processUpload() {
         // Fetch the file if required
@@ -343,8 +357,13 @@ class AddResource extends SpecialPage
 
         // Success, redirect to description page
         $this->mUploadSuccessful = true;
-        wfRunHooks( 'SpecialUploadComplete', array( &$this ) );
-        $this->getOutput()->redirect( $this->mLocalFile->getTitle()->getFullURL() );
+        //wfRunHooks( 'SpecialUploadComplete', array( &$this ) );
+        //$this->getOutput()->redirect( $this->mLocalFile->getTitle()->getFullURL() );
+
+        /**
+         * The previous two lines are in the original function. We don't need
+         * the hook and we don't need the redirect.
+         */
     }
 
     /**
