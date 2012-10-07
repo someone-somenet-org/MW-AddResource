@@ -6,6 +6,13 @@
 class AddResourceForm extends HTMLForm {
     protected $formAction;
 
+    public function __construct($title) {
+        $this->title = $title;
+
+        $descriptors = $this->getDescriptors();
+        parent::__construct($descriptors, 'addresource');
+    }
+
     /**
      * Get form fields common to all fields.
      */
@@ -114,11 +121,9 @@ class UploadFileForm extends AddResourceForm {
     private $mComment;
 
     public function __construct( $title, $options = array() ) {
-        $this->title = $title;
+        parent::__construct($title);
 
         global $wgUser;
-        $descriptor = $this->getUploadDescriptors();
-        parent::__construct( $descriptor, 'addresource' );
 
         # Set some form properties
         $this->setSubmitText( wfMsg( 'uploadbtn' ) );
@@ -139,7 +144,7 @@ class UploadFileForm extends AddResourceForm {
         );
     }
 
-    protected function getUploadDescriptors() {
+    protected function getDescriptors() {
         global $wgUser, $wgLang, $wgMaxUploadSize;
 
         $descriptor = $this->getCommonFields();
@@ -266,9 +271,7 @@ class SubpageForm extends PageCreationForm {
     private $mDest;
 
     public function __construct( $action, $title, $options = array() ) {
-        $this->title = $title;
-        $descriptor = $this->getDescriptors();
-        parent::__construct( $descriptor, 'addresource' );
+        parent::__construct($title);
 
         $this->mDest = isset( $options['dest'] ) ? $options['dest'] : '';
         $this->mSubmitCallback = array( $this, 'submit' );
@@ -318,14 +321,12 @@ class ExternalRedirectForm extends PageCreationForm {
     private $mLinkDesc;
 
     public function __construct( $action, $title, $options = array() ) {
-        $this->title = $title;
+        parent::__construct($title);
 
         $this->mLinkUrl = isset( $options['desturl'] ) ? $options['desturl'] : '';
         $this->mLinkTitle = isset( $options['desttitle'] ) ? $options['desttitle'] : '';
         $this->mLinkDesc = isset( $options['destdesc'] ) ? $options['destdesc'] : '';
 
-        $descriptor = $this->getDescriptors();
-        parent::__construct( $descriptor, 'addresource' );
 
         # Set some form properties
         $this->setSubmitText( wfMsg( 'link_button' ) );
