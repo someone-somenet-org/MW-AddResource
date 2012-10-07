@@ -32,22 +32,29 @@ class AddResource extends SpecialPage
     private function loadRequest( $request ) {
         global $wgUser;
         $this->mRequest = $request;
-        $this->mAction = $request->getVal( 'wpAction' );
+        $this->mAction = $request->getInt(ADD_RESOURCE_ACTION_FIELD);
 
-        $this->mSubpageDest = $request->getVal( 'wpSubpageDest' );
+        switch ($this->mAction) {
+        case ADD_RESOURCE_ACTION_UPLOAD;
+            break;
+            $this->mUpload = UploadBase::createFromRequest($request);
+            # used by copied func:
+            $this->mUploadClicked = true;
+        case ADD_RESOURCE_ACTION_SUBPAGE;
+            $this->mSubpageDest = $request->getVal( 'wpSubpageDest' );
+            break;
+        case ADD_RESOURCE_ACTION_LINK:
+            $this->mLinkUrl = $request->getVal( 'wpLinkUrl' );
+            $this->mLinkTitle = $request->getVal( 'wpLinkTitle' );
+            $this->mLinkDesc = $request->getVal( 'wpLinkDesc' );
+            break;
+        default:
+            break;
+        };
 
-        $this->mLinkUrl = $request->getVal( 'wpLinkUrl' );
-        $this->mLinkTitle = $request->getVal( 'wpLinkTitle' );
-        $this->mLinkDesc = $request->getVal( 'wpLinkDesc' );
-
-
-#TODO: get correct value for these variables:
-        $this->mUpload = UploadBase::createFromRequest($request);
-        $this->mUploadClicked = $request->wasPosted() && $this->mAction == 'upload'; # TODO: 'upload' replace by static variable #mMyAction #mAction
         $this->mTokenOk = $wgUser->matchEditToken(
             $request->getVal( 'wpEditToken' )
         );
-#TODO: Is there a sensefull way to cancel?
         $this->mCancelUpload = false;
     }
 
@@ -225,12 +232,12 @@ class AddResource extends SpecialPage
 
         # we need a header no matter what:
         $this->addSectionHeader( 'upload_header', 'upload' );
+        global $wgRequest;
 
         if (
                 $this->mTokenOk && !$this->mCancelUpload &&
                 ( $this->mUpload && $this->mUploadClicked )
         ) {
-            die('processing upload');
             $this->processUpload();
         } else {
             # check if we are allowed to upload:
