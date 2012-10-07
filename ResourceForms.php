@@ -32,10 +32,11 @@ class UploadFileForm extends HTMLForm {
 	private $mComment;
 
 	public function __construct( $title, $options = array() ) {
+        $this->title = $title;
+
 		global $wgUser;
 		$descriptor = $this->getUploadDescriptors();
-		parent::__construct( $descriptor, 'addresource' );
-		$this->title = $title;
+        parent::__construct( $descriptor, 'addresource' );
 
 		# Set some form properties
 		$this->setSubmitText( wfMsg( 'uploadbtn' ) );
@@ -132,7 +133,13 @@ class UploadFileForm extends HTMLForm {
 				'id' => 'wpForReUpload',
 				'default' => '1',
 			);
-#		}
+#        }
+
+        $descriptor['ForArticle'] = array(
+            'type' => 'hidden',
+            'id' => 'wpForArticle',
+            'default' => $this->title->getPrefixedDBkey(),
+        );
 
 		$descriptor['Action'] = array(
 			'type' => 'hidden',
