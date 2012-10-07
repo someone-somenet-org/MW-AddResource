@@ -20,13 +20,13 @@ define("ADD_RESOURCE_ACTION_UPLOAD", 1);
 define("ADD_RESOURCE_ACTION_SUBPAGE", 2);
 define("ADD_RESOURCE_ACTION_LINK", 3);
 
-/* this is boilerplate (hook-registration etc.) */
+/**
+ * Some extension boilerplace.
+ */
 $dir = dirname(__FILE__);
 $wgAutoloadClasses['AddResource'] = $dir . '/SpecialAddResource.php';
 $wgExtensionMessagesFiles['AddResource'] = $dir . '/AddResource.i18n.php';
 $wgSpecialPages[ 'AddResource' ] = 'AddResource';
-$wgHooks['LanguageGetSpecialPageAliases'][] = 'efAddResourceLocalizedPageName';
-$wgHooks['SkinTemplateContentActions'][] = 'efAddResourceDisplayTab';
 $wgSpecialPageGroups[ 'AddResource' ] = 'other';
 
 $wgExtensionCredits['specialpage'][] = array(
@@ -38,8 +38,15 @@ $wgExtensionCredits['specialpage'][] = array(
 );
 
 /**
+ * Hook registration.
+ */
+$wgHooks['LanguageGetSpecialPageAliases'][] = 'efAddResourceLocalizedPageName';
+$wgHooks['SkinTemplateContentActions'][] = 'efAddResourceDisplayTab';
+
+/**
  * These functions adds the localized pagename of the "Add resource" special-
  * page.
+ *
  * @param array $specialPageArray the current array of special pages
  * @param unknown $code unknown.
  */
