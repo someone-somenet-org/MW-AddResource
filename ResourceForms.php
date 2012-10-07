@@ -1,9 +1,34 @@
 <?php
 
 /**
+ * Baseclass for all forms in this extension.
+ */
+class AddResourceForm extends HTMLForm {
+
+    public function getCommonFields($action) {
+        return array(
+            # Remember what article we upload a resource for. This information
+            # is used by our upload backends in ResourceUploadBackends.php
+            ADD_RESOURCE_REFERER_NAME => array(
+                'type' => 'hidden',
+                'id' => ADD_RESOURCE_REFERER_FIELD,
+                'default' => $this->title->getPrefixedDBkey()
+            ),
+
+            # Remember the action we performed.
+            ADD_RESOURCE_ACTION_NAME => array(
+                'type' => 'hidden',
+                'id' => ADD_RESOURCE_ACTION_FIELD,
+                'default' => $action,
+            ),
+        );
+    }
+}
+
+/**
  * Superclass for creating links and subpages. Only contains common validator.
  */
-class PageCreationForm extends HTMLForm {
+class PageCreationForm extends AddResourceForm {
     protected $mMyAction;
     protected $mAction;
 
@@ -26,7 +51,7 @@ class PageCreationForm extends HTMLForm {
 
 /**
  */
-class UploadFileForm extends HTMLForm {
+class UploadFileForm extends AddResourceForm {
     private $mDesiredDestName;
     private $mForReUpload;
     private $mComment;
@@ -60,7 +85,8 @@ class UploadFileForm extends HTMLForm {
     protected function getUploadDescriptors() {
         global $wgUser, $wgLang, $wgMaxUploadSize;
 
-        $descriptor = array();
+        $descriptor = $this->getCommonFields(ADD_RESOURCE_ACTION_UPLOAD);
+
         $descriptor['UploadFile'] = array(
             'class' => 'UploadSourceField',
 #            'section' => 'file',
@@ -134,20 +160,6 @@ class UploadFileForm extends HTMLForm {
                 'default' => '1',
             );
 #        }
-
-        # Remember what article we upload a resource for. This information
-        # is used by our upload backends in ResourceUploadBackends.php
-        $descriptor['ForArticle'] = array(
-            'type' => 'hidden',
-            'id' => ADD_RESOURCE_REFERER_FIELD,
-            'default' => $this->title->getPrefixedDBkey(),
-        );
-
-        $descriptor['Action'] = array(
-            'type' => 'hidden',
-            'id' => 'action-upload',
-            'default' => ADD_RESOURCE_ACTION_UPLOAD,
-        );
 
         return $descriptor;
     }
@@ -225,7 +237,8 @@ class SubpageForm extends PageCreationForm {
     protected function getDescriptors() {
         global $wgUser, $wgLang, $wgMaxUploadSize;
 
-        $descriptor = array();
+        $descriptor = $this->getCommonFields(ADD_RESOURCE_ACTION_SUBPAGE);
+
         $descriptor['SubpageDest'] = array(
                 'type' => 'text',
                 'id' => 'wpSubpageDest',
@@ -235,10 +248,8 @@ class SubpageForm extends PageCreationForm {
                 'validation-callback' => array($this, 'validatePageNotExists'),
                 'required' => true,
         );
-        $descriptor['Action'] = array(
-            'type' => 'hidden',
-            'default' => 'subpage',
-        );
+
+        // TODO: Remove this field, it should use the wpForArticleField instead
         $descriptor['BasePage'] = array(
             'type' => 'hidden',
             'id' => 'action-link',
@@ -326,7 +337,7 @@ class ExternalRedirectForm extends PageCreationForm {
     }
 
     protected function getDescriptors() {
-        $descriptor = array();
+        $descriptor = $this->getCommonFields(ADD_RESOURCE_ACTION_LINK);
         $descriptor['LinkUrl'] = array(
                 'type' => 'text',
                 'id' => 'wpLinkUrl',
@@ -352,15 +363,11 @@ class ExternalRedirectForm extends PageCreationForm {
                 'size' => 60,
                 'default' => $this->mLinkDesc,
         );
+        // TODO: remove this field
         $descriptor['BasePage'] = array(
             'type' => 'hidden',
             'id' => 'action-link',
             'default' => $this->title->getPrefixedText(),
-        );
-        $descriptor['Action'] = array(
-            'type' => 'hidden',
-            'id' => 'action-link',
-            'default' => 'link',
         );
         return $descriptor;
     }
