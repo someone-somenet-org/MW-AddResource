@@ -3,7 +3,6 @@
 # hook definitions
 $wgHooks['UploadFormInitDescriptor'][] = 'wgManipulateUploadAddReferer';
 $wgHooks['UploadCreateFromRequest'][] = 'wgManipulateUploadGetUploadRequestHandler';
-$wgHooks['SpecialUploadComplete'][] = 'wgManipulateUploadHandleCompletion';
 
 /**
  * Generic function to add the comment linking back to the original title
@@ -114,27 +113,6 @@ function wgManipulateUploadAddReferer ( $descriptor ) {
 		'default' => $wgRequest->getText( 'wpReferer' ),
 	);
 	return true;
-}
-
-/**
- * Redirect to the original AddResource page upon successfull completion.
- */
-function wgManipulateUploadHandleCompletion( $page ) {
-	global $wgRequest;
-	$referer = ( $wgRequest->getText( 'wpReferer' ) );
-
-	if( $referer ) {
-		global $wgOut;
-		$specialPage = SpecialPage::getTitleFor( 'AddResource' );
-		$refererPage = Title::newFromText( $referer );
-		$target = Title::newFromText( $specialPage->getPrefixedText() .
-			'/' . $refererPage->getPrefixedText() );
-		header( 'Location: ' . $target->getFullURL() . '?wpDestFile=' .
-			$page->mDesiredDestName );
-		die(); // $wgOut->redirect doesn't work for some reason :-(
-	} else {
-		return true;
-	}
 }
 
 ?>
