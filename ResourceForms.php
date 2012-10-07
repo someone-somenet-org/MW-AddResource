@@ -139,7 +139,7 @@ class UploadFileForm extends HTMLForm {
         # is used by our upload backends in ResourceUploadBackends.php
         $descriptor['ForArticle'] = array(
             'type' => 'hidden',
-            'id' => 'wpForArticle',
+            'id' => ADD_RESOURCE_REFERER_FIELD,
             'default' => $this->title->getPrefixedDBkey(),
         );
 

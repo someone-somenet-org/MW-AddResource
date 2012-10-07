@@ -6,7 +6,7 @@
 function getResourceComment() {
 	global $wgResourcesCategory, $wgContLang, $wgRequest;
 
-	$referer = $wgRequest->getText( 'wpReferer' );
+	$referer = $wgRequest->getText(ADD_RESOURCE_REFERER_FIELD);
 	$pageText .= "\n\n<!-- Don't edit below this line! -->\n[[" . $referer . "]] ";
 	$pageText .= "([[" . SpecialPage::getTitleFor( 'Resources' )
 			. '/' . $referer . '|' . wfMsgForContent('resources') . ']])';
@@ -32,7 +32,7 @@ class UploadResourceFromFile extends UploadFromFile {
 			$desiredDestName = $request->getFileName( 'wpUploadFile' );
 		}
 
-		$referer =  $request->getText( 'wpReferer' );
+		$referer =  $request->getText(ADD_RESOURCE_REFERER_FIELD);
 
 		# filenames can never contain slashes, but the referer might contain them, if
 		# its a subpage:
@@ -49,7 +49,7 @@ class UploadResourceFromFile extends UploadFromFile {
 	 * @param $comment string The comment describing the change in the changelog
 	 * @param $pageText string The text of the page. This string is modified
 	 *	with a link back to the original article referred to by the
-	 * 	wpReferer variable.
+	 * 	ADD_RESOURCE_REFERER_FIELD variable.
 	 */
 	function performUpload( $comment, $pageText, $watch, $user ) {
 		$pageText .= getResourceComment();

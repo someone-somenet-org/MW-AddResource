@@ -142,11 +142,11 @@ function efAddResourceDisplayTab( $tabs ) {
 
 /**
  * Sets the upload handler to our special class in case the POST data includes
- * the wpReferer value
+ * the ADD_RESOURCE_REFERER_FIELD value
  */
 function wgAddResourceGetUploadRequestHandler( $type, $className ) {
     global $wgRequest;
-    if ( ! $wgRequest->getText( 'wpReferer' ) ) {
+    if ( ! $wgRequest->getText(ADD_RESOURCE_REFERER_FIELD) ) {
         return true;
     }
 
@@ -158,9 +158,7 @@ function wgAddResourceGetUploadRequestHandler( $type, $className ) {
             $className = 'UploadResourceFromStash';
             break;
         default:
-            print( "wpReferer: " . $wgRequest->getText( 'wpReferer' ) . "<br />" );
-            print( "wpDestFile: "  . $wgRequest->getText( 'wpDestFile' ) . "<br />") ;
-            die( $type );
+            break;
     }
     return true;
 }
