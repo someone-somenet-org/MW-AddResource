@@ -1,8 +1,5 @@
 <?php
 
-# hook definitions
-$wgHooks['UploadCreateFromRequest'][] = 'wgAddResourceGetUploadRequestHandler';
-
 /**
  * Generic function to add the comment linking back to the original title
  */

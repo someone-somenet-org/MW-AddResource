@@ -43,6 +43,7 @@ $wgExtensionCredits['specialpage'][] = array(
  */
 $wgHooks['LanguageGetSpecialPageAliases'][] = 'efAddResourceLocalizedPageName';
 $wgHooks['SkinTemplateContentActions'][] = 'efAddResourceDisplayTab';
+$wgHooks['UploadCreateFromRequest'][] = 'wgAddResourceGetUploadRequestHandler';
 
 /**
  * Default values for most options.
