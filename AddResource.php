@@ -7,8 +7,8 @@ code in LocalSettings.php:
 require_once( "$IP/extensions/AddResource/AddResource.php" );
 
 Note that several variables have to be set for this extension to become
-usefull. For full documentation please see:
-    http://pluto.htu.tuwien.ac.at/devel_wiki/AddResource
+useful. For full documentation please see:
+    https:///fs.fsinf.at/wiki/AddResource
 EOT;
     exit( 1 );
 }
