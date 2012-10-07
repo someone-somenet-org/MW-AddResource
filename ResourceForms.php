@@ -3,7 +3,7 @@
 /**
  * Baseclass for all forms in this extension.
  */
-class AddResourceForm extends HTMLForm {
+abstract class AddResourceForm extends HTMLForm {
     protected $formAction;
 
     public function __construct($title) {
@@ -38,12 +38,11 @@ class AddResourceForm extends HTMLForm {
     /**
      * Returns true if this particular form was clicked, which is decided
      * via ADD_RESOURCE_ACTION_FIELD.
-     *
-     * TODO: add check if request is POST.
      */
     function wasClicked() {
         global $wgRequest;
-        return $wgRequest->getInt(ADD_RESOURCE_ACTION_FIELD) === $this->formAction;
+        $action =  $wgRequest->getInt(ADD_RESOURCE_ACTION_FIELD);
+        return $wgRequest->wasPosted() && $action === $this->formAction;
     }
 
     /**
@@ -95,7 +94,7 @@ class AddResourceForm extends HTMLForm {
 /**
  * Superclass for creating links and subpages. Only contains common validator.
  */
-class PageCreationForm extends AddResourceForm {
+abstract class PageCreationForm extends AddResourceForm {
     /**
      * Callback that validates that a page does *not* exist.
      */
