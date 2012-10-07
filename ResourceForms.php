@@ -150,7 +150,6 @@ class UploadFileForm extends AddResourceForm {
 
         $descriptor['UploadFile'] = array(
             'class' => 'UploadSourceField',
-#            'section' => 'file',
             'type' => 'file',
             'id' => 'wpUploadFile',
             'label-message' => 'sourcefilename',
@@ -171,14 +170,12 @@ class UploadFileForm extends AddResourceForm {
 
         $descriptor['Extensions'] = array(
             'type' => 'info',
-#            'section' => 'file',
             'default' => $this->getExtensionsMessage(),
             'raw' => true,
         );
 
         $descriptor['DestFile'] = array(
                 'type' => 'text',
-#                'section' => 'description',
                 'id' => 'wpDestFile',
                 'label-message' => 'destfilename',
                 'size' => 60,
@@ -188,7 +185,6 @@ class UploadFileForm extends AddResourceForm {
         );
         $descriptor['UploadDescription'] = array(
             'type' => 'textarea',
-#            'section' => 'description',
             'id' => 'wpUploadDescription',
             'label-message' => $this->mForReUpload
                 ? 'filereuploadsummary'
@@ -209,18 +205,11 @@ class UploadFileForm extends AddResourceForm {
             'id' => 'wpDestFileWarningAck',
             'default' => '1',
         );
-#        $descriptor['SourceType'] = array(
-#            'type' => 'hidden',
-#            'default' => 'Stash',
-#        );
-
-#        if ( $this->mForReUpload ) {
-            $descriptor['ForReUpload'] = array(
-                'type' => 'hidden',
-                'id' => 'wpForReUpload',
-                'default' => '1',
-            );
-#        }
+        $descriptor['ForReUpload'] = array(
+            'type' => 'hidden',
+            'id' => 'wpForReUpload',
+            'default' => '1',
+        );
 
         return $descriptor;
     }
