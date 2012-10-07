@@ -165,10 +165,10 @@ function wgAddResourceGetUploadRequestHandler( $type, $className ) {
 }
 
 /**
- * primitive function that returns HTML for a Banner with the given text.
+ * Primitive function that returns HTML for a Banner with the given text.
  * color is either red or green, default is red.
  */
-function addBanner( $text, $div_id = 'random banner', $color = 'red' ) {
+function getBanner( $text, $div_id = 'random banner', $color = 'red' ) {
     $s = '<div id="' . $div_id . '">';
     $s .= '<table align="center" border="0" cellpadding="5" cellspacing="2"';
     switch ($color) {

@@ -91,10 +91,10 @@ class AddResource extends SpecialPage
         if ( !( $wgUser->isAllowed('edit') && $wgUser->isAllowed( 'createpage' ) )
                 && ! $wgUser->isAllowed( 'upload' ) ) {
             if ( $wgUser->isLoggedIn() )
-                $wgOut->addHTML( addBanner( wfMsg('not_allowed') ) );
+                $wgOut->addHTML( getBanner( wfMsg('not_allowed') ) );
             else {
                 $loginPage = $this->getLoginLink( wfMsg( 'login_text' ) );
-                $wgOut->addHTML( addBanner( wfMsg('not_allowed_anon', $loginPage)) );
+                $wgOut->addHTML( getBanner( wfMsg('not_allowed_anon', $loginPage)) );
             }
             return;
         }
@@ -119,7 +119,7 @@ class AddResource extends SpecialPage
             $directLink = $skin->makeMediaLinkObj( $targetTitle,
                 wfMsg( 'file_created_download') ); #direct herunterladen
 
-            $wgOut->addHTML( addBanner( wfMsg('file_created', $detailLink, $directLink ),
+            $wgOut->addHTML( getBanner( wfMsg('file_created', $detailLink, $directLink ),
                 'file_uploaded', 'green' ) );
         }
     }
@@ -155,14 +155,14 @@ class AddResource extends SpecialPage
                     $listSubpages = $skin->makeKnownLink( wfMsg('resources_page') . '/' .
                         $pageTitle, wfMsg('link_title_exists_2'), 'showAllSubpages=true');
 
-                    $wgOut->addHTML( addBanner( wfMsg('link_title_exists', $editPage, $listSubpages), 'link_title_exists' ) );
+                    $wgOut->addHTML( getBanner( wfMsg('link_title_exists', $editPage, $listSubpages), 'link_title_exists' ) );
                 } else {
                     # create new article
                     $newArticle = new Article( $newTitle );
                     global $wgExternalRedirectProtocols;
                     $preg_protos = '(?:' . implode( "|", $wgExternalRedirectProtocols ) .')';
                     if ( ! preg_match( '/^' . $preg_protos . ':\/\//', $externalLinkURL ) ) {
-                        $wgOut->addHTML( addBanner( wfMsg('wrong_proto') ) );
+                        $wgOut->addHTML( getBanner( wfMsg('wrong_proto') ) );
                     } else {
 
                         $newArticleText = '#REDIRECT [[' . $externalLinkURL;
@@ -186,7 +186,7 @@ class AddResource extends SpecialPage
                         $edit = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_edit'),
                             'action=edit');
                         $gothere = $skin->makeKnownLink( $newTitle->getFullText(), wfMsg('link_created_gothere'));
-                        $wgOut->addHTML( addBanner( wfMsg('link_created', $view, $edit, $gothere), 'link_created', 'green' ) );
+                        $wgOut->addHTML( getBanner( wfMsg('link_created', $view, $edit, $gothere), 'link_created', 'green' ) );
                         $externalLinkURL = '';
                         $externalLinkTitle = '';
                         $externalLinkDesc = '';
@@ -195,9 +195,9 @@ class AddResource extends SpecialPage
                 }
 # TODO: add $par/$externalLinkTitle with content '#REDIRECT [[$externalLinkURL]]'
             } elseif ( $externalLinkURL != '' and $externalLinkTitle == '') {
-                $wgOut->addHTML( addBanner( wfMsg('forgot_title'), 'forgot_title') );
+                $wgOut->addHTML( getBanner( wfMsg('forgot_title'), 'forgot_title') );
             } elseif ( $externalLinkURL == '' and $externalLinkTitle != '') {
-                $wgOut->addHTML( addBanner( wfMsg('forgot_url'), 'forgot_url') );
+                $wgOut->addHTML( getBanner( wfMsg('forgot_url'), 'forgot_url') );
             }
         }
 
@@ -205,7 +205,7 @@ class AddResource extends SpecialPage
         if ( ! $title->exists() ) {
             $message = wfMsg( 'article_not_exists', $pageTitle,
                 $skin->makeBrokenLink($pageTitle, 'create the page', 'action=edit') );
-            $wgOut->addHTML( addBanner( $message, 'article_not_exists') );
+            $wgOut->addHTML( getBanner( $message, 'article_not_exists') );
         }
 
 
@@ -427,7 +427,7 @@ class AddResource extends SpecialPage
         # check if we are allowed to create subpages:
         if ( ! ( $wgUser->isAllowed( 'edit' ) && $wgUser->isAllowed('createpage') ) ) {
             $link = $this->getLoginLink( wfMsg('login_text' ));
-            $wgOut->addHTML( addBanner( wfMsg( 'createpage_not_allowed', wfMsg( 'subpages' ), $link ),
+            $wgOut->addHTML( getBanner( wfMsg( 'createpage_not_allowed', wfMsg( 'subpages' ), $link ),
                 'createpage_not_allowed', 'grey' ) );
             return;
         }
@@ -450,7 +450,7 @@ class AddResource extends SpecialPage
         # check if we are allowed to create subpages:
         if ( ! ( $wgUser->isAllowed( 'edit' ) && $wgUser->isAllowed('createpage') ) ) {
             $link = $this->getLoginLink( wfMsg('login_text' ));
-            $wgOut->addHTML( addBanner( wfMsg( 'createpage_not_allowed', wfMsg( 'links' ),  $link ),
+            $wgOut->addHTML( getBanner( wfMsg( 'createpage_not_allowed', wfMsg( 'links' ),  $link ),
                 'createpage_not_allowed', 'grey' ) );
             return;
         }
@@ -482,7 +482,7 @@ class AddResource extends SpecialPage
      */
     private function addError($msg, $id = 'error') {
         global $wgOut;
-        $wgOut->addHTML(addBanner($msg, $id, 'red'));
+        $wgOut->addHTML(getBanner($msg, $id, 'red'));
     }
 
     /**
@@ -490,7 +490,7 @@ class AddResource extends SpecialPage
      */
     private function addWarning($msg, $id = 'warning') {
         global $wgOut;
-        $wgOut->addHTML(addBanner($msg, $id, 'grey'));
+        $wgOut->addHTML(getBanner($msg, $id, 'grey'));
     }
 
     /**
@@ -498,11 +498,11 @@ class AddResource extends SpecialPage
      */
     private function addNotification($msg, $id = 'notification') {
         global $wgOut;
-        $wgOut->addHTML(addBanner($msg, $id, 'green'));
+        $wgOut->addHTML(getBanner($msg, $id, 'green'));
     }
 
     protected function getError($msg) {
-        return addBanner($msg, 'error', 'red');
+        return getBanner($msg, 'error', 'red');
     }
 
     /**
