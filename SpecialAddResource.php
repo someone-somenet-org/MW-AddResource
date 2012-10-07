@@ -36,10 +36,9 @@ class AddResource extends SpecialPage
 
         switch ($this->mAction) {
         case ADD_RESOURCE_ACTION_UPLOAD;
-            break;
             $this->mUpload = UploadBase::createFromRequest($request);
-            # used by copied func:
-            $this->mUploadClicked = true;
+            $this->mUploadClicked = true; # used by copied processUpload()
+            break;
         case ADD_RESOURCE_ACTION_SUBPAGE;
             $this->mSubpageDest = $request->getVal( 'wpSubpageDest' );
             break;
@@ -494,7 +493,7 @@ class AddResource extends SpecialPage
     }
 
     /**
-     * TODO: deprecate theis function inf favour of getWarning()
+     * TODO: deprecate theis function inffavour of getWarning()
      */
     private function addWarning($msg, $id = 'warning') {
         global $wgOut;
@@ -511,6 +510,14 @@ class AddResource extends SpecialPage
 
     protected function getError($msg) {
         return getBanner($msg, 'error', 'red');
+    }
+
+    protected function getWarning($msg) {
+        return getBanner($msg, 'error', 'grey');
+    }
+
+    protected function getNotification($msg) {
+        return getBanner($msg, 'error', 'green');
     }
 
     /**
