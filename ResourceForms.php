@@ -135,6 +135,8 @@ class UploadFileForm extends HTMLForm {
 			);
 #        }
 
+        # Remember what article we upload a resource for. This information
+        # is used by our upload backends in ResourceUploadBackends.php
         $descriptor['ForArticle'] = array(
             'type' => 'hidden',
             'id' => 'wpForArticle',
