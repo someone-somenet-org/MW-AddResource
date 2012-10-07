@@ -1,7 +1,7 @@
 <?php
 
 # hook definitions
-$wgHooks['UploadCreateFromRequest'][] = 'wgManipulateUploadGetUploadRequestHandler';
+$wgHooks['UploadCreateFromRequest'][] = 'wgAddResourceGetUploadRequestHandler';
 
 /**
  * Generic function to add the comment linking back to the original title
@@ -79,7 +79,7 @@ class UploadResourceFromStash extends UploadFromStash {
  * Sets the upload handler to our special class in case the POST data includes
  * the wpReferer value
  */
-function wgManipulateUploadGetUploadRequestHandler( $type, $className ) {
+function wgAddResourceGetUploadRequestHandler( $type, $className ) {
 	global $wgRequest;
 	if ( ! $wgRequest->getText( 'wpReferer' ) ) {
 		return true;
