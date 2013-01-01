@@ -440,6 +440,21 @@ class AddResource extends SpecialPage
     protected function getInitialPageText($comment, $license, $copyrightStatus, $copyrightSource) {
         return $comment;
     }
+
+    /**
+     * Show an upload error.
+     *
+     * Direct copy of includes/specials/SpecialUpload.php, MW version 1.19.1
+     */
+    protected function showRecoverableUploadError( $message ) {
+        $sessionKey = $this->mUpload->stashSession();
+        $message = '<h2>' . wfMsgHtml( 'uploaderror' ) . "</h2>\n" .
+                 '<div class="error">' . $message . "</div>\n";
+
+        $form = $this->getUploadForm( $message, $sessionKey );
+        $form->setSubmitText( wfMsg( 'upload-tryagain' ) );
+        $this->showUploadForm( $form );
+    }
 }
 
 ?>
