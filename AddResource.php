@@ -10,7 +10,7 @@ Note that several variables have to be set for this extension to become
 useful. For full documentation please see:
     https:///fs.fsinf.at/wiki/AddResource
 EOT;
-    exit( 1 );
+    exit(1);
 }
 
 /**
@@ -27,8 +27,7 @@ define("ADD_RESOURCE_REFERER_FIELD", "wpForArticle");
 /**
  * Some extension boilerplate
  */
-$dir = dirname(__FILE__);
-$wgExtensionMessagesFiles['AddResource'] = $dir . '/AddResource.i18n.php';
+$wgExtensionMessagesFiles['AddResource'] = __DIR__ . '/AddResource.i18n.php';
 $wgSpecialPages[ 'AddResource' ] = 'AddResource';
 $wgSpecialPageGroups[ 'AddResource' ] = 'other';
 
@@ -44,17 +43,16 @@ $wgExtensionCredits['specialpage'][] = array(
 /**
  * Autoload classes
  */
-$wgAutoloadClasses['AddResource'] = $dir . '/SpecialAddResource.php';
-$wgAutoloadClasses['UploadFileForm'] = $dir . '/ResourceForms.php';
-$wgAutoloadClasses['SubpageForm'] = $dir . '/ResourceForms.php';
-$wgAutoloadClasses['ExternalRedirectForm'] = $dir . '/ResourceForms.php';
-$wgAutoloadClasses['UploadResourceFromFile'] = $dir . '/ResourceUploadBackends.php';
-$wgAutoloadClasses['UploadResourceFromStash'] = $dir . '/ResourceUploadBackends.php';
+$wgAutoloadClasses['AddResource'] = __DIR__ . '/SpecialAddResource.php';
+$wgAutoloadClasses['UploadFileForm'] = __DIR__ . '/ResourceForms.php';
+$wgAutoloadClasses['SubpageForm'] = __DIR__ . '/ResourceForms.php';
+$wgAutoloadClasses['ExternalRedirectForm'] = __DIR__ . '/ResourceForms.php';
+$wgAutoloadClasses['UploadResourceFromFile'] = __DIR__ . '/ResourceUploadBackends.php';
+$wgAutoloadClasses['UploadResourceFromStash'] = __DIR__ . '/ResourceUploadBackends.php';
 
 /**
  * Hook registration.
  */
-$wgHooks['LanguageGetSpecialPageAliases'][] = 'efAddResourceLocalizedPageName';
 $wgHooks['UploadCreateFromRequest'][] = 'wgAddResourceGetUploadRequestHandler';
 $wgHooks['SkinTemplateNavigation::SpecialPage'][] = 'efAddResourceSpecialPage';
 
@@ -68,27 +66,6 @@ $wgHooks['SkinTemplateNavigation::SpecialPage'][] = 'efAddResourceSpecialPage';
 function getResourcesUrl($title) {
     $resources = SpecialPage::getTitleFor('Resources');
     return $resources->getLocalURL() .'/'. $title->getPrefixedDBkey();
-}
-
-/**
- * These functions adds the localized pagename of the "Add resource" special-
- * page.
- *
- * @param array $specialPageArray the current array of special pages
- * @param unknown $code unknown.
- */
-function efAddResourceLocalizedPageName( &$specialPageArray, $code) {
-        wfLoadExtensionMessages('AddResource');
-        $textMain = wfMsgForContent('addresource');
-        $textUser = wfMsg('addresource');
-
-        # Convert from title in text form to DBKey and put it into the alias array:
-        $titleMain = Title::newFromText( $textMain );
-        $titleUser = Title::newFromText( $textUser );
-        $specialPageArray['AddResource'][] = $titleMain->getDBKey();
-        $specialPageArray['AddResource'][] = $titleUser->getDBKey();
-
-        return true;
 }
 
 function efAddResourceSpecialPage($template, $links) {
