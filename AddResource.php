@@ -36,7 +36,7 @@ $wgExtensionCredits['specialpage'][] = array(
     'path' => __FILE__,
     'name' => 'AddResource',
     'description' => 'This special page allows you to \'\'\'attach\'\'\' resources to a given page',
-    'version' => '2.1.0',
+    'version' => '2.1.1',
     'author' => 'Mathias Ertl',
     'url' => 'https://fs.fsinf.at/wiki/AddResource',
 );
