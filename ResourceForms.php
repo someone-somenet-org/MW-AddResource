@@ -141,6 +141,11 @@ class UploadFileForm extends AddResourceForm {
                 wfMsg( 'upload_footer_linktext' )
             ))
         );
+
+        $this->mSubmitCallback = array( $this, 'submit' );
+    }
+
+    public function submit() {
     }
 
     protected function getDescriptors() {
