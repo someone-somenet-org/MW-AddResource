@@ -3,7 +3,7 @@
 /**
  * The AddResource special page
  */
-class AddResource extends SpecialPage
+class SpecialAddResource extends SpecialPage
 {
     private $mAction;
     private $mRequest;
@@ -21,7 +21,6 @@ class AddResource extends SpecialPage
 
     function __construct($request = null) {
         parent::__construct('AddResource');
-        wfLoadExtensionMessages('AddResource');
 
         global $wgRequest;
         $this->loadRequest(is_null($request) ? $wgRequest : $request);

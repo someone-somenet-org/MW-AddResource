@@ -28,8 +28,9 @@ define("ADD_RESOURCE_REFERER_FIELD", "wpForArticle");
  * Some extension boilerplate
  */
 $wgExtensionMessagesFiles['AddResource'] = __DIR__ . '/AddResource.i18n.php';
-$wgSpecialPages[ 'AddResource' ] = 'AddResource';
-$wgSpecialPageGroups[ 'AddResource' ] = 'other';
+$wgExtensionMessagesFiles['AddResourceAlias'] = __DIR__ . '/AddResource.alias.php';
+$wgSpecialPages['AddResource'] = 'SpecialAddResource';
+$wgSpecialPageGroups['AddResource'] = 'other';
 
 $wgExtensionCredits['specialpage'][] = array(
     'path' => __FILE__,
@@ -43,7 +44,7 @@ $wgExtensionCredits['specialpage'][] = array(
 /**
  * Autoload classes
  */
-$wgAutoloadClasses['AddResource'] = __DIR__ . '/SpecialAddResource.php';
+$wgAutoloadClasses['SpecialAddResource'] = __DIR__ . '/SpecialAddResource.php';
 $wgAutoloadClasses['UploadFileForm'] = __DIR__ . '/ResourceForms.php';
 $wgAutoloadClasses['SubpageForm'] = __DIR__ . '/ResourceForms.php';
 $wgAutoloadClasses['ExternalRedirectForm'] = __DIR__ . '/ResourceForms.php';
