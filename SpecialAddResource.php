@@ -258,79 +258,77 @@ class SpecialAddResource extends SpecialPage
 
     /**
      * This functionis a 1:1 copy of class SpecialUpload found in
-     * includes/specials/SpecialUpload.php, version 1.19.2.
+     * includes/specials/SpecialUpload.php, version 1.21.1.
      */
     protected function processVerificationError($details) {
-        global $wgFileExtensions;
+                global $wgFileExtensions;
 
-        switch($details['status']) {
+        switch( $details['status'] ) {
 
             /** Statuses that only require name changing **/
             case UploadBase::MIN_LENGTH_PARTNAME:
-                $this->showRecoverableUploadError(wfMsgHtml('minlength1'));
+                $this->showRecoverableUploadError( $this->msg( 'minlength1' )->escaped() );
                 break;
             case UploadBase::ILLEGAL_FILENAME:
-                $this->showRecoverableUploadError(wfMsgExt('illegalfilename',
-                    'parseinline', $details['filtered']));
+                $this->showRecoverableUploadError( $this->msg( 'illegalfilename',
+                    $details['filtered'] )->parse() );
                 break;
             case UploadBase::FILENAME_TOO_LONG:
-                $this->showRecoverableUploadError(wfMsgHtml('filename-toolong'));
+                $this->showRecoverableUploadError( $this->msg( 'filename-toolong' )->escaped() );
                 break;
             case UploadBase::FILETYPE_MISSING:
-                $this->showRecoverableUploadError(wfMsgExt('filetype-missing',
-                    'parseinline'));
+                $this->showRecoverableUploadError( $this->msg( 'filetype-missing' )->parse() );
                 break;
             case UploadBase::WINDOWS_NONASCII_FILENAME:
-                $this->showRecoverableUploadError(wfMsgExt('windows-nonascii-filename',
-                    'parseinline'));
+                $this->showRecoverableUploadError( $this->msg( 'windows-nonascii-filename' )->parse() );
                 break;
 
             /** Statuses that require reuploading **/
             case UploadBase::EMPTY_FILE:
-                $this->showUploadError(wfMsgHtml('emptyfile'));
+                $this->showUploadError( $this->msg( 'emptyfile' )->escaped() );
                 break;
             case UploadBase::FILE_TOO_LARGE:
-                $this->showUploadError(wfMsgHtml('largefileserver'));
+                $this->showUploadError( $this->msg( 'largefileserver' )->escaped() );
                 break;
             case UploadBase::FILETYPE_BADTYPE:
-                $msg = wfMessage('filetype-banned-type');
-                if (isset($details['blacklistedExt'])) {
-                    $msg->params($this->getLanguage()->commaList($details['blacklistedExt']));
+                $msg = $this->msg( 'filetype-banned-type' );
+                if ( isset( $details['blacklistedExt'] ) ) {
+                    $msg->params( $this->getLanguage()->commaList( $details['blacklistedExt'] ) );
                 } else {
-                    $msg->params($details['finalExt']);
+                    $msg->params( $details['finalExt'] );
                 }
-                $msg->params($this->getLanguage()->commaList($wgFileExtensions),
-                    count($wgFileExtensions));
+                $msg->params( $this->getLanguage()->commaList( $wgFileExtensions ),
+                    count( $wgFileExtensions ) );
 
                 // Add PLURAL support for the first parameter. This results
                 // in a bit unlogical parameter sequence, but does not break
                 // old translations
-                if (isset($details['blacklistedExt'])) {
-                    $msg->params(count($details['blacklistedExt']));
+                if ( isset( $details['blacklistedExt'] ) ) {
+                    $msg->params( count( $details['blacklistedExt'] ) );
                 } else {
-                    $msg->params(1);
+                    $msg->params( 1 );
                 }
 
-                $this->showUploadError($msg->parse());
+                $this->showUploadError( $msg->parse() );
                 break;
             case UploadBase::VERIFICATION_ERROR:
-                unset($details['status']);
-                $code = array_shift($details['details']);
-                $this->showUploadError(wfMsgExt($code, 'parseinline', $details['details']));
+                unset( $details['status'] );
+                $code = array_shift( $details['details'] );
+                $this->showUploadError( $this->msg( $code, $details['details'] )->parse() );
                 break;
-            case UploadBase::HOOK_ABORTED:
-                if (is_array($details['error'])) { # allow hooks to return error details in an array
+                        case UploadBase::HOOK_ABORTED:
+                if ( is_array( $details['error'] ) ) { # allow hooks to return error details in an array
                     $args = $details['error'];
-                    $error = array_shift($args);
+                    $error = array_shift( $args );
                 } else {
                     $error = $details['error'];
                     $args = null;
                 }
 
-                $this->showUploadError(wfMsgExt($error, 'parseinline', $args));
+                $this->showUploadError( $this->msg( $error, $args )->parse() );
                 break;
             default:
-                throw new MWException(__METHOD__ . ": Unknown value `{$details['status']}`");
+                throw new MWException( __METHOD__ . ": Unknown value `{$details['status']}`" );
         }
     }
 
@@ -440,15 +438,15 @@ class SpecialAddResource extends SpecialPage
     /**
      * Show an upload error.
      *
-     * Direct copy of includes/specials/SpecialUpload.php, MW version 1.19.1
+     * Direct copy of includes/specials/SpecialUpload.php, MW version 1.21.1
      */
     protected function showRecoverableUploadError( $message ) {
         $sessionKey = $this->mUpload->stashSession();
-        $message = '<h2>' . wfMsgHtml( 'uploaderror' ) . "</h2>\n" .
-                 '<div class="error">' . $message . "</div>\n";
+        $message = '<h2>' . $this->msg( 'uploaderror' )->escaped() . "</h2>\n" .
+            '<div class="error">' . $message . "</div>\n";
 
         $form = $this->getUploadForm( $message, $sessionKey );
-        $form->setSubmitText( wfMsg( 'upload-tryagain' ) );
+        $form->setSubmitText( $this->msg( 'upload-tryagain' )->escaped() );
         $this->showUploadForm( $form );
     }
 }
