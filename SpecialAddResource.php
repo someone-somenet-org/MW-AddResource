@@ -19,8 +19,17 @@ class SpecialAddResource extends SpecialPage
     private $mCancelUpload;
     private $mUploadClicked;
 
+    /**
+      * Statically set some variables that are set dynamically by
+      * Special:Upload. Some code is copied 1:1 from MediaWiki source code,
+      * and this code needs the variables to be present (we set sensible
+      * defaults here).
+     */
     private $mIgnoreWarning = true;
     private $mWatchthis = false;
+    private $mLicense = '';
+    private $mCopyrightStatus = '';
+    private $mCopyrightSource = '';
 
     function __construct($request = null) {
         parent::__construct('AddResource');
