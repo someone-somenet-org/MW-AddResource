@@ -7,7 +7,7 @@ function getResourceComment() {
    global $wgResourcesCategory, $wgContLang, $wgRequest;
 
    $referer = $wgRequest->getText(ADD_RESOURCE_REFERER_FIELD);
-   $pageText .= "\n\n<!-- Don't edit below this line! -->\n[[" . $referer . "]] ";
+   $pageText = "\n\n<!-- Don't edit below this line! -->\n[[" . $referer . "]] ";
    $pageText .= "([[" . SpecialPage::getTitleFor( 'Resources' )
          . '/' . $referer . '|' . wfMsgForContent('resources') . ']])';
    if ( $wgResourcesCategory != NULL && gettype($wgResourcesCategory) == "string" ) {
