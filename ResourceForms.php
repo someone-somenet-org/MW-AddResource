@@ -49,35 +49,11 @@ abstract class AddResourceForm extends HTMLForm {
      * Override the function in HTMLForm to only load the data when this form
      * was actually clicked.
      *
-     * The else-branch is a 1:1 copy (with some parts commented out) of the
-     * parent function in version 1.21.1.
+     * We do nothing if the form wasn't clicked.
      */
     function loadData() {
         if ($this->wasClicked()) {
             parent::loadData();
-        } else {
-            $fieldData = array();
-
-            foreach ($this->mFlatFields as $fieldname => $field) {
-                if (!empty($field->mParams['nodata'])) {
-                    continue;
-                } elseif (!empty($field->mParams['disabled'])) {
-                    $fieldData[$fieldname] = $field->getDefault();
-// Commented lines from the original function:
-// Otherwise loadDataFromRequest throws errors for mandatory fields,
-// even if the relevant form wasn't clicked.
-                } else {
-                    $fieldData[$fieldname] = $field->loadDataFromRequest($this->getRequest());
-                }
-            }
-
-            # Filter data.
-            foreach ($fieldData as $name => &$value) {
-                $field = $this->mFlatFields[$name];
-                $value = $field->filter($value, $this->mFlatFields);
-            }
-
-            $this->mFieldData = $fieldData;
         }
     }
 
