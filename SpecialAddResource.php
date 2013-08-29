@@ -117,8 +117,8 @@ class SpecialAddResource extends SpecialPage
      * Display the upload chapter.
      *
      * Parts of this function are a 1:1 copy of SpecialUpload::execute() found
-     * in includes/specials/SpecialUpload.php. See inline-comments for exact
-     * details.
+     * in includes/specials/SpecialUpload.php, version 1.21.1. See
+     * inline-comments for exact details.
      */
     private function uploadChapter() {
         global $wgOut, $wgUser;
@@ -138,25 +138,23 @@ class SpecialAddResource extends SpecialPage
         /**
          * Start copy of SpecialUpload::execute()
          */
+        # Process upload or show a form
         if (
-                $this->mTokenOk && !$this->mCancelUpload &&
-                ($this->mUpload && $this->mUploadClicked)
+            $this->mTokenOk && !$this->mCancelUpload &&
+            ( $this->mUpload && $this->mUploadClicked )
         ) {
             $this->processUpload();
         } else {
-            # check if we are allowed to upload:
-            if (! $wgUser->isAllowed('upload')) {
-                $link = $this->getLoginLink(wfMsg('login_text'));
-                $this->addWarning(wfMsg('upload_not_allowed', $link),
-                                  'upload_not_allowed');
+            # Backwards compatibility hook
+            if( !wfRunHooks( 'UploadForm:initial', array( &$this ) ) ) {
+                wfDebug( "Hook 'UploadForm:initial' broke output of the upload form" );
                 return;
             }
-
-            $this->showUploadForm($this->getUploadForm());
+            $this->showUploadForm( $this->getUploadForm() );
         }
 
         # Cleanup
-        if ($this->mUpload) {
+        if ( $this->mUpload ) {
             $this->mUpload->cleanupTempFile();
         }
         /**
@@ -186,7 +184,7 @@ class SpecialAddResource extends SpecialPage
 
     /**
      * This functionis a 1:1 copy of class SpecialUpload found in
-     * includes/specials/SpecialUpload.php, version 1.19.2. The only
+     * includes/specials/SpecialUpload.php, version 1.21.1. The only
      * difference is the different redirect at the end.
      */
     private function processUpload() {
@@ -218,8 +216,7 @@ class SpecialAddResource extends SpecialPage
         $permErrors = $this->mUpload->verifyTitlePermissions($this->getUser());
         if ($permErrors !== true) {
             $code = array_shift($permErrors[0]);
-            $this->showRecoverableUploadError(wfMsgExt($code,
-                    'parseinline', $permErrors[0]));
+            $this->showRecoverableUploadError($this->msg($code, $permErrors[0])->parse());
             return;
         }
 
@@ -253,9 +250,9 @@ class SpecialAddResource extends SpecialPage
 
         /**
          * The previous two lines are in the original function. We don't need
-         * the hook and we don't need the redirect.
+         * the hook and we need a different redirect.
          */
-        $redir = SpecialPage::getTitleFor( 'Resources', $this->targetTitle->getPrefixedText() );
+        $redir = SpecialPage::getTitleFor('Resources', $this->targetTitle->getPrefixedText());
         $this->getOutput()->redirect($redir->getFullURL());
     }
 
