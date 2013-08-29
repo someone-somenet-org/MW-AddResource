@@ -50,7 +50,7 @@ abstract class AddResourceForm extends HTMLForm {
      * was actually clicked.
      *
      * The else-branch is a 1:1 copy (with some parts commented out) of the
-     * parent function.
+     * parent function in version 1.21.1.
      */
     function loadData() {
         if ($this->wasClicked()) {
@@ -63,8 +63,9 @@ abstract class AddResourceForm extends HTMLForm {
                     continue;
                 } elseif (!empty($field->mParams['disabled'])) {
                     $fieldData[$fieldname] = $field->getDefault();
-                //} else {
-                //    $fieldData[$fieldname] = $field->loadDataFromRequest($this->getRequest());
+// Commented lines from the original function:
+//                } else {
+//                    $fieldData[$fieldname] = $field->loadDataFromRequest($this->getRequest());
                 }
             }
 
