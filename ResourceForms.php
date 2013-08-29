@@ -222,14 +222,14 @@ class UploadFileForm extends AddResourceForm {
     /**
      * Get the messages indicating which extensions are preferred and prohibitted.
      *
-     * Exact copy of UploadForm::getExtensionsMessage() in 1.17.0
+     * Exact copy of UploadForm::getExtensionsMessage() in 1.21.1
      *
      * @return String: HTML string containing the message
      */
-    protected function getExtensionsMessage() {
+     protected function getExtensionsMessage() {
         # Print a list of allowed file extensions, if so configured.  We ignore
         # MIME type here, it's incomprehensible to most people and too long.
-        global $wgLang, $wgCheckFileExtensions, $wgStrictFileExtensions,
+        global $wgCheckFileExtensions, $wgStrictFileExtensions,
         $wgFileExtensions, $wgFileBlacklist;
 
         if ($wgCheckFileExtensions) {
@@ -237,16 +237,16 @@ class UploadFileForm extends AddResourceForm {
                 # Everything not permitted is banned
                 $extensionsList =
                     '<div id="mw-upload-permitted">' .
-                    wfMsgWikiHtml('upload-permitted', $wgLang->commaList($wgFileExtensions)) .
+                    $this->msg('upload-permitted', $this->getContext()->getLanguage()->commaList($wgFileExtensions))->parseAsBlock() .
                     "</div>\n";
             } else {
                 # We have to list both preferred and prohibited
                 $extensionsList =
                     '<div id="mw-upload-preferred">' .
-                    wfMsgWikiHtml('upload-preferred', $wgLang->commaList($wgFileExtensions)) .
+                        $this->msg('upload-preferred', $this->getContext()->getLanguage()->commaList($wgFileExtensions))->parseAsBlock() .
                     "</div>\n" .
                     '<div id="mw-upload-prohibited">' .
-                    wfMsgWikiHtml('upload-prohibited', $wgLang->commaList($wgFileBlacklist)) .
+                        $this->msg('upload-prohibited', $this->getContext()->getLanguage()->commaList($wgFileBlacklist))->parseAsBlock() .
                     "</div>\n";
             }
         } else {
@@ -255,7 +255,6 @@ class UploadFileForm extends AddResourceForm {
         }
         return $extensionsList;
     }
-
 }
 
 class SubpageForm extends PageCreationForm {
