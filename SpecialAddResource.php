@@ -19,6 +19,9 @@ class SpecialAddResource extends SpecialPage
     private $mCancelUpload;
     private $mUploadClicked;
 
+    private $mIgnoreWarning = true;
+    private $mWatchthis = false;
+
     function __construct($request = null) {
         parent::__construct('AddResource');
 
