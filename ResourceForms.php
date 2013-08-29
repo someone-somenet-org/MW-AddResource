@@ -312,7 +312,8 @@ class ExternalRedirectForm extends PageCreationForm {
             $title->getFullText(),
             $wgUser->getSkin()->linkKnown(
                 SpecialPage::getTitleFor('Prefixindex', $title->getPrefixedText()),
-                wfMsg('link_footer_linktext'), null,
+                wfMsg('link_footer_linktext'),
+                array(),
                 array('namespace' => $title->getNamespace())
             )
         ));
