@@ -64,8 +64,10 @@ abstract class AddResourceForm extends HTMLForm {
                 } elseif (!empty($field->mParams['disabled'])) {
                     $fieldData[$fieldname] = $field->getDefault();
 // Commented lines from the original function:
-//                } else {
-//                    $fieldData[$fieldname] = $field->loadDataFromRequest($this->getRequest());
+// Otherwise loadDataFromRequest throws errors for mandatory fields,
+// even if the relevant form wasn't clicked.
+                } else {
+                    $fieldData[$fieldname] = $field->loadDataFromRequest($this->getRequest());
                 }
             }
 
@@ -100,7 +102,7 @@ abstract class PageCreationForm extends AddResourceForm {
      * Callback that validates that a page does *not* exist.
      */
     public function validatePageNotExists($value, $alldata) {
-        $value =str_replace('/', '-', $value);
+        $value = str_replace('/', '-', $value);
         $title = Title::NewFromText(
             $alldata[ADD_RESOURCE_REFERER_NAME] . '/' . $value);
         if ($title->exists()) {
