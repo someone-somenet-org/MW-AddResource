@@ -58,20 +58,20 @@ abstract class AddResourceForm extends HTMLForm {
         } else {
             $fieldData = array();
 
-            foreach ( $this->mFlatFields as $fieldname => $field ) {
-                if ( !empty( $field->mParams['nodata'] ) ) {
+            foreach ($this->mFlatFields as $fieldname => $field) {
+                if (!empty($field->mParams['nodata'])) {
                     continue;
-                } elseif ( !empty( $field->mParams['disabled'] ) ) {
+                } elseif (!empty($field->mParams['disabled'])) {
                     $fieldData[$fieldname] = $field->getDefault();
                 //} else {
-                //    $fieldData[$fieldname] = $field->loadDataFromRequest( $this->getRequest() );
+                //    $fieldData[$fieldname] = $field->loadDataFromRequest($this->getRequest());
                 }
             }
 
             # Filter data.
-            foreach ( $fieldData as $name => &$value ) {
+            foreach ($fieldData as $name => &$value) {
                 $field = $this->mFlatFields[$name];
-                $value = $field->filter( $value, $this->mFlatFields );
+                $value = $field->filter($value, $this->mFlatFields);
             }
 
             $this->mFieldData = $fieldData;
@@ -98,11 +98,11 @@ abstract class PageCreationForm extends AddResourceForm {
     /**
      * Callback that validates that a page does *not* exist.
      */
-    public function validatePageNotExists( $value, $alldata) {
+    public function validatePageNotExists($value, $alldata) {
         $value =str_replace('/', '-', $value);
         $title = Title::NewFromText(
             $alldata[ADD_RESOURCE_REFERER_NAME] . '/' . $value);
-        if ( $title->exists() ) {
+        if ($title->exists()) {
             return wfMsg('page-exists');
         } else {
             return true;
@@ -119,30 +119,30 @@ class UploadFileForm extends AddResourceForm {
     private $mForReUpload;
     private $mComment;
 
-    public function __construct( $title, $options = array() ) {
+    public function __construct($title, $options = array()) {
         parent::__construct($title);
 
         global $wgUser;
 
         # Set some form properties
-        $this->setSubmitText( wfMsg( 'uploadbtn' ) );
-        $this->setSubmitName( 'submit' ); #TODO: maybe interesting to get type of submission?
+        $this->setSubmitText(wfMsg('uploadbtn'));
+        $this->setSubmitName('submit'); #TODO: maybe interesting to get type of submission?
         # Used message keys: 'accesskey-upload', 'tooltip-upload'
-        $this->setSubmitTooltip( 'upload' );
-        $this->setId( 'mw-upload-form' );
+        $this->setSubmitTooltip('upload');
+        $this->setId('mw-upload-form');
 
-        $this->addHeaderText( wfMsg( 'upload_exp', $wgUser->getSkin()->linkKnown(
-                SpecialPage::getTitleFor( 'Imagelist' ),
-                wfMsg( 'upload_exp_linktext' ) ))
+        $this->addHeaderText(wfMsg('upload_exp', $wgUser->getSkin()->linkKnown(
+                SpecialPage::getTitleFor('Imagelist'),
+                wfMsg('upload_exp_linktext')))
         );
-        $this->addPostText( '<br />' . wfMsg('upload_footer',
+        $this->addPostText('<br />' . wfMsg('upload_footer',
             $wgUser->getSkin()->makeExternalLink(
-                wfMsg( 'upload_footer_url' ),
-                wfMsg( 'upload_footer_linktext' )
+                wfMsg('upload_footer_url'),
+                wfMsg('upload_footer_linktext')
             ))
         );
 
-        $this->mSubmitCallback = array( $this, 'submit' );
+        $this->mSubmitCallback = array($this, 'submit');
     }
 
     public function submit() {
@@ -160,16 +160,16 @@ class UploadFileForm extends AddResourceForm {
             'label-message' => 'sourcefilename',
             'upload-type' => 'File',
             'radio' => &$radio,
-            'help' => wfMsgExt( 'upload-maxfilesize',
-                    array( 'parseinline', 'escapenoentities' ),
+            'help' => wfMsgExt('upload-maxfilesize',
+                    array('parseinline', 'escapenoentities'),
                     $wgLang->formatSize(
-                        wfShorthandToInteger( min(
+                        wfShorthandToInteger(min(
                             wfShorthandToInteger(
-                                ini_get( 'upload_max_filesize' )
+                                ini_get('upload_max_filesize')
                             ), $wgMaxUploadSize
-                        ) )
+                        ))
                     )
-                ) . ' ' . wfMsgHtml( 'upload_source_file' ),
+                ) . ' ' . wfMsgHtml('upload_source_file'),
             'checked' => true, #$selectedSourceType == 'file',
         );
 
@@ -186,7 +186,7 @@ class UploadFileForm extends AddResourceForm {
                 'size' => 60,
                 'default' => $this->mDesiredDestName,
                 # FIXME: hack to work around poor handling of the 'default' option in HTMLForm
-                'nodata' => strval( $this->mDesiredDestName ) !== '',
+                'nodata' => strval($this->mDesiredDestName) !== '',
         );
         $descriptor['UploadDescription'] = array(
             'type' => 'textarea',
@@ -195,7 +195,7 @@ class UploadFileForm extends AddResourceForm {
                 ? 'filereuploadsummary'
                 : 'fileuploadsummary',
             'default' => $this->mComment,
-            'cols' => intval( $wgUser->getOption( 'cols' ) ),
+            'cols' => intval($wgUser->getOption('cols')),
             'rows' => 8,
         );
         $descriptor['IgnoreWarning'] = array(
@@ -232,21 +232,21 @@ class UploadFileForm extends AddResourceForm {
         global $wgLang, $wgCheckFileExtensions, $wgStrictFileExtensions,
         $wgFileExtensions, $wgFileBlacklist;
 
-        if( $wgCheckFileExtensions ) {
-            if( $wgStrictFileExtensions ) {
+        if ($wgCheckFileExtensions) {
+            if ($wgStrictFileExtensions) {
                 # Everything not permitted is banned
                 $extensionsList =
                     '<div id="mw-upload-permitted">' .
-                    wfMsgWikiHtml( 'upload-permitted', $wgLang->commaList( $wgFileExtensions ) ) .
+                    wfMsgWikiHtml('upload-permitted', $wgLang->commaList($wgFileExtensions)) .
                     "</div>\n";
             } else {
                 # We have to list both preferred and prohibited
                 $extensionsList =
                     '<div id="mw-upload-preferred">' .
-                    wfMsgWikiHtml( 'upload-preferred', $wgLang->commaList( $wgFileExtensions ) ) .
+                    wfMsgWikiHtml('upload-preferred', $wgLang->commaList($wgFileExtensions)) .
                     "</div>\n" .
                     '<div id="mw-upload-prohibited">' .
-                    wfMsgWikiHtml( 'upload-prohibited', $wgLang->commaList( $wgFileBlacklist ) ) .
+                    wfMsgWikiHtml('upload-prohibited', $wgLang->commaList($wgFileBlacklist)) .
                     "</div>\n";
             }
         } else {
@@ -263,28 +263,28 @@ class SubpageForm extends PageCreationForm {
 
     private $mDest;
 
-    public function __construct( $action, $title, $options = array() ) {
+    public function __construct($action, $title, $options = array()) {
         parent::__construct($title);
 
-        $this->mDest = isset( $options['dest'] ) ? $options['dest'] : '';
-        $this->mSubmitCallback = array( $this, 'submit' );
+        $this->mDest = isset($options['dest']) ? $options['dest'] : '';
+        $this->mSubmitCallback = array($this, 'submit');
 
         # Set some form properties
-        $this->setSubmitText( wfMsg( 'subpage_button' ) );
-        $this->setSubmitName( 'submit' );
+        $this->setSubmitText(wfMsg('subpage_button'));
+        $this->setSubmitName('submit');
         # Used message keys: 'accesskey-upload', 'tooltip-upload'
-        $this->setSubmitTooltip( 'create' );
-        $this->setId( 'mw-upload-form' );
+        $this->setSubmitTooltip('create');
+        $this->setId('mw-upload-form');
 
-        $this->addHeaderText( wfMsg('subpage_exp', wfMsg('subpage_button')) );
-        $this->addPostText( '<br />' . wfMsg('subpage_after_exp' ) );
+        $this->addHeaderText(wfMsg('subpage_exp', wfMsg('subpage_button')));
+        $this->addPostText('<br />' . wfMsg('subpage_after_exp'));
     }
 
     public function submit() {
         global $wgOut;
         $subpage = str_replace('/', '-', $this->mDest);
 
-        $wgOut->redirect($this->title->getFullURL() . '/' . $subpage . '?action=edit' );
+        $wgOut->redirect($this->title->getFullURL() . '/' . $subpage . '?action=edit');
     }
 
     protected function getDescriptors() {
@@ -313,62 +313,62 @@ class ExternalRedirectForm extends PageCreationForm {
     private $mLinkTitle;
     private $mLinkDesc;
 
-    public function __construct( $action, $title, $options = array() ) {
+    public function __construct($action, $title, $options = array()) {
         parent::__construct($title);
 
-        $this->mLinkUrl = isset( $options['desturl'] ) ? $options['desturl'] : '';
-        $this->mLinkTitle = isset( $options['desttitle'] ) ? $options['desttitle'] : '';
-        $this->mLinkDesc = isset( $options['destdesc'] ) ? $options['destdesc'] : '';
+        $this->mLinkUrl = isset($options['desturl']) ? $options['desturl'] : '';
+        $this->mLinkTitle = isset($options['desttitle']) ? $options['desttitle'] : '';
+        $this->mLinkDesc = isset($options['destdesc']) ? $options['destdesc'] : '';
 
 
         # Set some form properties
-        $this->setSubmitText( wfMsg( 'link_button' ) );
-        $this->setSubmitName( 'submit' );
+        $this->setSubmitText(wfMsg('link_button'));
+        $this->setSubmitName('submit');
         # Used message keys: 'accesskey-upload', 'tooltip-upload'
-        $this->setSubmitTooltip( 'create' );
-        $this->setId( 'mw-upload-form' );
+        $this->setSubmitTooltip('create');
+        $this->setId('mw-upload-form');
 
         global $wgUser;
-        $this->addHeaderText( wfMsg('link_exp', wfMsg('link_button') ) );
-        $this->addPostText( '<br />' . wfMsg('link_footer',
+        $this->addHeaderText(wfMsg('link_exp', wfMsg('link_button')));
+        $this->addPostText('<br />' . wfMsg('link_footer',
             $title->getFullText(),
             $wgUser->getSkin()->linkKnown(
-                SpecialPage::getTitleFor( 'Prefixindex', $title->getPrefixedText() ),
+                SpecialPage::getTitleFor('Prefixindex', $title->getPrefixedText()),
                 wfMsg('link_footer_linktext'), null,
-                array( 'namespace' => $title->getNamespace() )
+                array('namespace' => $title->getNamespace())
             )
         ));
 
-        $this->mSubmitCallback = array( $this, 'submit' );
+        $this->mSubmitCallback = array($this, 'submit');
     }
 
     public function submit() {
         global $wgOut;
 
         $subpage = str_replace('/', '-', $this->mLinkTitle);
-        $title = Title::NewFromText( $this->title->getPrefixedText() . '/' . $subpage);
-        $article = new Article( $title );
+        $title = Title::NewFromText($this->title->getPrefixedText() . '/' . $subpage);
+        $article = new Article($title);
 
         $text = '#REDIRECT [[' . $this->mLinkUrl;
-        if ( $this->mLinkDesc != '' )
+        if ($this->mLinkDesc != '')
             $text .= '|' . $this->mLinkDesc;
         $text .= ']]';
 
         # add a category:
         global $wgResourcesCategory;
-        if ( $wgResourcesCategory != NULL && gettype($wgResourcesCategory) == "string" ) {
+        if ($wgResourcesCategory != NULL && gettype($wgResourcesCategory) == "string") {
             global $wgContLang;
-            $category_text = $wgContLang->getNSText ( NS_CATEGORY );
+            $category_text = $wgContLang->getNSText(NS_CATEGORY);
             $text .= "\n[[" . $category_text . ":" . $wgResourcesCategory . "]]";
         }
         $link = $title->getFullURL() . '?redirect=no';
-        $article->doEdit( $text, wfMsg('commit_message', $link, $this->mLinkUrl), EDIT_NEW );
+        $article->doEdit($text, wfMsg('commit_message', $link, $this->mLinkUrl), EDIT_NEW);
 
-        $redir = SpecialPage::getTitleFor( 'Resources', $this->title->getPrefixedText() );
-        $wgOut->redirect($redir->getFullURL() . '?highlight=' . $subpage );
+        $redir = SpecialPage::getTitleFor('Resources', $this->title->getPrefixedText());
+        $wgOut->redirect($redir->getFullURL() . '?highlight=' . $subpage);
     }
 
-    public function validateUrl( $value, $alldata ) {
+    public function validateUrl($value, $alldata) {
 #TODO: actually validate
         return true;
     }
