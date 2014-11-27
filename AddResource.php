@@ -110,7 +110,7 @@ function efAddResourceSpecialPage($template, $links) {
     $tail = array (
         $title->getNamespaceKey('') . '_talk' => array(
             'class' => $talkTitle->exists() ? null : 'new',
-            'text' => wfMsg('Talk'),
+            'text' => wfMessage('Talk')->text(),
             'href' => $talkTitle->getLocalUrl(),
         )
     );

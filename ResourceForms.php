@@ -82,7 +82,7 @@ abstract class PageCreationForm extends AddResourceForm {
         $title = Title::NewFromText(
             $alldata[ADD_RESOURCE_REFERER_NAME] . '/' . $value);
         if ($title->exists()) {
-            return wfMsg('page-exists');
+            return wfMessage('page-exists')->text();
         } else {
             return true;
         }
@@ -101,24 +101,21 @@ class UploadFileForm extends AddResourceForm {
     public function __construct($title, $options = array()) {
         parent::__construct($title);
 
-        global $wgUser;
-
         # Set some form properties
-        $this->setSubmitText(wfMsg('uploadbtn'));
+        $this->setSubmitText(wfMessage('uploadbtn')->text());
         $this->setSubmitName('submit'); #TODO: maybe interesting to get type of submission?
         # Used message keys: 'accesskey-upload', 'tooltip-upload'
         $this->setSubmitTooltip('upload');
         $this->setId('mw-upload-form');
 
-        $this->addHeaderText(wfMsg('upload_exp', $wgUser->getSkin()->linkKnown(
-                SpecialPage::getTitleFor('Imagelist'),
-                wfMsg('upload_exp_linktext')))
+        $image_list_link = Linker::specialLink('Imagelist', 'upload_exp_linktext');
+        $this->addHeaderText(wfMessage('upload_exp', $image_list_link)->text()
         );
-        $this->addPostText('<br />' . wfMsg('upload_footer',
-            $wgUser->getSkin()->makeExternalLink(
-                wfMsg('upload_footer_url'),
-                wfMsg('upload_footer_linktext')
-            ))
+        $this->addPostText('<br />' . wfMessage('upload_footer',
+            Linker::makeExternalLink(
+                wfMessage('upload_footer_url')->text(),
+                wfMessage('upload_footer_linktext')->text()
+            ))->text()
         );
 
         $this->mSubmitCallback = array($this, 'submit');
@@ -132,6 +129,15 @@ class UploadFileForm extends AddResourceForm {
 
         $descriptor = $this->getCommonFields();
 
+        $size = $wgLang->formatSize(
+            wfShorthandToInteger(min(
+                wfShorthandToInteger(
+                    ini_get('upload_max_filesize')
+                ), $wgMaxUploadSize
+            ))
+        );
+        $upload_source_file = wfMessage('upload_source_file')->escaped();
+
         $descriptor['UploadFile'] = array(
             'class' => 'UploadSourceField',
             'type' => 'file',
@@ -139,16 +145,7 @@ class UploadFileForm extends AddResourceForm {
             'label-message' => 'sourcefilename',
             'upload-type' => 'File',
             'radio' => &$radio,
-            'help' => wfMsgExt('upload-maxfilesize',
-                    array('parseinline', 'escapenoentities'),
-                    $wgLang->formatSize(
-                        wfShorthandToInteger(min(
-                            wfShorthandToInteger(
-                                ini_get('upload_max_filesize')
-                            ), $wgMaxUploadSize
-                        ))
-                    )
-                ) . ' ' . wfMsgHtml('upload_source_file'),
+            'help' => wfMessage('upload-maxfilesize', $size)->text() . " $upload_source_file",
             'checked' => true, #$selectedSourceType == 'file',
         );
 
@@ -248,14 +245,14 @@ class SubpageForm extends PageCreationForm {
         $this->mSubmitCallback = array($this, 'submit');
 
         # Set some form properties
-        $this->setSubmitText(wfMsg('subpage_button'));
+        $this->setSubmitText(wfMessage('subpage_button')->text());
         $this->setSubmitName('submit');
         # Used message keys: 'accesskey-upload', 'tooltip-upload'
         $this->setSubmitTooltip('create');
         $this->setId('mw-upload-form');
 
-        $this->addHeaderText(wfMsg('subpage_exp', wfMsg('subpage_button')));
-        $this->addPostText('<br />' . wfMsg('subpage_after_exp'));
+        $this->addHeaderText(wfMessage('subpage_exp', wfMessage('subpage_button')->text())->text());
+        $this->addPostText('<br />' . wfMessage('subpage_after_exp')->text());
     }
 
     public function submit() {
@@ -300,23 +297,22 @@ class ExternalRedirectForm extends PageCreationForm {
 
 
         # Set some form properties
-        $this->setSubmitText(wfMsg('link_button'));
+        $this->setSubmitText(wfMessage('link_button')->text());
         $this->setSubmitName('submit');
         # Used message keys: 'accesskey-upload', 'tooltip-upload'
         $this->setSubmitTooltip('create');
         $this->setId('mw-upload-form');
 
-        global $wgUser;
-        $this->addHeaderText(wfMsg('link_exp', wfMsg('link_button')));
-        $this->addPostText('<br />' . wfMsg('link_footer',
+        $this->addHeaderText(wfMessage('link_exp', wfMessage('link_button')->text())->text());
+        $this->addPostText('<br />' . wfMessage('link_footer',
             $title->getFullText(),
-            $wgUser->getSkin()->linkKnown(
+            Linker::linkKnown(
                 SpecialPage::getTitleFor('Prefixindex', $title->getPrefixedText()),
-                wfMsg('link_footer_linktext'),
+                wfMessage('link_footer_linktext')->text(),
                 array(),
                 array('namespace' => $title->getNamespace())
             )
-        ));
+        )->text());
 
         $this->mSubmitCallback = array($this, 'submit');
     }
@@ -341,7 +337,7 @@ class ExternalRedirectForm extends PageCreationForm {
             $text .= "\n[[" . $category_text . ":" . $wgResourcesCategory . "]]";
         }
         $link = $title->getFullURL() . '?redirect=no';
-        $article->doEdit($text, wfMsg('commit_message', $link, $this->mLinkUrl), EDIT_NEW);
+        $article->doEdit($text, wfMessage('commit_message', $link, $this->mLinkUrl)->text(), EDIT_NEW);
 
         $redir = SpecialPage::getTitleFor('Resources', $this->title->getPrefixedText());
         $wgOut->redirect($redir->getFullURL() . '?highlight=' . $subpage);
