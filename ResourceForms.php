@@ -108,7 +108,7 @@ class UploadFileForm extends AddResourceForm {
         $this->setSubmitTooltip('upload');
         $this->setId('mw-upload-form');
 
-        $image_list_link = Linker::specialLink('Imagelist', 'upload_exp_linktext');
+        $image_list_link = Linker::specialLink('Listfiles', 'upload_exp_linktext');
         $this->addHeaderText(wfMessage('upload_exp', $image_list_link)->text()
         );
         $this->addPostText('<br />' . wfMessage('upload_footer',

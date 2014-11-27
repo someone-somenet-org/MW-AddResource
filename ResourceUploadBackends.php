@@ -7,9 +7,10 @@ function getResourceComment() {
    global $wgResourcesCategory, $wgContLang, $wgRequest;
 
    $referer = $wgRequest->getText(ADD_RESOURCE_REFERER_FIELD);
+   $linktext = wfMessage('resources')->inContentLanguage()->text();
    $pageText = "\n\n<!-- Don't edit below this line! -->\n[[" . $referer . "]] ";
    $pageText .= "([[" . SpecialPage::getTitleFor( 'Resources' )
-         . '/' . $referer . '|' . wfMsgForContent('resources') . ']])';
+         . '/' . $referer . '|' . $linktext . ']])';
    if ( $wgResourcesCategory != NULL && gettype($wgResourcesCategory) == "string" ) {
       $categoryText = $wgContLang->getNSText ( NS_CATEGORY );
       $pageText .= "\n[[" . $categoryText . ":" .
