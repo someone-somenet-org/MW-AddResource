@@ -80,7 +80,6 @@ class SpecialAddResource extends SpecialPage
      */
     function execute($par) {
         global $wgOut, $wgRequest, $wgUser, $wgEnableUploads, $wgEnableExternalRedirects;
-        $skin = $wgUser->getSkin();
         $this->setHeaders();
 
         /* make a Title object from $par */
@@ -88,30 +87,30 @@ class SpecialAddResource extends SpecialPage
             $this->targetTitle = Title::newFromText($par);
             $this->param = $par;
         } else { /* if nothing was specified */
-            $wgOut->addWikiText(wfMsg('noParameterHelp'));
+            $wgOut->addWikiText(wfMessage('noParameterHelp')->text());
             return;
         }
 
         /* header text, title */
-        $wgOut->setPagetitle(wfMsg('addResourcesPageTitle', $this->targetTitle->getPrefixedText()));
+        $wgOut->setPagetitle(wfMessage('addResourcesPageTitle', $this->targetTitle->getPrefixedText())->text());
         $wgOut->addWikiText(
-            wfMsg('explanation',
+            wfMessage('explanation',
                 $this->targetTitle->getFullText(),
                 SpecialPage::getTitleFor('Resources'),
-                wfMsg('upload_header'),
-                wfMsg('subpage_header'),
-                wfMsg('link_header')
-            )
+                wfMessage('upload_header')->text(),
+                wfMessage('subpage_header')->text(),
+                wfMessage('link_header')->text()
+            )->text()
         );
 
         # If we are not allowed to do *anything*, we display a red warning message.
         if (!($wgUser->isAllowed('edit') && $wgUser->isAllowed('createpage'))
                 && ! $wgUser->isAllowed('upload')) {
             if ($wgUser->isLoggedIn())
-                $wgOut->addHTML(getBanner(wfMsg('not_allowed')));
+                $wgOut->addHTML(getBanner(wfMessage('not_allowed')->text()));
             else {
-                $loginPage = $this->getLoginLink(wfMsg('login_text'));
-                $wgOut->addHTML(getBanner(wfMsg('not_allowed_anon', $loginPage)));
+                $loginPage = $this->getLoginLink(wfMessage('login_text')->text());
+                $wgOut->addHTML(getBanner(wfMessage('not_allowed_anon', $loginPage)->text()));
             }
             return;
         }
@@ -354,8 +353,8 @@ class SpecialAddResource extends SpecialPage
 
         # check if we are allowed to create subpages:
         if (!($wgUser->isAllowed('edit') && $wgUser->isAllowed('createpage'))) {
-            $link = $this->getLoginLink(wfMsg('login_text'));
-            $wgOut->addHTML(getBanner(wfMsg('createpage_not_allowed', wfMsg('subpages'), $link),
+            $link = $this->getLoginLink(wfMessage('login_text')->text());
+            $wgOut->addHTML(getBanner(wfMessage('createpage_not_allowed', wfMessage('subpages')->text(), $link)->text(),
                 'createpage_not_allowed', 'grey'));
             return;
         }
@@ -379,8 +378,8 @@ class SpecialAddResource extends SpecialPage
 
         # check if we are allowed to create subpages:
         if (!($wgUser->isAllowed('edit') && $wgUser->isAllowed('createpage'))) {
-            $link = $this->getLoginLink(wfMsg('login_text'));
-            $wgOut->addHTML(getBanner(wfMsg('createpage_not_allowed', wfMsg('links'),  $link),
+            $link = $this->getLoginLink(wfMessage('login_text')->text());
+            $wgOut->addHTML(getBanner(wfMessage('createpage_not_allowed', wfMessage('links')->text(),  $link)->text(),
                 'createpage_not_allowed', 'grey'));
             return;
         }
@@ -397,12 +396,11 @@ class SpecialAddResource extends SpecialPage
     }
 
     function getLoginLink($login_text) {
-        global $wgUser, $wgTitle;
-        $skin = $wgUser->getSkin();
+        global $wgTitle;
         $userLogin = SpecialPage::getTitleFor('Userlogin');
         $query =  array('returnto' => $wgTitle->getPrefixedText());
 
-        return $skin->link($userLogin, $login_text, array(), $query);
+        return Linker::link($userLogin, $login_text, array(), $query);
     }
 
     /**
