@@ -127,7 +127,7 @@ function efAddResourceSpecialPage($template, $links) {
  * Sets the upload handler to our special class in case the POST data includes
  * the ADD_RESOURCE_REFERER_FIELD value
  */
-function wgAddResourceGetUploadRequestHandler( $type, $className ) {
+function wgAddResourceGetUploadRequestHandler( $type, &$className ) {
     global $wgRequest;
     if ( ! $wgRequest->getText(ADD_RESOURCE_REFERER_FIELD) ) {
         return true;
