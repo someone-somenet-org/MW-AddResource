@@ -55,7 +55,7 @@ $wgAutoloadClasses['UploadResourceFromStash'] = __DIR__ . '/ResourceUploadBacken
  * Hook registration.
  */
 $wgHooks['UploadCreateFromRequest'][] = 'wgAddResourceGetUploadRequestHandler';
-$wgHooks['SkinTemplateNavigation::SpecialPage'][] = 'efAddResourceSpecialPage';
+#$wgHooks['SkinTemplateNavigation::SpecialPage'][] = 'efAddResourceSpecialPage';
 
 /**
  * Default values for most options.
@@ -71,6 +71,7 @@ function getResourcesUrl($title) {
 
 function efAddResourceSpecialPage($template, $links) {
     global $wgTitle, $wgRequest, $wgUser, $wgAddResourceTab;
+    print(3);
 
     // return if we are not on the right special page
     if (!$wgTitle->isSpecial('AddResource')) {
