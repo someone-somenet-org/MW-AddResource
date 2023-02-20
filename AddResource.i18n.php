@@ -36,7 +36,7 @@ The page "$1" doesn\'t exist yet. You can still add files and links, but no subp
 		'subpage_button' => 'Create',
 		'subpage_after_exp' => '<strong>Please note:</strong> If the subpage already exists, you will simply be redirected to that page.',
 		'link_header' => 'Add a link',
-		'link_exp' => 'If you can\'t upload a file or page directly here, you can also add an external link. Please enter a full URL and a short but descriptive link text and click <strong>"$1"</strong>.',
+		'link_exp' => 'If you can\'t upload a file or page directly here, you can also add an external link. Please enter a full URL and a short but descriptive link text and click <strong>"$1"</strong>. <br/><strong>Beware that external pages tend to disappear within weeks or months. Therefore we recommend to upload the content or to create a subpage instead.</strong>',
 		'link_url' => 'full URL:',
 		'link_title' => 'link text:',
 		'link_desc' => 'description:
@@ -93,7 +93,7 @@ Die Seite $1 existiert noch nicht. Du kannst trotzdem Dateien und Links hinzufü
 		'subpage_button' => 'anlegen',
 		'subpage_after_exp' => '<strong>Anmerkung:</strong> Wenn eine Unterseite bereits existiert, wirst du einfach auf diese Seite weitergeleitet.',
 		'link_header' => 'Link hinzufügen',
-		'link_exp' => 'Wenn du Materialien nicht direkt hier hochladen kannst, kannst du auch einen externen Link hinzufügen. Gib eine URL und einen kurzen eindeutigen Linktext ein und klicke <strong>"$1"</strong>.',
+		'link_exp' => 'Wenn du Materialien nicht direkt hier hochladen kannst, kannst du auch einen externen Link hinzufügen. Gib eine URL und einen kurzen eindeutigen Linktext ein und klicke <strong>"$1"</strong>.<br/><strong>Bitte bedenke, dass externe Seiten oft nach wenigen Wochen oder Monaten wieder verschwinden und es im Normalfall besser ist, die verlinkten Inhalte stattdessen hochzuladen oder als Unterseite einzupflegen.</strong>',
 		'link_url' => 'URL:',
 		'link_title' => 'Titel:',
 		'link_desc' => 'Beschreibung:

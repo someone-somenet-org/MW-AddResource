@@ -54,6 +54,8 @@ abstract class AddResourceForm extends HTMLForm {
     function loadData() {
         if ($this->wasClicked()) {
             parent::loadData();
+        } else if ($this->mFieldData === null) {
+            $this->mFieldData = [];
         }
     }
 
@@ -337,7 +339,7 @@ class ExternalRedirectForm extends PageCreationForm {
             $text .= "\n[[" . $category_text . ":" . $wgResourcesCategory . "]]";
         }
         $link = $title->getFullURL() . '?redirect=no';
-        $article->doEdit($text, wfMessage('commit_message', $link, $this->mLinkUrl)->text(), EDIT_NEW);
+        $article->doEditContent(ContentHandler::makeContent($text, $title), wfMessage('commit_message', $link, $this->mLinkUrl)->text(), EDIT_NEW);
 
         $redir = SpecialPage::getTitleFor('Resources', $this->title->getPrefixedText());
         $wgOut->redirect($redir->getFullURL() . '?highlight=' . $subpage);
